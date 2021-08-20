@@ -107,6 +107,11 @@
                 <dt>{{ $t('pageInventory.table.speedPercent') }}:</dt>
                 <dd>{{ tableFormatter(item.speedPercent) }}</dd>
               </dl>
+              <dl>
+                <!-- Fan speed -->
+                <dt>{{ $t('pageInventory.table.speedPercent') }}:</dt>
+                <dd>{{ tableFormatter(item.speedPercent) }}</dd>
+              </dl>
             </b-col>
           </b-row>
         </b-container>
