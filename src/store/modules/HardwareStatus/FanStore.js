@@ -16,22 +16,23 @@ const FanStore = {
           LocationIndicatorActive,
           Location,
           Id,
+          Model,
           Name,
-          SpeedPercent,
           Status = {},
           PartNumber,
           SerialNumber,
+          SparePartNumber,
         } = fan;
         return {
           id: Id,
           health: Status.Health,
           partNumber: PartNumber,
           serialNumber: SerialNumber,
-          healthRollup: Status.HealthRollup,
           identifyLed: LocationIndicatorActive,
           locationNumber: Location?.PartLocation?.ServiceLabel,
+          model: Model,
           name: Name,
-          speedPercent: SpeedPercent?.Reading,
+          sparePartNumber: SparePartNumber,
           statusState: Status.State,
           uri: fan['@odata.id'],
         };
@@ -39,25 +40,9 @@ const FanStore = {
     },
   },
   actions: {
-    async getChassisCollection() {
+    async getAllFans({ commit }, requestBody) {
       return await api
-        .get('/redfish/v1/')
-        .then((response) => api.get(response.data.Chassis['@odata.id']))
-        .then(({ data: { Members } }) =>
-          Members.map((member) => member['@odata.id'])
-        )
-        .catch((error) => console.log(error));
-    },
-    async getAllFans({ dispatch }) {
-      const collection = await dispatch('getChassisCollection');
-      if (!collection) return;
-      return await api
-        .all(collection.map((chassis) => dispatch('getFanData', chassis)))
-        .catch((error) => console.log(error));
-    },
-    async getFanData({ commit }, id) {
-      return await api
-        .get(`${id}`)
+        .get(`${requestBody.uri}`)
         .then((response) =>
           api.get(response.data.ThermalSubsystem['@odata.id'])
         )
@@ -80,12 +65,10 @@ const FanStore = {
       return await api.patch(uri, updatedIdentifyLedValue).catch((error) => {
         console.log(error);
         if (led.identifyLed) {
-          throw new Error(
-            i18n.t('pageHardwareStatus.toast.errorEnableIdentifyLed')
-          );
+          throw new Error(i18n.t('pageInventory.toast.errorEnableIdentifyLed'));
         } else {
           throw new Error(
-            i18n.t('pageHardwareStatus.toast.errorDisableIdentifyLed')
+            i18n.t('pageInventory.toast.errorDisableIdentifyLed')
           );
         }
       });
