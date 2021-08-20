@@ -19,11 +19,11 @@
       no-sort-reset
       hover
       responsive="md"
-      sort-by="health"
+      sort-by="name"
       show-empty
       :items="fans"
       :fields="fields"
-      :sort-desc="true"
+      :sort-desc="false"
       :sort-compare="sortCompare"
       :filter="searchFilter"
       :empty-text="$t('global.table.emptyMessage')"
@@ -44,11 +44,23 @@
           <span class="sr-only">{{ expandRowLabel }}</span>
         </b-button>
       </template>
-
+      <!-- Name -->
+      <template #cell(name)="row">
+        {{ row.item.name }}
+      </template>
       <!-- Health -->
       <template #cell(health)="{ value }">
         <status-icon :status="statusIcon(value)" />
         {{ value }}
+      </template>
+
+      <!-- Status -->
+      <template #cell(status)="row">
+        {{
+          row.item.statusState === 'Enabled'
+            ? $t('global.status.present')
+            : $t('global.status.absent')
+        }}
       </template>
 
       <!-- Toggle identify LED -->
@@ -57,6 +69,7 @@
           v-model="row.item.identifyLed"
           name="switch"
           switch
+          :disabled="serverStatus"
           @change="toggleIdentifyLedValue(row.item)"
         >
           <span v-if="row.item.identifyLed">
@@ -69,48 +82,33 @@
       <template #row-details="{ item }">
         <b-container fluid>
           <b-row>
-            <b-col sm="6" xl="4">
+            <b-col sm="6" xl="6">
               <dl>
                 <!-- Name -->
-                <dt>{{ $t('pageInventory.table.name') }}:</dt>
+                <dt>{{ $t('pageInventory.table.name') }}</dt>
                 <dd>{{ dataFormatter(item.name) }}</dd>
               </dl>
               <dl>
                 <!-- Serial number -->
-                <dt>{{ $t('pageInventory.table.serialNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.serialNumber') }}</dt>
                 <dd>{{ dataFormatter(item.serialNumber) }}</dd>
               </dl>
               <dl>
                 <!-- Part number -->
-                <dt>{{ $t('pageInventory.table.partNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.partNumber') }}</dt>
                 <dd>{{ dataFormatter(item.partNumber) }}</dd>
               </dl>
-              <dl>
-                <!-- Fan speed -->
-                <dt>{{ $t('pageInventory.table.fanSpeed') }}:</dt>
-                <dd>{{ dataFormatter(item.speed) }}</dd>
-              </dl>
             </b-col>
-            <b-col sm="6" xl="4">
+            <b-col sm="6" xl="6">
               <dl>
-                <!-- Status state -->
-                <dt>{{ $t('pageInventory.table.statusState') }}:</dt>
-                <dd>{{ dataFormatter(item.statusState) }}</dd>
+                <!-- Spare part number -->
+                <dt>{{ $t('pageInventory.table.sparePartNumber') }}</dt>
+                <dd>{{ dataFormatter(item.sparePartNumber) }}</dd>
               </dl>
               <dl>
-                <!-- Health Rollup state -->
-                <dt>{{ $t('pageInventory.table.statusHealthRollup') }}:</dt>
-                <dd>{{ dataFormatter(item.healthRollup) }}</dd>
-              </dl>
-              <dl>
-                <!-- Fan speed -->
-                <dt>{{ $t('pageInventory.table.speedPercent') }}:</dt>
-                <dd>{{ tableFormatter(item.speedPercent) }}</dd>
-              </dl>
-              <dl>
-                <!-- Fan speed -->
-                <dt>{{ $t('pageInventory.table.speedPercent') }}:</dt>
-                <dd>{{ tableFormatter(item.speedPercent) }}</dd>
+                <!-- Model -->
+                <dt>{{ $t('pageInventory.table.bmcManagerModel') }}</dt>
+                <dd>{{ dataFormatter(item.model) }}</dd>
               </dl>
             </b-col>
           </b-row>
@@ -135,15 +133,23 @@ import SearchFilterMixin, {
 import TableRowExpandMixin, {
   expandRowLabel,
 } from '@/components/Mixins/TableRowExpandMixin';
+import BVToastMixin from '@/components/Mixins/BVToastMixin';
 
 export default {
   components: { IconChevron, PageSection, StatusIcon, Search, TableCellCount },
   mixins: [
+    BVToastMixin,
     TableRowExpandMixin,
     DataFormatterMixin,
     TableSortMixin,
     SearchFilterMixin,
   ],
+  props: {
+    chassis: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
       isBusy: true,
@@ -155,8 +161,8 @@ export default {
           sortable: false,
         },
         {
-          key: 'id',
-          label: this.$t('pageInventory.table.id'),
+          key: 'name',
+          label: this.$t('pageInventory.table.name'),
           formatter: this.dataFormatter,
           sortable: true,
         },
@@ -168,15 +174,22 @@ export default {
           tdClass: 'text-nowrap',
         },
         {
+          key: 'status',
+          label: this.$t('pageUserManagement.table.status'),
+          formatter: this.dataFormatter,
+          sortable: true,
+          tdClass: 'text-nowrap',
+        },
+        {
           key: 'locationNumber',
           label: this.$t('pageInventory.table.locationNumber'),
-          formatter: this.tableFormatter,
+          formatter: this.dataFormatter,
           sortable: true,
         },
         {
           key: 'identifyLed',
           label: this.$t('pageInventory.table.identifyLed'),
-          formatter: this.tableFormatter,
+          formatter: this.dataFormatter,
         },
       ],
       searchFilter: searchFilter,
@@ -193,13 +206,33 @@ export default {
     fans() {
       return this.$store.getters['fan/fans'];
     },
+    serverStatus() {
+      if (this.chassis.endsWith('chassis')) {
+        return false;
+      } else if (this.$store.getters['global/serverStatus'] !== 'on') {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
+  watch: {
+    chassis: function (value) {
+      this.$store.dispatch('fan/getAllFans', { uri: value }).finally(() => {
+        // Emit initial data fetch complete to parent component
+        this.$root.$emit('hardware-status-fans-complete');
+        this.isBusy = false;
+      });
+    },
   },
   created() {
-    this.$store.dispatch('fan/getAllFans').finally(() => {
-      // Emit initial data fetch complete to parent component
-      this.$root.$emit('hardware-status-fans-complete');
-      this.isBusy = false;
-    });
+    this.$store
+      .dispatch('fan/getAllFans', { uri: this.chassis })
+      .finally(() => {
+        // Emit initial data fetch complete to parent component
+        this.$root.$emit('hardware-status-fans-complete');
+        this.isBusy = false;
+      });
   },
   methods: {
     sortCompare(a, b, key) {
