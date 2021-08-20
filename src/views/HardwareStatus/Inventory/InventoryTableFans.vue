@@ -35,7 +35,7 @@
       <template #cell(expandRow)="row">
         <b-button
           variant="link"
-          data-test-id="hardwareStatus-button-expandFans"
+          data-test-id="inventory-button-expandFans"
           :title="expandRowLabel"
           class="btn-icon-only"
           @click="toggleRowDetails(row)"
@@ -49,6 +49,21 @@
       <template #cell(health)="{ value }">
         <status-icon :status="statusIcon(value)" />
         {{ value }}
+      </template>
+
+      <!-- Toggle identify LED -->
+      <template #cell(identifyLed)="row">
+        <b-form-checkbox
+          v-model="row.item.identifyLed"
+          name="switch"
+          switch
+          @change="toggleIdentifyLedValue(row.item)"
+        >
+          <span v-if="row.item.identifyLed">
+            {{ $t('global.status.on') }}
+          </span>
+          <span v-else> {{ $t('global.status.off') }} </span>
+        </b-form-checkbox>
       </template>
 
       <template #row-details="{ item }">
@@ -86,6 +101,11 @@
                 <!-- Health Rollup state -->
                 <dt>{{ $t('pageInventory.table.statusHealthRollup') }}:</dt>
                 <dd>{{ dataFormatter(item.healthRollup) }}</dd>
+              </dl>
+              <dl>
+                <!-- Fan speed -->
+                <dt>{{ $t('pageInventory.table.speedPercent') }}:</dt>
+                <dd>{{ tableFormatter(item.speedPercent) }}</dd>
               </dl>
             </b-col>
           </b-row>
@@ -143,15 +163,15 @@ export default {
           tdClass: 'text-nowrap',
         },
         {
-          key: 'partNumber',
-          label: this.$t('pageInventory.table.partNumber'),
-          formatter: this.dataFormatter,
+          key: 'locationNumber',
+          label: this.$t('pageInventory.table.locationNumber'),
+          formatter: this.tableFormatter,
           sortable: true,
         },
         {
-          key: 'serialNumber',
-          label: this.$t('pageInventory.table.serialNumber'),
-          formatter: this.dataFormatter,
+          key: 'identifyLed',
+          label: this.$t('pageInventory.table.identifyLed'),
+          formatter: this.tableFormatter,
         },
       ],
       searchFilter: searchFilter,
@@ -170,7 +190,7 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('fan/getFanInfo').finally(() => {
+    this.$store.dispatch('fan/getAllFans').finally(() => {
       // Emit initial data fetch complete to parent component
       this.$root.$emit('hardware-status-fans-complete');
       this.isBusy = false;
@@ -184,6 +204,14 @@ export default {
     },
     onFiltered(filteredItems) {
       this.searchTotalFilteredRows = filteredItems.length;
+    },
+    toggleIdentifyLedValue(row) {
+      this.$store
+        .dispatch('fan/updateIdentifyLedValue', {
+          uri: row.uri,
+          identifyLed: row.identifyLed,
+        })
+        .catch(({ message }) => this.errorToast(message));
     },
   },
 };
