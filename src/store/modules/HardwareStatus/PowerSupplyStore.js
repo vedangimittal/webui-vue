@@ -13,12 +13,10 @@ const PowerSupplyStore = {
     setPowerSupply: (state, data) => {
       state.powerSupplies = data.map((powerSupply) => {
         const {
-          EfficiencyRatings,
           FirmwareVersion,
+          Location,
           LocationIndicatorActive,
           Id,
-          Location,
-          Manufacturer,
           Model,
           Name,
           PartNumber,
@@ -31,11 +29,9 @@ const PowerSupplyStore = {
           health: Status.Health,
           partNumber: PartNumber,
           serialNumber: SerialNumber,
-          efficiencyPercent: EfficiencyRatings[0].EfficiencyPercent,
           firmwareVersion: FirmwareVersion,
           identifyLed: LocationIndicatorActive,
           locationNumber: Location?.PartLocation?.ServiceLabel,
-          manufacturer: Manufacturer,
           model: Model,
           name: Name,
           sparePartNumber: SparePartNumber,
@@ -46,25 +42,9 @@ const PowerSupplyStore = {
     },
   },
   actions: {
-    async getChassisCollection() {
+    async getAllPowerSupplies({ commit }, requestBody) {
       return await api
-        .get('/redfish/v1/')
-        .then((response) => api.get(response.data.Chassis['@odata.id']))
-        .then(({ data: { Members } }) =>
-          Members.map((member) => member['@odata.id'])
-        )
-        .catch((error) => console.log(error));
-    },
-    async getAllPowerSupplies({ dispatch }) {
-      const collection = await dispatch('getChassisCollection');
-      if (!collection) return;
-      return await api
-        .all(collection.map((chassis) => dispatch('getPowerSupplies', chassis)))
-        .catch((error) => console.log(error));
-    },
-    async getPowerSupplies({ commit }, id) {
-      return await api
-        .get(`${id}`)
+        .get(`${requestBody.uri}`)
         .then((response) => api.get(response.data.PowerSubsystem['@odata.id']))
         .then((response) => api.get(response.data.PowerSupplies['@odata.id']))
         .then(({ data: { Members } }) =>
@@ -89,12 +69,10 @@ const PowerSupplyStore = {
       return await api.patch(uri, updatedIdentifyLedValue).catch((error) => {
         console.log(error);
         if (led.identifyLed) {
-          throw new Error(
-            i18n.t('pageHardwareStatus.toast.errorEnableIdentifyLed')
-          );
+          throw new Error(i18n.t('pageInventory.toast.errorEnableIdentifyLed'));
         } else {
           throw new Error(
-            i18n.t('pageHardwareStatus.toast.errorDisableIdentifyLed')
+            i18n.t('pageInventory.toast.errorDisableIdentifyLed')
           );
         }
       });
