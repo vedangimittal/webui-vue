@@ -2,8 +2,8 @@
   <page-section
     :section-title="$t('pageInventory.systemIndicator.sectionTitle')"
   >
-    <div class="form-background pl-4 pt-4 pb-1">
-      <b-row>
+    <div class="form-background">
+      <b-row class="pl-4 pt-4 pb-1">
         <b-col sm="6" md="3">
           <dl>
             <dt>{{ $t('pageInventory.systemIndicator.powerStatus') }}</dt>
@@ -33,17 +33,73 @@
             </dd>
           </dl>
         </b-col>
+        <b-col sm="6" md="3">
+          <dl>
+            <dt>
+              {{ $t('pageInventory.systemIndicator.attentionLed') }}
+              <info-tooltip
+                :title="
+                  $t('pageInventory.systemIndicator.attentionLedToolTipInfo')
+                "
+              />
+            </dt>
+            <dd>
+              <b-form-checkbox
+                id="attentionLedSwitch"
+                v-model="systems.sysAttentionLed"
+                data-test-id="hardwareStatus-toggle-attentionLed"
+                :disabled="!systems.sysAttentionLed"
+                switch
+                @change="toggleSystemAttentionLedSwitch"
+              >
+                <span v-if="systems.sysAttentionLed">
+                  {{ $t('global.status.on') }}
+                </span>
+                <span v-else>{{ $t('global.status.off') }}</span>
+              </b-form-checkbox>
+            </dd>
+          </dl>
+        </b-col>
+        <b-col sm="6" md="3">
+          <dl>
+            <dt>
+              {{ $t('pageInventory.systemIndicator.lampTest') }}
+              <info-tooltip
+                :title="$t('pageInventory.systemIndicator.tooltipInfo')"
+              />
+            </dt>
+            <dd>
+              <b-form-checkbox
+                id="lampSwitch"
+                v-model="systems.lampTest"
+                data-test-id="hardwareStatus-toggle-lampTest"
+                switch
+                @change="toggleLampTestSwitch"
+              >
+                <span class="sr-only">
+                  {{ $t('pageInventory.systemIndicator.lampTest') }}
+                </span>
+                <span v-if="systems.lampTest">
+                  {{ $t('global.status.on') }}
+                </span>
+                <span v-else>{{ $t('global.status.off') }}</span>
+              </b-form-checkbox>
+            </dd>
+          </dl>
+        </b-col>
       </b-row>
     </div>
   </page-section>
 </template>
 <script>
+import InfoTooltip from '@/components/Global/InfoTooltip';
 import PageSection from '@/components/Global/PageSection';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
+import DataFormatterMixin from '@/components/Mixins/DataFormatterMixin';
 
 export default {
-  components: { PageSection },
-  mixins: [BVToastMixin],
+  components: { InfoTooltip, PageSection },
+  mixins: [BVToastMixin, DataFormatterMixin],
   computed: {
     systems() {
       let systemData = this.$store.getters['system/systems'][0];
@@ -66,10 +122,17 @@ export default {
     });
   },
   methods: {
-    toggleIdentifyLedSwitch(state) {
-      this.$store
-        .dispatch('system/changeIdentifyLedState', state)
-        .catch(({ message }) => this.errorToast(message));
+    toggleIdentifyLedSwitch(ledState) {
+      this.$store.dispatch('system/changeIdentifyLedState', ledState);
+    },
+    toggleSystemAttentionLedSwitch(systemLedState) {
+      this.$store.dispatch(
+        'system/changeSystemAttentionLedState',
+        systemLedState
+      );
+    },
+    toggleLampTestSwitch(lampTestState) {
+      this.$store.dispatch('system/changeLampTestState', lampTestState);
     },
   },
 };

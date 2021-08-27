@@ -19,6 +19,7 @@ const SystemStore = {
       system.health = data.Status?.Health;
       system.totalSystemMemoryGiB = data.MemorySummary?.TotalSystemMemoryGiB;
       system.id = data.Id;
+      system.lampTest = data.Oem?.IBM?.LampTest;
       system.locationIndicatorActive = data.LocationIndicatorActive;
       system.locationNumber = data.Location?.PartLocation?.ServiceLabel;
       system.manufacturer = data.Manufacturer;
@@ -67,6 +68,29 @@ const SystemStore = {
           } else {
             throw new Error(
               i18n.t('pageInventory.toast.errorDisableIdentifyLed')
+            );
+          }
+        });
+    },
+    async changeLampTestState({ commit }, lampTestState) {
+      return await api
+        .patch('/redfish/v1/Systems/system', {
+          Oem: {
+            IBM: {
+              LampTest: lampTestState,
+            },
+          },
+        })
+        .catch((error) => {
+          commit('setSystemInfo', this.state.system.systems[0]);
+          console.log('error', error);
+          if (lampTestState) {
+            throw new Error(
+              i18n.t('pageHardwareStatus.toast.errorEnableLampTest')
+            );
+          } else {
+            throw new Error(
+              i18n.t('pageHardwareStatus.toast.errorDisableLampTest')
             );
           }
         });

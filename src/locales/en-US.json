@@ -1,6 +1,7 @@
 {
   "global": {
     "action": {
+      "activate": "Activate",
       "add": "Add",
       "cancel": "Cancel",
       "clearAll": "Clear all",
@@ -10,11 +11,13 @@
       "deleteAll": "Delete all",
       "disable": "Disable",
       "download": "Download",
+      "downloadAll": "Download all",
       "edit": "Edit",
       "enable": "Enable",
       "export": "Export",
       "exportAll": "Export all",
       "filter": "Filter",
+      "openNewTab": "Open in new tab",
       "refresh": "Refresh",
       "replace": "Replace",
       "reset": "Reset",
@@ -25,10 +28,10 @@
     "ariaLabel": {
       "clearSearch": "Clear search input",
       "hidePassword": "Hide password",
+      "progressBar": "Page loading progress bar",
       "scrollToTop": "Scroll to top",
       "showPassword": "Show password as plain text. Note: this will visually expose your password on the screen.",
-      "tooltip": "Tooltip",
-      "progressBar": "Page loading progress bar"
+      "tooltip": "Tooltip"
     },
     "calendar": {
       "selectDate": "Select date",
@@ -42,6 +45,7 @@
       "dateMustBeAfter": "Date must be after %{date}",
       "dateMustBeBefore": "Date must be before %{date}",
       "fieldRequired": "Field required",
+      "invalidCharacterLength": "Invalid character length",
       "invalidFormat": "Invalid format",
       "invalidValue": "Invalid value",
       "lengthMustBeBetween": "Length must be between %{min} – %{max} characters",
@@ -53,17 +57,31 @@
       "selectAnOption": "Select an option",
       "valueMustBeBetween": "Value must be between %{min} – %{max}"
     },
+    "passwordValidation": {
+      "title": "Password must:",
+      "message1": "1. Be at least 8 characters",
+      "message2": "2. Not be a palindrome",
+      "message3": "3. Not contain the account username",
+      "message4": "4. Not contain a dictionary word",
+      "message5": "5. Not contain sequential characters",
+      "message6": "6. Must be 20 characters or less if used for IPMI"
+    },
     "status": {
+      "absent": "Absent",
       "copied": "Copied",
+      "connected": "Connected",
       "disabled": "Disabled",
+      "disconnected": "Disconnected",
       "enabled": "Enabled",
       "error": "Error",
+      "informational": "Informational",
+      "nextReboot": "Changes will take effect on next boot.",
       "notAvailable": "Not available",
       "off": "Off",
       "on": "On",
+      "present": "Present",
       "success": "Success",
-      "warning": "Warning",
-      "informational": "Informational"
+      "warning": "Warning"
     },
     "table": {
       "collapseTableRow": "Collapse table row",
@@ -74,14 +92,14 @@
       "items": "%{count} items",
       "itemsPerPage": "Items per page",
       "selectAll": "Select all",
-      "selectItem": "Select item",
       "selectedItems": "%{filterCount} of %{count} items",
+      "selectItem": "Select item",
       "toDate": "To date",
       "viewAll": "View all"
     },
     "toast": {
-      "unAuthTitle": "Unauthorized",
-      "unAuthDescription": "The attempted action is not accessible from the logged in account. Contact your system administrator to check your privilege role."
+      "unAuthDescription": "The attempted action is not accessible from the logged in account. Contact your system administrator to check your privilege role.",
+      "unAuthTitle": "Unauthorized"
     }
   },
   "appHeader": {
@@ -93,70 +111,197 @@
     "refresh": "Refresh",
     "skipToContent": "Skip to content",
     "titleHideNavigation": "Hide navigation",
-    "titleShowNavigation": "Show navigation",
     "titleProfile": "Show profile menu",
-    "titleRefresh": "Refresh application data"
+    "titleRefresh": "Refresh application data",
+    "titleShowNavigation": "Show navigation"
   },
   "appNavigation": {
-    "resourceManagement": "Resource management",
-    "securityAndAccess": "Security and access",
-    "sessions": "@:appPageTitle.sessions",
-    "settings": "Settings",
-    "operations": "Operations",
+    "capacityOnDemand": "@:appPageTitle.capacityOnDemand",
+    "certificates": "@:appPageTitle.certificates",
+    "concurrentMaintenance": "@:appPageTitle.concurrentMaintenance",
     "dateTime": "@:appPageTitle.dateTime",
+    "deconfigurationHardware": "@:appPageTitle.deconfigurationHardware",
+    "deconfigurationRecords": "@:appPageTitle.deconfigurationRecords",
     "dumps": "@:appPageTitle.dumps",
     "eventLogs": "@:appPageTitle.eventLogs",
     "factoryReset": "@:appPageTitle.factoryReset",
+    "fieldCoreOverride": "@:appPageTitle.fieldCoreOverride",
     "firmware": "@:appPageTitle.firmware",
     "hardwareStatus": "Hardware status",
+    "hostConsole": "@:appPageTitle.hostConsole",
     "inventory": "@:appPageTitle.inventory",
+    "keyClear": "@:appPageTitle.keyClear",
     "kvm": "@:appPageTitle.kvm",
+    "lateralCastOutControl": "@:appPageTitle.lateralCastOutControl",
     "ldap": "@:appPageTitle.ldap",
     "logs": "Logs",
-    "userManagement": "@:appPageTitle.userManagement",
+    "memory": "@:appPageTitle.memory",
     "network": "@:appPageTitle.network",
+    "operations": "Operations",
     "overview": "@:appPageTitle.overview",
-    "primaryNavigation": "Primary navigation",
-    "postCodeLogs": "@:appPageTitle.postCodeLogs",
-    "powerRestorePolicy": "@:appPageTitle.powerRestorePolicy",
-    "rebootBmc": "@:appPageTitle.rebootBmc",
+    "pcieTopology": "@:appPageTitle.pcieTopology",
     "policies": "@:appPageTitle.policies",
-    "sensors": "@:appPageTitle.sensors",
-    "serialOverLan": "SOL console",
-    "serverPowerOperations": "@:appPageTitle.serverPowerOperations",
-    "certificates": "@:appPageTitle.certificates",
-    "virtualMedia": "@:appPageTitle.virtualMedia",
+    "postCodeLogs": "@:appPageTitle.postCodeLogs",
     "power": "@:appPageTitle.power",
-    "keyClear": "@:appPageTitle.keyClear"
+    "powerRestorePolicy": "@:appPageTitle.powerRestorePolicy",
+    "primaryNavigation": "Primary navigation",
+    "rebootBmc": "@:appPageTitle.rebootBmc",
+    "resourceManagement": "Resource management",
+    "securityAndAccess": "Security and access",
+    "sensors": "@:appPageTitle.sensors",
+    "serverPowerOperations": "@:appPageTitle.serverPowerOperations",
+    "serviceLogin": "@:appPageTitle.serviceLogin",
+    "sessions": "@:appPageTitle.sessions",
+    "settings": "Settings",
+    "snmpAlerts": "SNMP alerts",
+    "userManagement": "@:appPageTitle.userManagement",
+    "virtualMedia": "@:appPageTitle.virtualMedia"
   },
   "appPageTitle": {
+    "capacityOnDemand": "Capacity on demand",
+    "certificates": "Certificates",
     "changePassword": "Change password",
-    "power": "Power",
-    "sessions": "HMC and user sessions",
+    "concurrentMaintenance":"Concurrent maintenance",
     "dateTime": "Date and time",
+    "deconfigurationHardware": "Hardware deconfiguration",
+    "deconfigurationRecords": "Deconfiguration records",
     "dumps": "Dumps",
     "eventLogs": "Event logs",
     "factoryReset": "Factory reset",
+    "fieldCoreOverride": "Field core override",
     "firmware": "Firmware",
+    "hostConsole": "Host console",
     "inventory": "Inventory and LEDs",
+    "keyClear": "Key clear",
     "kvm": "KVM",
+    "lateralCastOutControl": "Lateral cast out control",
     "ldap": "LDAP",
-    "userManagement": "User management",
     "login": "Login",
+    "memory": "Memory",
     "network": "Network",
     "overview": "Overview",
     "pageNotFound": "Page not found",
+    "pcieTopology": "PCIe hardware topology",
+    "policies": "Policies",
     "postCodeLogs": "Progress logs",
+    "postCodes": "Progress logs",
+    "power": "Power",
     "powerRestorePolicy": "Power restore policy",
     "profileSettings": "Profile settings",
     "rebootBmc": "Reboot BMC",
-    "policies": "Policies",
     "sensors": "Sensors",
-    "serialOverLan": "Serial over LAN (SOL) console",
     "serverPowerOperations": "Server power operations",
-    "certificates": "Certificates",
-    "virtualMedia": "Virtual media",
-    "keyClear": "Key clear"
+    "serviceLogin": "Service login consoles",
+    "sessions": "HMC and user sessions",
+    "snmpAlerts": "SNMP alerts",
+    "userManagement": "User management",
+    "virtualMedia": "Virtual media"
+  },
+  "pageCapacityOnDemand": {
+    "vetCapabilities": "VET Capabilities",
+    "quickLinks": "Quick links",
+    "activation": {
+      "alert": "PHYP must be in standby or running to activate.",
+      "helperText": "Must be 34 characters. To obtain a new access key, visit ",
+      "placeholder": "Enter activation code",
+      "sectionTitle": "Activation",
+      "srLabel": "Activation code",
+      "toast": {
+        "error": "Capacity on demand activation failed.",
+        "success": "Capacity on demand activation successful."
+      }
+    },
+    "alert": {
+      "description": "System needs to be powered on.",
+      "title": "Applying changes to capacity on demand activation."
+    },
+    "orderInfo": {
+      "activatedResources": "Activated resources",
+      "accessKeyInfo": "Access key information",
+      "aixAccessKeyExpiration": "AIX access key expiration:",
+      "entryCheck": "Entry check",
+      "firmwareAccessKeyExpiration": "Firmware access key expiration:",
+      "memoryInfo": "Memory information",
+      "memoryLicensed": "Memory licensed:",
+      "memoryResourceId": "Memory resource ID:",
+      "memorySequenceNumber": "Memory sequence number:",
+      "previousActivated": "Previous activated:",
+      "processorInfo": "Processor information",
+      "processorResourceId": "Processor resource ID:",
+      "processorSequenceNumber": "Processor sequence number:",
+      "processorsLicensed": "Processors licensed:",
+      "resourceId": "Resource ID:",
+      "sequenceNumber": "Sequence number:",
+      "systemCodPublicKey": "System COD public key",
+      "systemCodUniqueId": "System COD unique ID:",
+      "systemAnchor": "System anchor:",
+      "systemInfo": "System information",
+      "systemSerialNumber": "System serial number:",
+      "systemType": "System type:",
+      "title": "Order information for on-demand utilities",
+      "description": {
+        "message": "If this information is not available, or more information is required, create  a resource dump (using a specific resource selector) from  ",
+        "link": "Dumps page."
+      }
+    },
+    "table": {
+      "bitCapabilityStatus": "Bit capability status",
+      "setting": "Setting"
+    }
+  },
+  "pageCertificates": {
+    "addNewCertificate": "Add new certificate",
+    "caCertificate": "CA Certificate",
+    "deleteCertificate": "Delete certificate",
+    "generateCsr": "Generate CSR",
+    "httpsCertificate": "HTTPS Certificate",
+    "ldapCertificate": "LDAP Certificate",
+    "replaceCertificate": "Replace certificate",
+    "serviceLoginCertificate": "Service login Certificate",
+    "alert": {
+      "certificateExpiredMessage": "%{certificate} has expired. Consider replacing it with a new certificate.",
+      "certificateExpiringMessage": "%{certificate} is expiring soon. Consider replacing it with a new certificate.",
+      "certificatesExpiredMessage": "Some certificates have expired. Consider replacing them with new certificates.",
+      "certificatesExpiringMessage": "Some certificates are expiring soon. Consider replacing them with new certificates."
+    },
+    "modal": {
+      "alternateName": "Alternate name",
+      "alternateNameHelperText": "Add multiple alternate names separated by space",
+      "certificateFile": "Certificate file",
+      "certificateSigningRequest": "Certificate Signing Request (CSR)",
+      "certificateType": "Certificate type",
+      "challengePassword": "Challenge password",
+      "city": "City",
+      "commonName": "Common name",
+      "companyName": "Company name",
+      "companyUnit": "Company unit",
+      "contactPerson": "Contact person",
+      "country": "Country/Region",
+      "deleteConfirmMessage": "Are you sure you want to delete '%{certificate}'? This action cannot be undone.",
+      "duplicateAlternateName": "Duplicate alternate name",
+      "emailAddress": "Email address",
+      "generateACertificateSigningRequest": "Generate a Certificate Signing Request (CSR)",
+      "keyBitLength": "Key bit length",
+      "keyCurveId": "Key curve ID",
+      "keyPairAlgorithm": "Key pair algorithm",
+      "privateKey": "Private key",
+      "state": "State"
+    },
+    "table": {
+      "certificate": "Certificate",
+      "issuedBy": "Issued by",
+      "issuedTo": "Issued to",
+      "validFrom": "Valid from",
+      "validUntil": "Valid until"
+    },
+    "toast": {
+      "errorAddCertificate": "Error adding certificate.",
+      "errorDeleteCertificate": "Error deleting certificate.",
+      "errorReplaceCertificate": "Error replacing certificate.",
+      "successAddCertificate": "Successfully added %{certificate}.",
+      "successDeleteCertificate": "Successfully deleted %{certificate}.",
+      "successReplaceCertificate": "Successfully replaced %{certificate}."
+    }
   },
   "pageChangePassword": {
     "changePassword": "Change password",
@@ -167,29 +312,10 @@
     "newPassword": "New password",
     "username": "Username"
   },
-  "pageSessions": {
-    "action": {
-      "disconnect": "Disconnect"
-    },
-    "modal": {
-      "disconnectTitle": "Disconnect session| Disconnect sessions",
-      "disconnectMessage": "Are you sure you want to disconnect %{count} session? This action cannot be undone. | Are you sure you want to disconnect %{count} sessions? This action cannot be undone."
-    },
-    "table": {
-      "clientID": "Client ID",
-      "username": "Username",
-      "ipAddress": "IP address",
-      "searchSessions": "Search sessions"
-    },
-    "toast": {
-      "errorDelete": "Error disconnecting %{count} session. | Error disconnecting %{count} sessions.",
-      "successDelete": "Successfully disconnected %{count} session. | Successfully disconnected %{count} sessions."
-    }
-  },
   "pageDateTime": {
     "alert": {
-      "message": "To change how date and time are displayed (either UTC or browser offset) throughout the application, visit ",
-      "link": "Profile Settings"
+      "link": "Profile Settings",
+      "message": "To change how date and time are displayed (either UTC or browser offset) throughout the application, visit "
     },
     "configureSettings": "Configure settings",
     "form": {
@@ -210,15 +336,129 @@
       "successSaveDateTime": "Successfully saved date and time settings."
     }
   },
+  "pageConcurrentMaintenance": {
+    "concurrentMaintenance": "Concurrent maintenance",
+    "tod": "Time of day battery maintenance",
+    "alert": {
+      "message": "Enable this to remove or replace the battery. Once it is done, it is recommended to disable to go back to normal mode.",
+      "title": "Concurrent repair of the battery"
+    },
+    "toast": {
+      "errorSaveReadyToRemove": "Error %{state} ready to remove state.",
+      "successSaveReadyToRemove": "Successfully %{state} ready to remove state."
+    }
+  },
+  "pageDeconfigurationHardware": {
+    "capacity": "Capacity",
+    "clearRecords": "Clear records",
+    "configure": "Configure",
+    "configured": "Configured",
+    "deconfigure": "Deconfigure",
+    "deconfigured": "Deconfigured",
+    "description": "View or change the state of all hardware resources. To view details about each deconfigured resource, visit ",
+    "fcoSetting": "FCO Setting",
+    "initiateDump": "Initiate dump",
+    "link": "Deconfiguration records.",
+    "memoryDimms": "Memory DIMMs",
+    "node": "Node(s)",
+    "overview": "Overview",
+    "pcieRootComplex": "PCIe root complex",
+    "processorChips": "Processor chips",
+    "processorCores": "Processor cores",
+    "totalCores": "Total cores",
+    "alert":{
+      "message": "Memory dimms and processor cores can be configured or deconfigured only when the server is powered off."
+    },
+    "toast": {
+      "deleteReqFailed": "The delete request failed because the resource requested cannot be deleted.",
+      "errorDisablingSetting": "Error disabling setting",
+      "errorEnablingSetting": "Error enabling setting"
+    },
+    "table": {
+      "deconfigurationType": "Deconfiguration Type",
+      "functionalState": "Functional State",
+      "id": "Id",
+      "locationCode": "Location Code",
+      "name": "Name",
+      "pelId": "Pel ID",
+      "settings": "Settings",
+      "size": "Size in mebibytes"
+    }
+  },
+  "pageDeconfigurationRecords": {
+    "additionalDataUri": "Download additional data",
+    "clearAll": "Clear all records",
+    "fatal": "Fatal",
+    "manual": "Manual",
+    "nextRebootInfoIcon": "@:global.status.nextReboot",
+    "predictive": "Predictive",
+    "resolved": "Resolved",
+    "unresolved": "Unresolved",
+    "pageDescription": {
+      "description": "Select a record to view or export deconfiguration details to a .txt file. To view and manually change the configuration state of all hardware resources visit ",
+      "link": "Hardware deconfiguration."
+    },
+    "modal": {
+      "title": "Clear all records",
+      "subtileServiceRequired": "Service privilege required",
+      "messageServiceRequired": "Please reach out to  your service representative to assist you with this operation.",
+      "confirm": "Are you sure?",
+      "confirmMessage": "Clearing all deconfiguration records will attempt to reconfigure all hardware in the selected node(s). These changes will take effect on the next boot.",
+      "deleteAllMessage": "Are you sure you want to delete all records? This action cannot be undone.",
+      "deleteAllTitle": "Delete all records",
+      "deleteMessage": "Are you sure you want to delete %{count} records? This action cannot be undone. | Are you sure you want to delete %{count} records? This action cannot be undone.",
+      "deleteTitle": "Delete record | Delete records",
+      "goBack": "Go back",
+      "continue": "Continue"
+    },
+    "table": {
+      "alerts": "Alerts",
+      "date": "Date",
+      "description": "Description",
+      "id": "Id",
+      "name": "Name",
+      "reference": "Reference",
+      "resource": "Resource",
+      "severity": "Severity",
+      "srcDetails": "SRC Details",
+      "srcDetailsToolTip": "System Reference Code Details. SRC details are not present for a manual guard records.",
+      "status": "Status",
+      "type": "Deconfiguration type"
+    },
+    "toast": {
+      "errorDelete": "Error deleting %{count} record. | Error deleting %{count} records.",
+      "errorResolveEntries": "Error resolving %{count} record. | Error resolving %{count} records.",
+      "errorUnresolveEntries": "Error unresolving %{count} record. | Error unresolving %{count} records.",
+      "successDelete": "Successfully deleted %{count} record. | Successfully deleted %{count} records."
+    }
+  },
   "pageDumps": {
     "dumpsAvailableOnBmc": "Dumps available on BMC",
     "initiateDump": "Initiate dump",
+    "alert": {
+      "bmcDumpHeading": "BMC dump",
+      "bmcDumpMessage": "The dump will take some time to complete.",
+      "bmcDumpMessageHmcEnabled": "BMC dumps will be offloaded to HMC and will not appear in the table below.",
+      "refreshMessage": "Refresh the application to see the completed dump in the table.",
+      "resourceDumpHeading": "Resource dump",
+      "resourceDumpMessage": "The Resource dump is a long running process.",
+      "resourceDumpMessage2": "If the Dump is not listed in the Dumps table and there are no Resource dump error logs, it has been offloaded to the operating system.",
+      "systemDumpHeading": "System dump",
+      "systemDumpMessage": "The System dump is a long running process.",
+      "systemDumpMessageHmcDisabled": "System dumps will be offloaded to the operating system and will be deleted by the operating system when the dump is deleted from the host memory.",
+      "systemDumpMessageHmcEnabled": "System dumps will be offloaded to HMC."
+    },
     "form": {
-      "bmcDump": "BMC dump",
+      "bmcDump": "BMC dump (non disruptive)",
       "initiateDump": "Initiate dump",
+      "password": "Password",
+      "passwordTooltip": "Required for resource selectors that need service authorization",
+      "resourceDump": "Resource dump",
+      "resourceSelector": "Resource selector",
+      "resourceSelectorTooltip": "Command length cannot exceed 80 characters",
       "selectDumpType": "Select dump type",
-      "systemDump": "System dump (disruptive)",
-      "systemDumpInfo": "System dumps will be offloaded to the operating system and will not appear in the table below."
+      "selectDumpTypeTooltip": "Resource dump and system dump are only available when system is powered on",
+      "systemDump": "System dump (disruptive)"
     },
     "modal": {
       "deleteDump": "Delete dump | Delete dumps",
@@ -238,12 +478,18 @@
     },
     "toast": {
       "errorDeleteDump": "Error deleting %{count} dump. | Error deleting %{count} dumps.",
+      "errorPhypInStandby": "Dump cannot be initiated until system is booted to at least PHYP in standby. If powered off, allow some time for the system to power on before initiating dump.",
       "errorStartBmcDump": "Error starting new BMC dump.",
+      "errorStartDumpAnotherInProgress": "Error starting new %{dump}. Another dump is in progress.",
+      "errorStartDumpResourceInStandby": "Error starting new %{dump}. System must be booted.",
+      "errorStartResourceDump": "Error starting new Resource dump.",
+      "errorStartResourceDumpInvalidSelector": "Error initiating dump. Invalid resource selector.",
+      "errorStartResourceDumpInvalidPassword": "Error initiating dump. Invalid password.",
       "errorStartSystemDump": "Error starting new System dump.",
       "successDeleteDump": "Successfully deleted %{count} dump. | Successfully deleted %{count} dumps.",
-      "successStartBmcDump": "The dump will take some time to complete. Refresh the application to see the completed dump in the table.",
       "successStartBmcDumpTitle": "BMC dump started",
-      "successStartSystemDump": "The dump will take some time to complete. The dump will be offloaded to the operating system.",
+      "successStartDump": "The dump will take some time to complete.",
+      "successStartResourceDumpTitle": "Resource dump started",
       "successStartSystemDumpTitle": "System dump started"
     }
   },
@@ -254,40 +500,46 @@
     "unresolve": "Unresolve",
     "unresolved": "Unresolved",
     "modal": {
-      "deleteAllTitle": "Delete all logs",
       "deleteAllMessage": "Are you sure you want to delete all logs? This action cannot be undone.",
-      "deleteTitle": "Delete log | Delete logs",
-      "deleteMessage": "Are you sure you want to delete %{count} log? This action cannot be undone. | Are you sure you want to delete %{count} logs? This action cannot be undone."
+      "deleteAllTitle": "Delete all logs",
+      "deleteMessage": "Are you sure you want to delete %{count} log? This action cannot be undone. | Are you sure you want to delete %{count} logs? This action cannot be undone.",
+      "deleteTitle": "Delete log | Delete logs"
     },
     "table": {
       "date": "Date",
       "description": "Description",
+      "srcDetails": "SRC Details",
+      "srcDetailsToolTip": "System Reference Code Details",
       "id": "ID",
       "modifiedDate": "Modified Date",
       "name": "Name",
+      "resolution": "Resolution",
       "searchLogs": "Search logs",
       "severity": "Severity",
       "status": "Status",
-      "type": "Type"
+      "type": "Type",
+      "eventId": "Event ID"
     },
     "toast": {
       "errorDelete": "Error deleting %{count} log. | Error deleting %{count} logs.",
       "errorLogStatusUpdate": "Error updating log status.",
       "errorResolveLogs": "Error resolving %{count} log. | Error resolving %{count} logs.",
       "errorUnresolveLogs": "Error unresolving %{count} log. | Error unresolving %{count} logs.",
+      "infoStartDownload": "Download might take several minutes to complete.",
       "successDelete": "Successfully deleted %{count} log. | Successfully deleted %{count} logs.",
       "successResolveLogs": "Successfully resolved %{count} log. | Successfully resolved %{count} logs.",
       "successUnresolveLogs": "Successfully unresolved %{count} log. | Successfully unresolved %{count} logs."
     }
   },
   "pageFactoryReset": {
+    "alert": "System must be powered off to reset",
     "description": "These functions do not perform a secure delete of any sensitive data.",
     "form": {
-      "resetOptionsLabel": "Reset options",
+      "resetBiosOptionHelperText": "Resets server settings including: Platform keystore, partition NVRAM, partition configurations, and event logs.",
       "resetBiosOptionLabel": "Reset server settings only",
-      "resetBiosOptionHelperText": "Resets firmware settings including: Platform keystore, partition NVRAM, and partition configurations.",
-      "resetToDefaultsOptionLabel": "Reset BMC and server settings",
-      "resetToDefaultsOptionHelperText": "In addition to server settings, this option resets BMC settings, including: all BMC account data, all changed passwords, all policies, LDAP configurations, network addresses, and time of day."
+      "resetOptionsLabel": "Reset options",
+      "resetToDefaultsOptionHelperText": "In addition to server settings, this option resets BMC settings, including: all BMC account data, all changed passwords, all policies, LDAP configurations, network addresses, and time of day.",
+      "resetToDefaultsOptionLabel": "Reset BMC and server settings"
     },
     "modal": {
       "resetBiosTitle": "Reset server settings",
@@ -297,9 +549,9 @@
         "item1": "All manual settings will be deleted.",
         "item2": "Partition configurations and the platform keystore may be recovered if backups exist."
       },
-      "resetToDefaultsTitle": "Reset BMC and server settings",
       "resetToDefaultsHeader": "Do you want to reset both the BMC and server settings?",
       "resetToDefaultsSubmitText": "Reset BMC and server settings",
+      "resetToDefaultsTitle": "Reset BMC and server settings",
       "resetToDefaultsSettingsList": {
         "item1": "All manual settings will be deleted.",
         "item2": "Partition configurations and the platform keystore may be recovered if backups exist.",
@@ -307,14 +559,33 @@
         "item4": "Currently active sessions on all network interfaces will be disconnected.",
         "item5": "The BMC default account and password settings will be restored."
       },
-      "resetWarningMessage": "Resetting without shutting down the system might cause an unrecoverable error.",
-      "resetWarningCheckLabel": "Continue without shutting down the system"
+      "resetWarningCheckLabel": "Continue without shutting down the system",
+      "resetWarningMessage": "Resetting without shutting down the system might cause an unrecoverable error."
     },
     "toast": {
-      "resetBiosSuccess": "Factory reset of server settings successful.",
       "resetBiosError": "Factory reset of server settings failed.",
-      "resetToDefaultsSuccess": "Factory reset of BMC and server settings successful.",
-      "resetToDefaultsError": "Factory reset of BMC and server settings failed."
+      "resetBiosSuccess": "Factory reset of server settings successful.",
+      "resetToDefaultsError": "Factory reset of BMC and server settings failed.",
+      "resetToDefaultsSuccess": "Factory reset of BMC and server settings successful. If you are not automatically logged out, refresh the browser."
+    }
+  },
+  "pageFieldCoreOverride": {
+    "changeConfiguration": "Change configuration",
+    "configuredCores": "Configured cores",
+    "currentConfiguration": "Current configuration",
+    "enableFieldCoreOverride": "Enable field core override",
+    "enterValue": "Enter value",
+    "licensedCores": "Licensed cores",
+    "pageDescription": "View or change the processor cores that will be configured by the firmware.",
+    "scheduledForNextReboot": "@:global.status.nextReboot",
+    "totalInstalledCores": "Total installed cores",
+    "alert": {
+      "description": "Changes made will take effect on next server reboot.",
+      "title": "Applying changes"
+    },
+    "toast": {
+      "configurationChangeError": "Configuration failed to save.",
+      "configurationChangeSuccess": "Configuration successfully saved."
     }
   },
   "pageFirmware": {
@@ -322,10 +593,12 @@
     "cardBodyVersion": "Version",
     "cardTitleBackup": "Backup image",
     "cardTitleRunning": "Running image",
+    "permanent": "Permanent",
     "sectionTitleBmcCards": "BMC",
     "sectionTitleBmcCardsCombined": "BMC and server",
     "sectionTitleHostCards": "Host",
     "sectionTitleUpdateFirmware": "Update firmware",
+    "temporary": "Temporary",
     "alert": {
       "operationInProgress": "Server power operation in progress.",
       "serverMustBePoweredOffTo": "Server must be powered off to:",
@@ -336,11 +609,14 @@
     },
     "form": {
       "updateFirmware": {
+        "accessKeyExpiration": "Access key expiration",
         "fileAddress": "File address",
         "fileSource": "File source",
         "imageFile": "Image file",
+        "manageAccessKeys": "Manage access keys",
         "startUpdate": "Start update",
         "tftpServer": "TFTP server",
+        "tftpServerInfo": "<server_ip>/<file_name>.tar",
         "workstation": "Workstation"
       }
     },
@@ -356,142 +632,187 @@
     },
     "toast": {
       "errorSwitchImages": "Error switching running and backup images.",
+      "errorActivation": "Error starting firmware activation.",
       "errorUpdateFirmware": "Error starting firmware update.",
+      "errorUploadFirmware": "Error uploading firmware.",
       "rebootStarted": "Reboot started",
-      "rebootStartedMessage": "Successfully started reboot from backup image.",
-      "updateStarted": "Update started",
-      "updateStartedMessage": "Wait for the firmware update notification before making any changes.",
+      "rebootStartedMessage": "Successfully started reboot from backup image. Reboot might take several minutes to complete.",
+      "taskComplete": "Task complete",
+      "taskCompleteMessage": "Task complete. Waiting for BMC reboot",
+      "updateFirmware": {
+        "step1": "Step 1 of 4 - Upload",
+        "step1Message": "Update started. Firmware upload in progress.",
+        "step2": "Step 2 of 4 - Activation",
+        "step2Message": "Firmware upload complete. Activation task in progress.",
+        "step3": "Step 3 of 4 - Reboot",
+        "step3Message": "Activation task complete. BMC reboot in progress.",
+        "step4": "Step 4 of 4 - Complete",
+        "step4Message": "Firmware update successful. Click refresh to verify firmware level."
+      },
       "verifySwitch": "Verify switch",
-      "verifySwitchMessage": "Refresh the application to verify the running and backup images switched.",
-      "verifyUpdate": "Verify update",
-      "verifyUpdateMessage": "Refresh the application to verify firmware updated successfully"
+      "verifySwitchMessage": "Refresh the application to verify the running and backup images switched."
     }
   },
+  "pageHostConsole": {
+    "subTitle": "Host console redirects the server's serial port output to this window.",
+    "status": "Status"
+  },
   "pageInventory": {
-    "dimmSlot": "DIMM slot",
-    "fans": "Fans",
-    "powerSupplies": "Power supplies",
+    "assemblies": "Assemblies",
     "bmcManager": "BMC manager",
     "chassis": "Chassis",
+    "dimmSlot": "DIMM slot",
+    "fans": "Fans",
+    "identifyLedInfo": "For parts with no LEDs, the Identify LED toggle switch will only turn on the Enclosure LED",
+    "pcieSlots": "PCIe slots",
+    "pcieTopologyLink": "PCIe hardware topology.",
+    "pcieTopologyLinkDescription": "To know more about PCIe slots, visit ",
+    "powerSupplies": "Power supplies",
     "processors": "Processors",
     "quicklinkTitle": "Quick links to hardware components",
     "system": "System",
-    "assemblies": "Assemblies",
+    "enclosures": {
+      "title": "I/O enclosures",
+      "traceLabel": "Collect I/O enclosure trace",
+      "traceDescription": "Create a resource dump (using a specific resource selector) from the ",
+      "DumpsLink": "Dumps page."
+    },
     "systemIndicator": {
-      "powerStatus": "Power status",
+      "attentionLed": "System attention LED",
+      "attentionLedToolTipInfo": "System attention LED can only be disabled",
       "identifyLed": "System identify LED",
-      "sectionTitle": "LED light control"
+      "lampTest": "Lamp test",
+      "powerStatus": "Power status",
+      "sectionTitle": "System indicators",
+      "tooltipInfo": "Changes all indicators controlled by the BMC and hypervisor to the ON state for four minutes."
+    },
+    "alert": {
+      "enclosureAlertTitle": "Viewing enclosure configuration",
+      "enclosureAlertMessage": "System needs to be powered on.",
+      "viewServerPowerOperations": "View server power operations"
+    },
+    "modal": {
+      "assemblies": {
+        "id": "@:pageInventory.table.id",
+        "locationNumber": "@:pageInventory.table.locationNumber",
+        "message": "This operation may take 2 minutes to complete.",
+        "remove": "@:pageInventory.table.remove",
+        "selected": "Selected '%{assemblyName}' -",
+        "subTitle": "Are you sure?",
+        "title": "Remove '%{assemblyName}'?"
+      },
+      "enclosures": {
+        "locationNumber": "@:pageInventory.table.locationNumber",
+        "serialNumber": "@:pageInventory.table.serialNumber",
+        "serialNumberHelperText": "Enter seven characters for the enclosure serial number. All alphanumeric characters except o, i, and q are valid. All lowercase letters are converted to uppercase letters.",
+        "title": "Change enclosure settings",
+        "typeModel": "@:pageInventory.table.typeModel",
+        "typeModelHelperText": "The enclosure machine type cannot be 0000. All alphanumeric characters are invalid."
+      }
     },
     "table": {
+      "action": "Action",
       "assetTag": "Asset tag",
-      "baseModuleType": "Base module type",
-      "busWidthBits": "Bus width bits",
-      "bmcDateTime": "BMC date and time",
+      "assetTagInfo": "System name",
+      "bmcManagerModel": "Model (CCIN)",
       "capacityMiB": "Capacity MiB",
-      "chassisType": "Chassis type",
-      "connectTypesSupported": "Connect types supported",
       "coreCount": "Core count",
-      "count": "Count",
-      "dataWidthBits": "Data width bits",
+      "processorCount": "Processor count",
+      "currentNext": "(current and next)",
       "description": "Description",
-      "efficiencyPercent": "Efficiency percent",
       "enabled": "Enabled",
-      "fanSpeed": "Fan speed",
       "firmwareVersion": "Firmware version",
-      "graphicalConsole": "Graphical console",
-      "hardwareType": "Hardware type",
       "health": "Health",
       "healthRollup": "Health rollup",
       "id": "ID",
       "identifyLed": "Identify LED",
-      "instructionSet": "Instruction set",
-      "lastResetTime": "Last reset time",
+      "install": "Install",
       "locationNumber": "Location number",
-      "managerType": "Manager type",
-      "manufacturer": "Manufacturer",
-      "maxConcurrentSessions": "Max concurrent sessions",
-      "maxSpeedMHz": "Max speed MHz",
-      "maxPowerWatts": "Max power watts",
-      "memoryType": "Memory type",
-      "memorySize": "Memory size",
-      "memorySummary": "Memory summary",
-      "minPowerWatts": "Min power watts",
-      "minSpeedMHz": "Min speed MHz",
       "model": "Model",
       "name": "Name",
-      "operatingSpeedMhz": "Operating speed Mhz",
       "partNumber": "Part number",
       "power": "Power",
-      "processorArchitecture": "Processor architecture",
-      "processorSummary": "Processor summary",
       "processorType": "Processor type",
-      "serialConsole": "Serial console",
+      "remove": "Remove",
       "serialNumber": "Serial number",
-      "serviceEnabled": "Service enabled",
-      "serviceEntryPointUuid": "Service entry point UUID",
-      "sparePartNumber": "Spare part number",
-      "speedPercent": "Speed percent",
-      "statusHealthRollup": "Status (Health rollup)",
-      "statusState": "Status (State)",
-      "subModel": "Sub model",
-      "systemType": "System type",
+      "slotType": "Slot type",
+      "sparePartNumber": "Spare part number (FRU number)",
       "totalCores": "Total cores",
       "totalSystemMemoryGiB": "Total system memory",
-      "totalThreads": "Total threads",
-      "uuid": "UUID",
-      "version": "Version"
+      "typeModel": "Type - model"
     },
     "toast": {
       "errorDisableIdentifyLed": "Error disabling Identify LED.",
-      "errorEnableIdentifyLed": "Error enabling Identify LED."
+      "errorDisableLampTest": "Error disabling Lamp test.",
+      "errorDisableSystemAttentionLed": "Error disabling System Attention LED.",
+      "errorEnableIdentifyLed": "Error enabling Identify LED.",
+      "errorEnableLampTest": "Error enabling Lamp test.",
+      "errorEnableSystemAttentionLed": "Error enabling System Attention LED.",
+      "errorEnclosureSettings": "Error updating enclosure settings.",
+      "infoRemoveAssembly": "Refresh to confirm whether '%{assemblyName}' is ready to  be removed.",
+      "successEnclosureSettings": "Successfully updated enclosure settings."
     }
   },
   "pageKeyClear": {
     "description": "Securely clear sensitive data on the system",
     "alert": {
-      "description": "Due to senstivity of the data that will be cleared, verification through physical presence is required to authorize this operation.",
+      "description": "Due to sensitivity of the data that will be cleared, verification through physical presence is required to authorize this operation.",
       "title": "This operation requires physical presence and system reboot"
     },
     "form": {
-      "clearAllSetGenesisIPL": "Clear all and set genesis IPL",
       "clear": "Clear",
+      "clearAllHelperText": "Clear all the sensitive data that is controlled by the platform firmware",
       "clearAllLabel": "Clear all",
-      "clearAllHeperText":"Clear all the sensitive data that is controlled by the platform firmware",
-      "clearHypervisorSystemKeyLabel":"Clear hypervisor system key",
-      "clearHypervisorSystemKeyHelperText":"This indicates the hypervisor to clear the system key.",
-      "clearOperatingSystemKeysLabel":"Clear operating system keys label",
-      "clearOperatingSystemKeysHelperText":"This indicates OPAL to clear the operating system Secure Boot keys.",
-      "clearSystemSecurityKeyLabel":"Clear system security officer key",
-      "clearSystemSecurityKeyHelperText":"This incicates OPAL/PEF to clear teh system security officer keys.",
-      "keyClearOptionsLabel": "Key clear options",
+      "clearAllSetGenesisIPL": "Clear all and set genesis IPL",
+      "clearHypervisorSystemKeyHelperText": "This indicates the hypervisor to clear the system key.",
+      "clearHypervisorSystemKeyLabel": "Clear hypervisor system key",
+      "clearOperatingSystemKeysHelperText": "This indicates OPAL to clear the operating system Secure Boot keys.",
+      "clearSystemSecurityKeyHelperText": "This indicates OPAL/PEF to clear teh system security officer keys.",
+      "clearSystemSecurityKeyLabel": "Clear system security officer key",
       "keyClearNotRequested": "Key clear not requested",
+      "keyClearOptionsLabel": "Key clear options",
       "none": "None",
       "setFactoryDefault": "Set factory default"
     },
-    "modal":{
+    "modal": {
       "clear": "Clear keys",
       "clearAllMessage": "Any encryption keys contained in the selected data will be lost. System will not be able to decrypt any data that requires these keys.",
       "clearAllTitle": "Warning: This operation is not reversible"
-     
     },
-    "toast":{
+    "toast": {
       "selectedKeyClearedError": "Error clearing keys",
       "selectedKeyClearedSuccess": "Keys cleared successfully"
     }
   },
   "pageKvm": {
-    "openNewTab": "Open in new tab",
     "buttonCtrlAltDelete": "Send Ctrl+Alt+Delete",
-    "status": "Status",
     "connected": "Connected",
     "connecting": "Connecting",
-    "disconnected": "Disconnected"
+    "disconnected": "Disconnected",
+    "openNewTab": "Open in new tab",
+    "status": "Status"
+  },
+  "pageLateralCastOutControl": {
+    "lateralCastOut": "Lateral cast out",
+    "lateralCastOutControl": "Lateral cast out control",
+    "lateralCastOutControlDescription": "Only change this value if instructed by your service provider as it might degrade system performance.",
+    "alert": {
+      "message": "System has to be powered off. Changes made will take effect on next reboot",
+      "title": "Applying changes"
+    },
+    "button": {
+      "saveSettings": "Save settings"
+    },
+    "toast": {
+      "errorSavingLateralCastOut": "Error saving lateral cast out mode",
+      "successSavingLateralCastOut": "Lateral cast out mode saved successfully"
+    }
   },
   "pageLdap": {
+    "addRoleGroup": "Add role group",
     "pageDescription": "Configure LDAP settings and manage role groups",
     "roleGroups": "Role groups",
     "settings": "Settings",
-    "addRoleGroup": "Add role group",
     "ariaLabel": {
       "ldapSettings": "LDAP settings"
     },
@@ -507,15 +828,15 @@
       "secureLdapHelper": "A CA certificate and an LDAP certificate are required to enable secure LDAP",
       "secureLdapUsingSsl": "Secure LDAP using SSL",
       "serverUri": "Server URI",
-      "serverUriTooltip": "Enabling Secure LDAP changes URI scheme to ldaps",
+      "serverUriTooltip": "Enabling Secure LDAP changes URI scheme to LDAPS",
       "serviceType": "Service type",
       "userIdAttribute": "User ID attribute"
     },
     "modal": {
       "addNewRoleGroup": "Add new role group",
+      "deleteRoleGroup": "Delete role group",
       "deleteRoleGroupBatchConfirmMessage": "Are you sure you want to delete %{count} role group? This action cannot be undone. | Are you sure you want to delete %{count} role groups? This action cannot be undone.",
       "deleteRoleGroupConfirmMessage": "Are you sure you want to delete '%{groupName}'? This action cannot be undone.",
-      "deleteRoleGroup": "Delete role group",
       "editRoleGroup": "Edit role group",
       "groupName": "Group name",
       "groupPrivilege": "Group privilege"
@@ -536,6 +857,578 @@
       "successSaveActiveDirectorySettings": "Successfully saved Active Directory settings.",
       "successSaveLdapSettings": "Successfully saved Open LDAP settings.",
       "successSaveRoleGroup": "Successfully saved role group '%{groupName}'."
+    }
+  },
+  "pageLogin": {
+    "dateAndTime": "Date and time",
+    "language": "Language",
+    "logIn": "Log in",
+    "model": "Model",
+    "password": "Password",
+    "serialNumber": "Serial number",
+    "uploadServiceLoginCertificate": "Upload service login certificate",
+    "username": "Username",
+    "alert": {
+      "message": "Invalid username or password"
+    },
+    "modal": {
+      "addNewServiceLoginCertificate": "Add new service login certificate",
+      "certificateFile": "Certificate File"
+    }
+  },
+  "pageMemory": {
+    "activeMemoryMirroring": "Active memory mirror mode",
+    "activeMemoryMirroringDescription": "Active Memory Mirroring for hypervisor is designed to ensure that system operation continues even in the unlikely event of an uncorrectable error occurring in main memory used by the system hypervisor.",
+    "activeMemoryMirroringHelpText": "Specifies if memory mirroring is enabled, requires a reboot for the change to be applied.",
+    "activeMemoryMirroringTitle": "Active memory mirroring",
+    "ioAdapterEnlargedCapacity": "This option controls the size of PCI memory space allocated to each PCI slot.",
+    "ioAdapterEnlargedCapacityTitle": "I/O Adapter enlarged capacity",
+    "logicalMemorySize": "Logical memory block size",
+    "logicalMemorySizeHeading": "Logical memory block size is used for partitioning. Changing the logical memory block size impacts system resource management.",
+    "maxNumHugePages": "Max number huge pages",
+    "memoryBlockSize": "Memory block size",
+    "requestedHugePageMemory": "Requested huge page memory",
+    "slotCountForNode0": "Slot Count for Node 0",
+    "systemMemoryPageSetup": "Improve the application's performance by setting large virtual memory page sizes of 16GB each.",
+    "systemMemoryPageSetupTitle": "System memory page setup",
+    "updateIoAdapterEnlargedCapacity": "Update I/O Adapter Enlarged Capacity",
+    "updateLogicalMemoryPageSetup": "Update system memory page setup",
+    "updateLogicalMemorySize": "Update logical memory block size",
+    "updatePageSetup": "Update system memory page setup",
+    "alert": {
+      "heading": "Applying changes",
+      "message": "System has to be powered off. Changes made will take effect on next reboot.",
+      "serverMustBePoweredOffTo": "Server must be powered off to:",
+      "updateActiveMemoryMirroring": "Update active memory mirror mode",
+      "updateIoAdapterEnlargedCapacity": "@:pageMemory.updateIoAdapterEnlargedCapacity",
+      "updateLogicalMemoryPage": "@:pageMemory.updateLogicalMemorySize",
+      "updateSystemMemoryPageSetup": "Update system memory page setup (server should be not be HMC connected)"
+    },
+    "toast": {
+      "errorSavingActiveMemoryMirroringMode": "Error updating active memory mirroring mode",
+      "errorSavingAdapterEnlargedCapacity": "Error updating I/O adapter enlarged capacity",
+      "errorSavingLogicalMemory": "Error updating logical memory block size ",
+      "errorSavingPageSetup": "Error updating system memory page setup",
+      "message": "System must be powered off to make changes",
+      "successSavingAdapterEnlargedCapacity": "Successfully updated I/O adapter enlarged capacity",
+      "successSavingLogicalMemory": "Successfully updated logical memory block size",
+      "successSavingActiveMemoryMirroringMode": "Successfully updated active memory mirroring mode",
+      "successSavingPageSetup": "Successfully updated system memory page setup"
+    }
+  },
+  "pageNetwork": {
+    "dhcp": "DHCP",
+    "dns": "DNS server",
+    "domainName": "domain name",
+    "hostname": "Hostname",
+    "hostnameAlert": "You will be logged out when the hostname is changed. Changes will take effect on next log in.",
+    "interfaceSection": "Interface settings",
+    "ipv4": "IPv4",
+    "ipv4Addresses": "IPv4 addresses",
+    "ipv6": "IPv6",
+    "ipv6DefaultGateway": "IPv6 default gateway",
+    "macAddress": "MAC address",
+    "network": "network",
+    "networkSettings": "Network settings",
+    "ntp": "NTP server",
+    "operatingMode": "Operating mode",
+    "pageDescription": "Configure BMC network settings",
+    "staticDns": "Static DNS",
+    "useDns": "Use DNS servers",
+    "useDomainName": "Use domain name",
+    "useNtp": "Use NTP servers",
+    "modal": {
+      "confirmDeleteIpv4": "Are you sure you want to delete '%{address}'?",
+      "confirmDisableDhcp": "Are you sure you want to disable DHCP?",
+      "confirmEnableDhcp": "When DHCP is enabled, static IP addresses will not be accessible.",
+      "dhcpConfirmTitle": "%{dhcpState} DHCP",
+      "deleteIpv4": "Delete IPv4 address",
+      "editHostnameTitle": "Edit hostname",
+      "gateway": "Gateway",
+      "ipAddress": "IP address",
+      "staticDns": "Static DNS",
+      "subnetMask": "Subnet mask"
+    },
+    "table": {
+      "addDnsAddress": "Add IP address",
+      "addIpv4Address": "Add static IPv4 address",
+      "addIpv6Address": "Add static IPv6 address",
+      "addressOrigin": "Address origin",
+      "addressState": "Address  state",
+      "deleteDns": "Delete DNS address",
+      "deleteIpv4": "Delete IPv4 address",
+      "editDns": "Edit DNS address",
+      "editIpv4": "Edit static IPv4 address",
+      "editIpv6": "Edit static IPv6 address",
+      "gateway": "Gateway",
+      "ipAddress": "IP address",
+      "prefixLength": "Prefix length",
+      "subnet": "Subnet mask"
+    },
+    "toast": {
+      "errorSaveNetworkSettings": "Error updating %{setting} settings.",
+      "successSaveNetworkSettings": "Successfully updated %{setting} settings."
+    }
+  },
+  "pageOverview": {
+    "assetTag": "Asset tag",
+    "accessKeyExpiration": "Access key expiration",
+    "backupVersion": "Backup",
+    "bmcTime": "BMC date and time",
+    "criticalEvents": "Critical",
+    "dhcp": "DHCPv4",
+    "dumps": "Dumps",
+    "eventLogs": "Event logs",
+    "firmwareInformation": "Firmware information",
+    "hostConsole": "Host console",
+    "hostName": "Hostname",
+    "inventory": "Inventory and LEDs",
+    "ipv4": "IPv4",
+    "model": "Model",
+    "networkInformation": "Network information",
+    "operatingMode": "Operating mode",
+    "powerCap": "Power cap",
+    "powerConsumption": "Power consumption",
+    "powerInformation": "Power information",
+    "powerMode": "Power mode",
+    "runningVersion": "Running",
+    "safeMode": "Safe mode",
+    "serialNumber": "Serial number",
+    "serverInformation": "Server information",
+    "serviceLogin": "Service login",
+    "statusInformation": "Status information",
+    "systemIdentifyLed": "System identify LED",
+    "systemInformation": "System information",
+    "total": "Total",
+    "viewMore": "View more",
+    "warningEvents": "Warning",
+    "powerPerformanceModes": {
+      "maximumPerformance": "Maximum performance",
+      "powerSaving": "Power saving",
+      "static": "Static"
+    },
+    "modal" : {
+      "editAssetTag": "Edit asset tag"
+    },
+    "toast": {
+      "successSaveAssetTag" : "Successfully updated asset tag.",
+      "errorSaveAssetTag": "Error updating asset tag."
+    }
+  },
+  "pagePageNotFound": {
+    "description": "The requested resource could not be found."
+  },
+  "pagePcieTopology": {
+      "alert": "This page might take a few minutes to load.",
+      "bridgeOrHost": "PCIe bridge or CAPI host",
+      "cableLength": "Cable length",
+      "cableStatus": "Cable status",
+      "cableType": "Cable type",
+      "id": "@:pageInventory.table.id",
+      "identifyLed": "Identify LEDs",
+      "ioSlots": "I/O slots",
+      "linkProperties": "Link properties",
+      "linkStatus": "Link status",
+      "localPort": "Local port",
+      "localPortLocation": "Local port location",
+      "parentId": "Parent ID",
+      "partNumber": "@:pageInventory.table.partNumber",
+      "remotePort": "Remote port",
+      "remotePortLocation": "Remote port location",
+      "resetLink": "Reset link",
+      "savePcieTopology": "Save PCIe topology",
+      "speed": "Speed",
+      "type": "Type",
+      "warning": "System must at least be in PHYP standby. To power on, visit ",
+      "width": "Width",
+      "modal": {
+        "resetConfirm": "Are you sure?",
+        "resetLinkDescription": "Resetting a link while system partitions are running can cause errors. This operation must be performed with guidance from a support team member.",
+        "resetLinkHeader": "Reset link %{id}"
+      },
+      "table": {
+        "search": "Search"
+      },
+      "toast": {
+        "errorReset": "Error resetting link %{id}",
+        "errorSavePcieTopology": "Error saving PCIe topology Info.",
+        "errorSwitchingLed": "Error turning %{operation} LED for %{value}",
+        "resetInfoTitle": "Link ID %{id} being reset.",
+        "resetInfoDescription": "this operation may take a few seconds to complete.",
+        "successReset": "Reset link %{id} successfully initiated. Check event logs for any issues.",
+        "successSavePcieTopology": "Successfully saved PCIe topology Info."
+      }
+  },
+  "pagePolicies": {
+    "hostTpm": "Host TPM",
+    "hostTpmDescription": "Enable to ensure the system only boots when the TPM is functional.",
+    "hostUsb": "Host USB enablement",
+    "hostUsbDescription": "Specifies if Host USB is disabled or enabled for security reasons.",
+    "ipmi": "Network IPMI (out-of-band IPMI)",
+    "ipmiDescription": "Allow remote management of the platform via IPMI. Tools such as ipmitool require this setting to be enabled. Once enabled, please follow the procedure in the online support documentation to add IPMI users.",
+    "rtad": "RTAD",
+    "rtadDescription": "This option enables or disables the Remote Trusted Attestation Daemon for host firmware.",
+    "rtadInfoIcon": "@:global.status.nextReboot",
+    "secureVersion": "Secure version lock-in",
+    "secureVersionDescription": "Specifies whether the secure version lock-in functionality is enabled.",
+    "ssh": "BMC shell (via SSH)",
+    "sshDescription": "Allow access to shell sessions via SSH, through port 22 on the BMC.",
+    "usbFirmwareUpdatePolicy": "USB firmware update policy",
+    "usbFirmwareUpdatePolicyDescription": "Enabling the USB Firmware Update Policy will enable the functionality to allow firmware updates through a USB key.",
+    "toast": {
+      "errorNetworkPolicyUpdate": "Error updating %{policy}.",
+      "successNetworkPolicyUpdate": "Successfully updated %{policy}.",
+      "successNextBootToast": "Applying changes to %{policy}. Changes made to %{policy} will take effect on next reboot."
+    },
+    "vtpm": "VirtualTPM",
+    "vtpmDescription": "Enabling vTPM makes a TPM available to the guest operating system."
+  },
+  "pagePostCodeLogs": {
+    "allExportFilePrefix": "All_POST_codes_log_",
+    "downloadFilePrefix": "POST_codes_additional_details_",
+    "exportFilePrefix": "POST_codes_log_",
+    "viewCodesInRealtime": "View progress codes in real time",
+    "action": {
+      "downloadDetails": "Download additional details",
+      "exportLogs": "Export log"
+    },
+    "button": {
+      "exportAll": "Export all"
+    },
+    "table": {
+      "bootCount": "Boot count",
+      "created": "Created",
+      "postCode": "Code",
+      "searchLogs": "Search logs",
+      "timeStampOffset": "Time stamp offset"
+    }
+  },
+  "pagePower": {
+    "delayTime": "Delay time (in seconds)",
+    "description": "Set a power cap to keep power consumption at or below the specified value in watts",
+    "enableIdlePower": "Enable idle power saver",
+    "idlePower": "Idle power saver",
+    "idlePowerSubmitUpdate": "Update idle power saver",
+    "idlePowerSubmitReset": "Reset to default",
+    "powerConsumptionTooltip": "Power consumption will be available once PHYP is running",
+    "powerCapLabel": "Power cap value (in watts)",
+    "powerCapLabelTextInfo": "Value must be between %{min} and %{max}",
+    "powerCapSettingData": "Apply power cap",
+    "powerCapSettingLabel": "Power cap setting",
+    "powerConsumption": "Current power consumption",
+    "powerPerformanceModesDropdownLabel": "View effects of each mode",
+    "powerPerformanceModesTitle": "Power and performance mode",
+    "selectModeLabel": "Select mode",
+    "submitButton": "Update power saver mode",
+    "toEnter": "To enter",
+    "toExit": "To exit",
+    "utilizationThreshold": "Utilization threshold (in %)",
+    "alert": {
+      "message": "The system is currently operating with reduced performance due to Safe Mode. Power settings are not accessible while in safe mode. ",
+      "message2": "To determine the cause, visit",
+      "message2Link": "event logs",
+      "message3": "The system will attempt to exit Safe Mode on the next power on attempt. To reboot the server, visit",
+      "message3Link": "server power operations"
+    },
+    "delayTimeValidation": {
+      "delayTimeRange": "Value must be between %{min} and %{max}.",
+      "enterDelayTime": "Value cannot be less than delay time to exit.",
+      "exitDelayTime": "Value cannot be greater than delay time to enter."
+    },
+    "modalEnablePowerPerformanceMode": {
+      "cancelButton": "Cancel",
+      "content": "Enabling any of the power saver modes will cause changes in processor frequencies, changes in processor utilization, changes in power consumption, and performance to vary.",
+      "subTitle": "Are you sure?",
+      "titleMaximumPerformance": "Enable maximum performance mode",
+      "titlePowerSaving": "Enable power saving mode",
+      "titleStatic": "Enable static mode"
+    },
+    "selectMode": {
+      "maximumPerformance": "Maximum performance",
+      "powerSaving": "Power saving",
+      "static": "Static"
+    },
+    "tableRoles": {
+      "descMaximumPerformance": "Processor frequency will vary. This mode allows the system to reach the maximum frequency by taking advantage of the thermal and power headroom provided by idle cores, lower workloads, and favorable environmental conditions.",
+      "descPowerSaving": "Processor frequency is set to a fixed minimum value, reducing the power consumption of the system while still delivering predictable performance.",
+      "descStatic": "Processor frequency is set to a fixed value that can run normal workloads under normal environmental conditions."
+    },
+    "utilizationPercentValidation": {
+      "enterUtilization": "Value cannot be greater than threshold to exit.",
+      "exitUtilization": "Value cannot be less than threshold to enter.",
+      "utilizationRange": "Value must be between %{min} and %{max}."
+    },
+    "toast": {
+      "errorIdlePower": "Error saving idle power settings",
+      "errorIdlePowerReset": "Error resetting idle power settings",
+      "errorPowerPerformanceModes": "Error saving power and performance mode",
+      "successIdlePower": "Successfully saved idle power settings",
+      "successIdlePowerReset": "Successfully reset idle power settings",
+      "successPowerPerformanceModes": "Successfully saved power saver mode"
+    }
+  },
+  "pagePowerRestorePolicy": {
+    "description": "Configure power policy to determine how the system starts after a power disturbance.",
+    "powerPoliciesLabel": "Power restore policies",
+    "policies": {
+      "AlwaysOff": "Always off",
+      "AlwaysOn": "Always on",
+      "LastState": "Last state"
+    },
+    "policiesDesc": {
+      "AlwaysOff": "Always off - The system always remains powered off when power is applied.",
+      "AlwaysOn": "Always on - The system always powers on when power is applied.",
+      "LastState": "Last state - The system returns to its last on or off power state when power is applied."
+    },
+    "alert": {
+      "changeServerOpMode": "Change server operating mode",
+      "manualOperatingMode": "Power restore policy can not be changed while in manual operating  mode."
+    },
+    "toast": {
+      "errorIdlePower": "Error saving idle power data",
+      "errorPowerSaver": "Error saving power saver mode",
+      "errorSaveSettings": "Error saving settings.",
+      "successIdlePower": "Successfully saved idle power data",
+      "successPowerSaver": "Successfully saved power saver mode",
+      "successSaveSettings": "Power restore policy updated successfully."
+    }
+  },
+  "pageProfileSettings": {
+    "browserOffset": "Browser offset (%{timezone})",
+    "changePassword": "Change password",
+    "confirmPassword": "Confirm new password",
+    "defaultUTC": "Default (UTC)",
+    "newPassLabelTextInfo": "Password must be between %{min} - %{max} characters",
+    "newPassword": "New password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "profileInfoTitle": "Profile information",
+    "timezone": "Timezone",
+    "timezoneDisplay": "Timezone display preference",
+    "timezoneDisplayDesc": "Select how time is displayed throughout the application",
+    "username": "Username",
+    "toast": {
+      "successUpdatingTimeZone": "Timezone updated successfully."
+    }
+  },
+  "pageRebootBmc": {
+    "lastReboot": "Last BMC reboot",
+    "rebootBmc": "Reboot BMC",
+    "rebootInformation": "When you reboot the BMC, your web browser loses contact with the BMC for several minutes. When the BMC is back online, you may need to log in again.",
+    "modal": {
+      "confirmMessage": "Are you sure you want to reboot the BMC?",
+      "confirmMessage2": "A system dump is being offloaded. Rebooting the BMC will result in the dump being lost.",
+      "confirmTitle": "Confirm BMC reboot"
+    },
+    "toast": {
+      "errorRebootStart": "Error rebooting BMC.",
+      "successRebootStart": "Rebooting BMC."
+    }
+  },
+  "pageSensors": {
+    "alert": "This page might take a few minutes to load",
+    "exportFilePrefix": "sensors_",
+    "searchForSensors": "Search for sensors",
+    "table": {
+      "currentValue": "Current value",
+      "lowerCritical": "Lower critical",
+      "lowerWarning": "Lower warning",
+      "name": "Name",
+      "status": "Status",
+      "upperCritical": "Upper critical",
+      "upperWarning": "Upper warning"
+    }
+  },
+  "pageServerPowerOperations": {
+    "currentStatus": "Current status",
+    "immediateReboot": "Immediate – Server reboots without operating system shutting down; may cause data corruption",
+    "immediateShutdown": "Immediate - Server shuts down without operating system shutting down; may cause data corruption",
+    "lastPowerOperation": "Last chassis power operation",
+    "oneTimeBootWarning": "Pending one time boot. Next boot will be performed with the specified one time boot settings. Subsequent boots will be performed with the default settings.",
+    "operationInProgress": "There are no options to display while a power operation is in progress. When complete, power operations will be displayed here.",
+    "operations": "Operations",
+    "orderlyReboot": "Orderly – operating system shuts down, then server reboots",
+    "orderlyShutdown": "Orderly - operating system shuts down, then server shuts down",
+    "osRuntimeButton": "Continue to OS running",
+    "osRuntimeMessage": "Continue to OS running state to continue to runtime.",
+    "phypStandby": "System is in PHYP standby.",
+    "powerOn": "Power on",
+    "reboot": "Reboot",
+    "rebootServer": "Reboot server",
+    "serverBootSettings": "Settings",
+    "serverStatus": "Server status",
+    "shutDown": "Shut down",
+    "shutdownServer": "Shutdown server",
+    "biosSettings": {
+      "aixLinux": "AIX/LINUX partition boot mode",
+      "currentOperatingMode": "Current operating mode %{currOptMode}",
+      "defaultPartition": "Default partition environment",
+      "ibmIPartition": "IBM i partition boot mode",
+      "powPolicySection": "will be set to %{powerPolicy}",
+      "pvm_default_os_type": "Default partition environment",
+      "pvm_os_boot_type": "IBM i partition boot mode",
+      "pvm_rpa_boot_mode": "AIX/LINUX partition boot mode",
+      "pvm_stop_at_standby": "Server firmware start policy",
+      "pvm_system_operating_mode": "Server operating mode",
+      "pvm_system_power_off_policy": "Server power policy",
+      "selectedOperatingMode": "On save operating mode will be set to %{selectedOptMode}",
+      "serverFirmware": "Server firmware start policy",
+      "powerSettingDescription": "View power setting descriptions",
+      "serverFirmwareItems": { 
+       "setting": {
+        "autoStartOnly": "Auto-start only",
+        "autoStartAlways": "Auto-start always",
+        "standBy": "Standby"
+      },
+      "description": {
+        "autoStartOnly": "Activate server firmware and partitions automatically only in the case of a recovery power on after an abnormal termination (e.g. auto power restart or system termination auto-reboot).",
+        "autoStartAlways" : "Activate certain partitions automatically. If the server is powered on using the HMC or ASMI menus, the server automatically activates the partitions configured for 'auto-start'. If an auto-power restart or a reboot is performed after the server stops abnormally, the server activates the partitions that were running at the time the system stopped.",
+        "standBy": "Do not activate server firmware and partitions automatically for either a user-initiated power on or a recovery power on."
+      }
+    },
+    "defaultPartitionItems": { 
+      "setting": {
+       "aix": "AIX",
+       "linux": "Linux",
+       "ibmI": "IBM I",
+       "default": "Default"
+     },
+     "description": {
+       "aix": "System firmware will select AIX/Linux as default partition environment.",
+       "linux" : "System firmware will select AIX/Linux as default partition environment.",
+       "ibmI": "Server firmware will select IBM i as default partition environment.",
+       "default": "System firmware will automatically select the default partition environment based on system brand type."
+   }
+  },
+  "aixPartitionItems": { 
+    "setting": {
+     "partitionBoot": "This partition boots directly to the operating system",
+     "serviceBoot": "Service boot mode from saved list",
+     "bootToSms": "Boot to SMS menu",
+     "bootToOpenFirware": "Boot to open firmware prompt",
+     "serviceBootMode": "Service mode boot from default list"
+   },
+   "description": {
+     "partitionBoot": "The partition boots to the operating system without stopping.",
+     "serviceBoot" : "The system boots from the saved service mode boot list. This is typically a shorthand method of executing the partition's diagnostics.  To make this option useful, the partition operating system must support diagnostic boot and diagnostics must be loaded on the partition's disk drive.",
+     "bootToSms": "The partition stops at the System Management Services (SMS) menu.",
+     "bootToOpenFirware": "The system stops at the open firmware prompt.",
+     "serviceBootMode": "The system boots from the default boot list.  This option is the preferred way to run stand-alone diagnostics from a CD-ROM drive."
+ }
+},
+"ibmiItems": { 
+  "setting": {
+   "a": "A",
+   "b": "B",
+   "c": "C",
+   "d": "D"
+ },
+ "description": {
+  "a": "IPL from disk using copy A of the system Licensed Internal Code.",
+  "b": "IPL from disk using copy B of the system Licensed Internal Code.",
+  "c": "Reserved for hardware service use only.",
+  "d": "IPL from media other than load-source disk. Alternate IPL for code installation support."
+}
+},
+      "attributeValues": {
+        "pvm_os_boot_type": {
+          "A_Mode": "A (Boot from disk using copy A)",
+          "B_Mode": "B (Boot from disk using copy B)",
+          "C_Mode": "C (Reserved for IBM lab use only)",
+          "D_Mode": "D (Boot from media / drives)"
+        },
+        "pvm_rpa_boot_mode": {
+          "DefaultList": "Service mode boot from default list",
+          "Normal": "The partition boots directly to the operating system",
+          "OkPrompt": "Boot to open firmware prompt",
+          "PblBootLid": "The partition boots from the petitboot boot loader",
+          "SavedList": "Service mode boot from saved list",
+          "SmsMenu": "Boot to SMS menu"
+        },
+        "pvm_stop_at_standby": {
+          "Disabled": "Auto-start always",
+          "Enabled": "Standby (User-initiated)",
+          "ManualOnly": "Auto-start only"
+        },
+        "pvm_system_operating_mode": {
+          "Manual": "Manual - Service / Maintenance",
+          "Normal": "Normal - Automatic"
+        },
+        "pvm_system_power_off_policy": {
+          "automaticHelperText": "System automatic power off",
+          "powerOffHelperText": "When the last partition powers off, the server will power off",
+          "stayOnHelperText": "When the last partition powers off, the server will stay on"
+        }
+      }
+    },
+    "modal": {
+      "confirmRebootMessage": "Are you sure you want to reboot?",
+      "confirmRebootMessage2": "A system dump is being offloaded. Rebooting will result in the dump being lost.",
+      "confirmRebootTitle": "Server reboot will cause outage",
+      "confirmShutdownMessage": "Are you sure you want to shut down?",
+      "confirmShutdownMessage2": "A system dump is being offloaded. Shutting down the system will result in the dump being lost.",
+      "confirmShutdownTitle": "Server shutdown will cause outage"
+    },
+    "toast": {
+      "errorPowerOn": "BMC is not ready to power on the host.",
+      "errorSaveSettings": "Error saving settings.",
+      "successSaveSettings": "Successfully saved settings."
+    }
+  },
+  "pageServiceLoginConsoles": {
+    "bmcConsole": "BMC console",
+    "hypervisorConsole": "Hypervisor console",
+    "selectConsoleType": "Select console",
+    "status": "Status"
+  },
+  "pageSessions": {
+    "action": {
+      "disconnect": "Disconnect"
+    },
+    "alert": {
+      "heading": "Warning",
+      "message": "If the HMC is active, it will attempt to reconnect. To disconnect a working HMC, disconnect from the HMC itself."
+    },
+    "modal": {
+      "disconnectMessage": "Are you sure you want to disconnect %{count} session? This action cannot be undone. | Are you sure you want to disconnect %{count} sessions? This action cannot be undone.",
+      "disconnectTitle": "Disconnect session| Disconnect sessions"
+    },
+    "table": {
+      "clientID": "Client ID",
+      "ipAddress": "IP address",
+      "searchSessions": "Search sessions",
+      "username": "Username"
+    },
+    "toast": {
+      "errorDelete": "Error disconnecting %{count} session. | Error disconnecting %{count} sessions.",
+      "successDelete": "Successfully disconnected %{count} session. | Successfully disconnected %{count} sessions."
+    }
+  },
+  "pageSnmpAlerts": {
+    "addDestination": "Add destination",
+    "deleteDestination": "Delete destination | Delete destinations",
+    "pageDescription": "Set the Simple Network Management Protocol (SNMP) traps with an IP address and a port.",
+    "modal": {
+      "addSnmpDestinationTitle": "Add SNMP alert destination",
+      "batchDeleteConfirmMessage": "Are you sure you want to delete the SNMP alert destination? This action cannot be undone. | Are you sure you want to delete %{count} SNMP alert destinations? This action cannot be undone.",
+      "deleteConfirmMessage": "Are you sure you want to delete the SNMP alert destination? This action cannot be undone.",
+      "deleteSnmpDestinationTitle": "Delete SNMP alert destination | Delete SNMP alert destinations",
+      "ipaddress": "IP Address",
+      "ipaddressFqdn": "IP Address / FQDN",
+      "ipaddressFqdnInfo": "IP Address or somehost.example.com",
+      "port": "Port"
+    },
+    "table": {
+      "ipaddress": "IP Address",
+      "port": "Port"
+    },
+    "toast": {
+      "errorAddDestination": "Error in adding SNMP alert destination",
+      "errorBatchDelete": "Error in deleting SNMP alert destination. | Error in deleting SNMP alert destinations.",
+      "errorDeleteDestination": "Error deleting SNMP alert destination.",
+      "errorLoadSnmpDetails": "Error loading SNMP alert details.",
+      "successAddDestination": "Successfully added SNMP alert destination.",
+      "successBatchDelete": "Successfully deleted SNMP alert destination. | Successfully deleted %{count} SNMP alert destinations.",
+      "successDeleteDestination": "Successfully deleted SNMP alert destination."
     }
   },
   "pageUserManagement": {
@@ -582,11 +1475,14 @@
       "errorBatchDisable": "Error disabling %{count} user. | Error disabling %{count} users.",
       "errorBatchEnable": "Error enabling %{count} user. | Error enabling %{count} users.",
       "errorCreateUser": "Error creating user '%{username}'.",
+      "errorCreateUserMaxUsers": "Error creating user '%{username}' because this system has reached the maximum amount of allowable users.",
+      "errorCreateUserPasswordNotAccepted": "Error creating user '%{username}' because the password was not accepted.",
       "errorDeleteUser": "Error deleting user '%{username}'.",
       "errorLoadAccountSettings": "Error loading account settings",
       "errorLoadUsers": "Error loading users.",
       "errorSaveSettings": "Error saving account settings.",
       "errorUpdateUser": "Error updating user '%{username}'.",
+      "errorUpdateUserPasswordNotAccepted": "Error updating user '%{username}' because the password was not accepted.",
       "successBatchDelete": "Successfully deleted %{count} user. | Successfully deleted %{count} users.",
       "successBatchDisable": "Successfully disabled %{count} user. | Successfully disabled %{count} users.",
       "successBatchEnable": "Successfully enabled %{count} user. | Successfully enabled %{count} users.",
@@ -594,315 +1490,6 @@
       "successDeleteUser": "Deleted user '%{username}'.",
       "successSaveSettings": "Successfully saved account settings.",
       "successUpdateUser": "Updated user '%{username}'."
-    }
-  },
-  "pageLogin": {
-    "language": "Language",
-    "logIn": "Log in",
-    "password": "Password",
-    "username": "Username",
-    "alert": {
-      "message": "Invalid username or password"
-    }
-  },
-  "pageOverview": {
-    "backupVersion": "Backup",
-    "bmcTime": "BMC date and time",
-    "criticalEvents": "Critical",
-    "dhcp": "DHCPv4",
-    "dumps": "Dumps",
-    "eventLogs": "Event logs",
-    "firmwareInformation": "Firmware information",
-    "hostName": "Hostname",
-    "idlePower": "Idle power",
-    "inventory": "Inventory and LEDs",
-    "ipv4": "IPv4",
-    "linkStatus": "Link status",
-    "model": "Model",
-    "networkInformation": "Network information",
-    "powerCap": "Power cap",
-    "powerConsumption": "Power consumption",
-    "powerInformation": "Power information",
-    "powerMode": "Power mode",
-    "runningVersion": "Running",
-    "serialNumber": "Serial number",
-    "serverInformation": "Server information",
-    "solConsole": "@:appNavigation.serialOverLan",
-    "statusInformation": "Status information",
-    "systemIdentifyLed": "System identify LED",
-    "systemInformation": "System information",
-    "total": "Total",
-    "warningEvents": "Warning",
-    "viewMore": "View more"
-  },
-  "pagePostCodeLogs": {
-    "allExportFilePrefix": "All_POST_codes_log_",
-    "downloadFilePrefix": "POST_codes_additional_details_",
-    "exportFilePrefix": "POST_codes_log_",
-    "action": {
-      "downloadDetails": "Download additional details",
-      "exportLogs": "Export log"
-    },
-    "button": {
-      "exportAll": "Export all"
-    },
-    "table": {
-      "created": "Created",
-      "bootCount": "Boot count",
-      "postCode": "Code",
-      "searchLogs": "Search logs",
-      "timeStampOffset": "Time stamp offset"
-    }
-  },
-  "pageProfileSettings": {
-    "browserOffset": "Browser offset (%{timezone})",
-    "changePassword": "Change password",
-    "confirmPassword": "Confirm new password",
-    "defaultUTC": "Default (UTC)",
-    "newPassword": "New password",
-    "newPassLabelTextInfo": "Password must be between %{min} - %{max} characters",
-    "passwordsDoNotMatch": "Passwords do not match",
-    "profileInfoTitle": "Profile information",
-    "timezone": "Timezone",
-    "timezoneDisplay": "Timezone display preference",
-    "timezoneDisplayDesc": "Select how time is displayed throughout the application",
-    "username": "Username",
-    "toast": {
-      "successUpdatingTimeZone": "Timezone updated successfully."
-    }
-  },
-  "pageNetwork": {
-    "dhcp": "DHCP",
-    "domainName": "domain name",
-    "dns": "DNS server",
-    "fqdn": "FQDN",
-    "hostname": "Hostname",
-    "interfaceSection": "Interface settings",
-    "ipv4": "IPv4",
-    "ipv4Addresses": "IPv4 addresses",
-    "ipv6": "IPv6",
-    "linkStatus": "Link status",
-    "macAddress": "MAC address",
-    "network": "network",
-    "networkSettings": "Network settings",
-    "ntp": "NTP server",
-    "pageDescription": "Configure BMC network settings",
-    "useDns": "Use DNS servers",
-    "useDomainName": "Use domain name",
-    "useNtp": "Use NTP servers",
-    "speed": "Speed (mbps)",
-    "staticDns": "Static DNS",
-    "modal": {
-      "editHostnameTitle": "Edit hostname",
-      "editMacAddressTitle": "Edit MAC address",
-      "gateway": "Gateway",
-      "ipAddress": "IP address",
-      "staticDns": "Static DNS",
-      "subnetMask": "Subnet mask"
-    },
-    "table": {
-      "addDnsAddress": "Add IP address",
-      "addIpv4Address": "Add static IPv4 address",
-      "addressOrigin": "Address origin",
-      "deleteDns": "Delete DNS address",
-      "deleteIpv4": "Delete IPv4 address",
-      "editDns": "Edit DNS address",
-      "editIpv4": "Edit IPv4 address",
-      "gateway": "Gateway",
-      "ipAddress": "IP address",
-      "subnet": "Subnet mask"
-    },
-    "toast": {
-      "errorSaveNetworkSettings": "Error updating %{setting} settings.",
-      "successSaveNetworkSettings": "Successfully updated %{setting} settings."
-    }
-  },
-  "pagePageNotFound": {
-    "description": "The requested resource could not be found."
-  },
-  "pagePowerRestorePolicy": {
-    "description": "Configure power policy to determine how the system starts after a power disturbance.",
-    "powerPoliciesLabel": "Power restore policies",
-    "policies": {
-      "AlwaysOn": "Always on",
-      "AlwaysOff": "Always off",
-      "LastState": "Last state"
-    },
-    "policiesDesc": {
-      "AlwaysOn": "Always on - The system always powers on when power is applied.",
-      "AlwaysOff": "Always off - The system always remains powered off when power is applied.",
-      "LastState": "Last state - The system returns to its last on or off power state when power is applied."
-    },
-    "toast": {
-      "errorSaveSettings": "Error saving settings.",
-      "successSaveSettings": "Power restore policy updated successfully."
-    }
-  },
-  "pageRebootBmc": {
-    "lastReboot": "Last BMC reboot",
-    "rebootBmc": "Reboot BMC",
-    "rebootInformation": "When you reboot the BMC, your web browser loses contact with the BMC for several minutes. When the BMC is back online, you may need to log in again.",
-    "modal": {
-      "confirmMessage": "Are you sure you want to reboot the BMC?",
-      "confirmTitle": "Confirm BMC reboot"
-    },
-    "toast": {
-      "errorRebootStart": "Error rebooting BMC.",
-      "successRebootStart": "Rebooting BMC."
-    }
-  },
-  "pagePolicies": {
-    "ipmi": "Network IPMI (out-of-band IPMI)",
-    "ipmiDescription": "Allow remote management of the platform via IPMI. Tools such as ipmitool require this setting to be enabled.",
-    "rtad": "RTAD",
-    "rtadDescription": "This option enables or disables the Remote Trusted Attestation Daemon for host firmware",
-    "ssh": "BMC shell (via SSH)",
-    "sshDescription": "Allow access to shell sessions via SSH, through port 22 on the BMC.",
-    "modal": {
-      "disableMessage": {
-        "ipmi": "Are you sure you want to disable @:pagePolicies.ipmi?",
-        "ssh": "Are you sure you want to disable @:pagePolicies.ssh?"
-      },
-      "enableMessage": {
-        "ipmi": "Are you sure you want to enable @:pagePolicies.ipmi?",
-        "ssh": "Are you sure you want to enable @:pagePolicies.ssh?"
-      }
-    },
-    "toast": {
-      "errorIpmiDisabled": "Error disabling IPMI security setting.",
-      "errorIpmiEnabled": "Error enabling IPMI security setting.",
-      "errorRtadDisabled": "Error disabling RTAD security setting.",
-      "errorRtadEnabled": "Error enabling RTAD security setting.",
-      "errorSshDisabled": "Error disabling SSH security setting.",
-      "errorSshEnabled": "Error enabling SSH security setting.",
-      "errorVtpmDisabled": "Error disabling VitualTPM security setting.",
-      "errorVtpmEnabled": "Error enabling VitualTPM security setting.",
-      "successIpmiDisabled": "Successfully disabled IPMI security setting.",
-      "successIpmiEnabled": "Successfully enabled IPMI security setting.",
-      "successRtadDisabled": "Successfully disabled RTAD security setting.",
-      "successRtadEnabled": "Successfully enabled RTAD security setting.",
-      "successSshDisabled": "Successfully disabled SSH security setting.",
-      "successSshEnabled": "Successfully enabled SSH security setting.",
-      "successVtpmDisabled": "Successfully disabled VitualTPM security setting.",
-      "successVtpmEnabled": "Successfully enabled VitualTPM security setting."
-    },
-    "vtpm": "VirtualTPM",
-    "vtpmDescription": "Enabling vTPM makes a TPM available to the guest operating system."
-  },
-  "pagePower": {
-    "description": "Set a power cap to keep power consumption at or below the specified value in watts",
-    "powerCapLabel": "Power cap value (in watts)",
-    "powerCapLabelTextInfo": " Value must be between %{min} and %{max}",
-    "powerCapSettingData": "Apply power cap",
-    "powerCapSettingLabel": "Power cap setting",
-    "powerConsumption": "Current power consumption",
-    "serverPowCapSetting": "Server power cap setting"
-  },
-  "pageSensors": {
-    "exportFilePrefix": "sensors_",
-    "searchForSensors": "Search for sensors",
-    "table": {
-      "currentValue": "Current value",
-      "lowerWarning": "Lower warning",
-      "lowerCritical": "Lower critical",
-      "name": "Name",
-      "status": "Status",
-      "upperWarning": "Upper warning",
-      "upperCritical": "Upper critical"
-    }
-  },
-  "pageSerialOverLan": {
-    "connected": "Connected",
-    "disconnected": "Disconnected",
-    "openNewTab": "Open in new tab",
-    "status": "Status",
-    "subTitle": "SOL console redirects the server's serial port output to this window."
-  },
-  "pageServerPowerOperations": {
-    "currentStatus": "Current status",
-    "serverBootSettings": "Boot settings",
-    "serverStatus": "Server status",
-    "immediateReboot": "Immediate – Server reboots without operating system shutting down; may cause data corruption",
-    "immediateShutdown": "Immediate - Server shuts down without operating system shutting down; may cause data corruption",
-    "lastPowerOperation": "Last power operation",
-    "oneTimeBootWarning": "Pending one time boot. Next boot will be performed with the specified one time boot settings. Subsequent boots will be performed with the default settings.",
-    "operationInProgress": "There are no options to display while a power operation is in progress. When complete, power operations will be displayed here.",
-    "operations": "Operations",
-    "orderlyReboot": "Orderly – operating system shuts down, then server reboots",
-    "orderlyShutdown": "Orderly - operating system shuts down, then server shuts down",
-    "powerOn": "Power on",
-    "reboot": "Reboot",
-    "rebootServer": "Reboot server",
-    "shutDown": "Shut down",
-    "shutdownServer": "Shutdown server",
-    "bootSettings": {
-      "bootSettingsOverride": "Boot settings override",
-      "enableOneTimeBoot": "Enable one time boot",
-      "tpmRequiredPolicy": "TPM required policy",
-      "tpmRequiredPolicyHelper": "Enable to ensure the system only boots when the TPM is functional."
-    },
-    "modal": {
-      "confirmRebootMessage": "Are you sure you want to reboot?",
-      "confirmRebootTitle": "Server reboot will cause outage",
-      "confirmShutdownMessage": "Are you sure you want to shut down?",
-      "confirmShutdownTitle": "Server shutdown will cause outage"
-    },
-    "toast": {
-      "errorSaveSettings": "Error saving settings.",
-      "successSaveSettings": "Successfully saved settings."
-    }
-  },
-  "pageCertificates": {
-    "addNewCertificate": "Add new certificate",
-    "caCertificate": "CA Certificate",
-    "deleteCertificate": "Delete certificate",
-    "generateCsr": "Generate CSR",
-    "httpsCertificate": "HTTPS Certificate",
-    "ldapCertificate": "LDAP Certificate",
-    "replaceCertificate": "Replace certificate",
-    "alert": {
-      "certificateExpiredMessage": "%{certificate} has expired. Consider replacing it with a new certificate.",
-      "certificateExpiringMessage": "%{certificate} is expiring soon. Consider replacing it with a new certificate.",
-      "certificatesExpiredMessage": "Some certificates have expired. Consider replacing them with new certificates.",
-      "certificatesExpiringMessage": "Some certificates are expiring soon. Consider replacing them with new certificates."
-    },
-    "modal": {
-      "alternateName": "Alternate name",
-      "alternateNameHelperText": "Add multiple alternate names separated by space",
-      "certificateFile": "Certificate file",
-      "certificateSigningRequest": "Certificate Signing Request (CSR)",
-      "certificateType": "Certificate type",
-      "challengePassword": "Challenge password",
-      "city": "City",
-      "commonName": "Common name",
-      "companyName": "Company name",
-      "companyUnit": "Company unit",
-      "contactPerson": "Contact person",
-      "country": "Country/Region",
-      "deleteConfirmMessage": "Are you sure you want to delete '%{certificate}' issued by %{issuedBy}? This action cannot be undone.",
-      "duplicateAlternateName": "Duplicate alternate name",
-      "emailAddress": "Email address",
-      "generateACertificateSigningRequest": "Generate a Certificate Signing Request (CSR)",
-      "keyBitLength": "Key bit length",
-      "keyCurveId": "Key curve ID",
-      "keyPairAlgorithm": "Key pair algorithm",
-      "privateKey": "Private key",
-      "state": "State"
-    },
-    "table": {
-      "certificate": "Certificate",
-      "issuedBy": "Issued by",
-      "issuedTo": "Issued to",
-      "validFrom": "Valid from",
-      "validUntil": "Valid until"
-    },
-    "toast": {
-      "errorAddCertificate": "Error adding certificate.",
-      "errorDeleteCertificate": "Error deleting certificate.",
-      "errorReplaceCertificate": "Error replacing certificate.",
-      "successAddCertificate": "Successfully added %{certificate}.",
-      "successDeleteCertificate": "Successfully deleted %{certificate}.",
-      "successReplaceCertificate": "Successfully replaced %{certificate}."
     }
   },
   "pageVirtualMedia": {
@@ -922,10 +1509,10 @@
       "errorMounting": "Error mounting",
       "errorReadingFile": "Error reading file. Closing server.",
       "errorUnmounting": "Error unmounting",
-      "serverRunning": "Server running",
-      "serverConnectionEstablished": "Server connection established",
       "serverClosedSuccessfully": "Server closed successfully",
-      "serverClosedWithErrors": "Server closed with errors"
+      "serverClosedWithErrors": "Server closed with errors",
+      "serverConnectionEstablished": "Server connection established",
+      "serverRunning": "Server running"
     }
   },
   "countries": {
