@@ -209,6 +209,11 @@ const AppNavigationMixin = {
               label: this.$t('appNavigation.snmpAlerts'),
               route: '/settings/snmp-alerts',
             },
+            {
+              id: 'snmp-alerts',
+              label: this.$t('appNavigation.snmpAlerts'),
+              route: '/settings/snmp-alerts',
+            },
           ],
         },
         {
