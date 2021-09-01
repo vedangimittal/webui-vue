@@ -1,5 +1,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import ChangePassword from '@/views/ChangePassword';
+import ConcurrentMaintenance from '@/views/HardwareStatus/ConcurrentMaintenance';
 import Sessions from '@/views/SecurityAndAccess/Sessions';
 import ConsoleLayout from '@/layouts/ConsoleLayout.vue';
 import DateTime from '@/views/Settings/DateTime';
@@ -12,22 +13,31 @@ import UserManagement from '@/views/SecurityAndAccess/UserManagement';
 import Login from '@/views/Login';
 import LoginLayout from '@/layouts/LoginLayout';
 import Network from '@/views/Settings/Network';
+import HardwareDeconfiguration from '@/views/Settings/HardwareDeconfiguration';
 import Overview from '@/views/Overview';
 import PageNotFound from '@/views/PageNotFound';
 import PostCodeLogs from '@/views/Logs/PostCodeLogs';
+import PostCodes from '@/views/Logs/PostCodeLogs/PostCodes';
 import PowerRestorePolicy from '@/views/Settings/PowerRestorePolicy';
 import ProfileSettings from '@/views/ProfileSettings';
 import RebootBmc from '@/views/Operations/RebootBmc';
 import Policies from '@/views/SecurityAndAccess/Policies';
 import KeyClear from '@/views/Operations/KeyClear';
 import Sensors from '@/views/HardwareStatus/Sensors';
-import SerialOverLan from '@/views/Operations/SerialOverLan';
-import SerialOverLanConsole from '@/views/Operations/SerialOverLan/SerialOverLanConsole';
+import PcieTopology from '@/views/HardwareStatus/PcieTopology';
+import ServiceLogin from '@/views/Operations/ServiceLoginConsoles/ServiceLogin';
+import ServiceLoginConsoles from '@/views/Operations/ServiceLoginConsoles/ServiceLoginConsoles';
+import HostConsole from '@/views/Operations/HostConsole';
+import HostConsoleConsole from '@/views/Operations/HostConsole/HostConsoleConsole';
 import ServerPowerOperations from '@/views/Operations/ServerPowerOperations';
 import Certificates from '@/views/SecurityAndAccess/Certificates';
 import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
+import LateralCastOutControl from '@/views/ResourceManagement/LateralCastOutControl';
 import SnmpAlerts from '@/views/Settings/SnmpAlerts';
+import CapacityOnDemand from '@/views/ResourceManagement/CapacityOnDemand';
+import FieldCoreOverride from '@/views/ResourceManagement/FieldCoreOverride';
+import DeconfigurationRecords from '@/views/Logs/DeconfigurationRecords';
 
 import i18n from '@/i18n';
 
@@ -66,11 +76,27 @@ const routes = [
     },
     children: [
       {
-        path: 'serial-over-lan-console',
-        name: 'serial-over-lan-console',
-        component: SerialOverLanConsole,
+        path: 'service-login-consoles',
+        name: 'service-login-consoles',
+        component: ServiceLoginConsoles,
         meta: {
-          title: i18n.t('appPageTitle.serialOverLan'),
+          title: i18n.t('appPageTitle.serviceLogin'),
+        },
+      },
+      {
+        path: 'host-console-console',
+        name: 'host-console-console',
+        component: HostConsoleConsole,
+        meta: {
+          title: i18n.t('appPageTitle.hostConsole'),
+        },
+      },
+      {
+        path: 'post-codes',
+        name: 'post-codes',
+        component: PostCodes,
+        meta: {
+          title: i18n.t('appPageTitle.postCodes'),
         },
       },
     ],
@@ -96,6 +122,14 @@ const routes = [
         component: ProfileSettings,
         meta: {
           title: i18n.t('appPageTitle.profileSettings'),
+        },
+      },
+      {
+        path: '/logs/deconfiguration-records',
+        name: 'deconfiguration-records',
+        component: DeconfigurationRecords,
+        meta: {
+          title: i18n.t('appPageTitle.deconfigurationRecords'),
         },
       },
       {
@@ -136,6 +170,22 @@ const routes = [
         component: Sensors,
         meta: {
           title: i18n.t('appPageTitle.sensors'),
+        },
+      },
+      {
+        path: '/hardware-status/pcie-topology',
+        name: 'pcie-topology',
+        component: PcieTopology,
+        meta: {
+          title: i18n.t('appPageTitle.pcieTopology'),
+        },
+      },
+      {
+        path: '/hardware-status/concurrent-maintenance',
+        name: 'concurrent-maintenance',
+        component: ConcurrentMaintenance,
+        meta: {
+          title: i18n.t('appPageTitle.concurrentMaintenance'),
         },
       },
       {
@@ -195,6 +245,14 @@ const routes = [
         },
       },
       {
+        path: '/settings/hardware-deconfiguration',
+        name: 'hardware-deconfiguration',
+        component: HardwareDeconfiguration,
+        meta: {
+          title: i18n.t('appPageTitle.deconfigurationHardware'),
+        },
+      },
+      {
         path: '/settings/network',
         name: 'network',
         component: Network,
@@ -219,6 +277,14 @@ const routes = [
         },
       },
       {
+        path: '/resource-management/lateral-cast-out-control',
+        name: 'lateral-cast-out-control',
+        component: LateralCastOutControl,
+        meta: {
+          title: i18n.t('appPageTitle.lateralCastOutControl'),
+        },
+      },
+      {
         path: '/resource-management/memory',
         name: 'memory',
         component: Memory,
@@ -232,6 +298,22 @@ const routes = [
         component: Power,
         meta: {
           title: i18n.t('appPageTitle.power'),
+        },
+      },
+      {
+        path: '/resource-management/capacity-on-demand',
+        name: 'capacity-on-demand',
+        component: CapacityOnDemand,
+        meta: {
+          title: i18n.t('appPageTitle.capacityOnDemand'),
+        },
+      },
+      {
+        path: '/resource-management/field-core-override',
+        name: 'field-core-override',
+        component: FieldCoreOverride,
+        meta: {
+          title: i18n.t('appPageTitle.fieldCoreOverride'),
         },
       },
       {
@@ -259,11 +341,19 @@ const routes = [
         },
       },
       {
-        path: '/operations/serial-over-lan',
-        name: 'serial-over-lan',
-        component: SerialOverLan,
+        path: '/operations/service-login',
+        name: 'service-login',
+        component: ServiceLogin,
         meta: {
-          title: i18n.t('appPageTitle.serialOverLan'),
+          title: i18n.t('appPageTitle.serviceLogin'),
+        },
+      },
+      {
+        path: '/operations/host-console',
+        name: 'host-console',
+        component: HostConsole,
+        meta: {
+          title: i18n.t('appPageTitle.hostConsole'),
         },
       },
       {
