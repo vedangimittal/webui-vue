@@ -24,14 +24,22 @@ import ChassisStore from './modules/HardwareStatus/ChassisStore';
 import BmcStore from './modules/HardwareStatus/BmcStore';
 import ProcessorStore from './modules/HardwareStatus/ProcessorStore';
 import AssemblyStore from './modules/HardwareStatus/AssemblyStore';
+import PcieTopologyStore from './modules/HardwareStatus/PcieTopologyStore';
 import PostCodeLogsStore from './modules/Logs/PostCodeLogsStore';
 import PoliciesStore from './modules/SecurityAndAccess/PoliciesStore';
 import FactoryResetStore from './modules/Operations/FactoryResetStore';
+import HardwareDeconfigurationStore from './modules/Settings/HardwareDeconfigurationStore';
 import KeyClearStore from './modules/Operations/KeyClearStore';
 
+import SnmpAlertsStore from './modules/Settings/SnmpAlertsStore';
 import WebSocketPlugin from './plugins/WebSocketPlugin';
 import DateTimeStore from './modules/Settings/DateTimeStore';
 import VirtualMediaStore from './modules/Operations/VirtualMediaStore';
+import ResourceMemoryStore from './modules/ResourceManagement/ResourceMemoryStore';
+import LateralCastOutControlStore from './modules/ResourceManagement/LateralCastOutControlStore';
+import DeconfigurationRecordsStore from './modules/Logs/DeconfigurationRecordsStore';
+import ConcurrentMaintenanceStore from './modules/HardwareStatus/ConcurrentMaintenanceStore';
+import PcieSlotsStore from './modules/HardwareStatus/PcieSlotsStore';
 
 Vue.use(Vuex);
 
@@ -42,6 +50,7 @@ export default new Vuex.Store({
   modules: {
     global: GlobalStore,
     authentication: AuthenticationStore,
+    concurrent: ConcurrentMaintenanceStore,
     sessions: SessionsStore,
     dateTime: DateTimeStore,
     ldap: LdapStore,
@@ -49,6 +58,7 @@ export default new Vuex.Store({
     firmware: FirmwareStore,
     serverBootSettings: BootSettingsStore,
     controls: ControlStore,
+    pcieTopology: PcieTopologyStore,
     powerControl: PowerControlStore,
     powerPolicy: PowerPolicyStore,
     powerSupply: PowerSupplyStore,
@@ -56,6 +66,7 @@ export default new Vuex.Store({
     eventLog: EventLogStore,
     sensors: SensorsStore,
     serverLed: ServerLedStore,
+    snmpAlerts: SnmpAlertsStore,
     certificates: CertificatesStore,
     system: SystemStore,
     memory: MemoryStore,
@@ -64,11 +75,16 @@ export default new Vuex.Store({
     bmc: BmcStore,
     processors: ProcessorStore,
     assemblies: AssemblyStore,
+    pcieSlots: PcieSlotsStore,
     postCodeLogs: PostCodeLogsStore,
     virtualMedia: VirtualMediaStore,
     policies: PoliciesStore,
     factoryReset: FactoryResetStore,
     keyClear: KeyClearStore,
+    resourceMemory: ResourceMemoryStore,
+    hardwareDeconfiguration: HardwareDeconfigurationStore,
+    deconfigurationRecords: DeconfigurationRecordsStore,
+    lateralCastOutControl: LateralCastOutControlStore,
   },
   plugins: [WebSocketPlugin],
 });

@@ -26,6 +26,7 @@ import SerialOverLanConsole from '@/views/Operations/SerialOverLan/SerialOverLan
 import ServerPowerOperations from '@/views/Operations/ServerPowerOperations';
 import Certificates from '@/views/SecurityAndAccess/Certificates';
 import Power from '@/views/ResourceManagement/Power';
+import SnmpAlerts from '@/views/Settings/SnmpAlerts';
 import i18n from '@/i18n';
 
 // Custom components
@@ -205,6 +206,14 @@ const routes = [
         component: PowerRestorePolicy,
         meta: {
           title: i18n.t('appPageTitle.powerRestorePolicy'),
+        },
+      },
+      {
+        path: '/settings/snmp-alerts',
+        name: 'snmp-alerts',
+        component: SnmpAlerts,
+        meta: {
+          title: i18n.t('appPageTitle.snmpAlerts'),
         },
       },
       {
