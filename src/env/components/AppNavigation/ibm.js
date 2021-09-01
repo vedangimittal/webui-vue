@@ -204,6 +204,11 @@ const AppNavigationMixin = {
               route: '/operations/factory-reset',
               restrictTo: [],
             },
+            {
+              id: 'snmp-alerts',
+              label: this.$t('appNavigation.snmpAlerts'),
+              route: '/settings/snmp-alerts',
+            },
           ],
         },
         {
