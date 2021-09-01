@@ -1,6 +1,15 @@
 <template>
   <b-container fluid="xl">
     <page-title />
+    <b-row>
+      <b-col md="8" xl="6">
+        <alert variant="info" class="mb-4">
+          <span>
+            {{ $t('pageSensors.alert') }}
+          </span>
+        </alert>
+      </b-col>
+    </b-row>
     <b-row class="align-items-end">
       <b-col sm="6" md="5" xl="4">
         <search
@@ -48,6 +57,8 @@
           :no-border-collapse="true"
           :items="filteredSensors"
           :fields="fields"
+          :per-page="perPage"
+          :current-page="currentPage"
           :sort-desc="true"
           :sort-compare="sortCompare"
           :filter="searchFilter"
@@ -97,10 +108,37 @@
         </b-table>
       </b-col>
     </b-row>
+    <!-- Table pagination -->
+    <b-row>
+      <b-col sm="6">
+        <b-form-group
+          class="table-pagination-select"
+          :label="$t('global.table.itemsPerPage')"
+          label-for="pagination-items-per-page"
+        >
+          <b-form-select
+            id="pagination-items-per-page"
+            v-model="perPage"
+            :options="itemsPerPageOptions"
+          />
+        </b-form-group>
+      </b-col>
+      <b-col sm="6">
+        <b-pagination
+          v-model="currentPage"
+          first-number
+          last-number
+          :per-page="perPage"
+          :total-rows="getTotalRowCount(filteredRows)"
+          aria-controls="table-sensors"
+        />
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
 <script>
+import Alert from '@/components/Global/Alert';
 import PageTitle from '@/components/Global/PageTitle';
 import Search from '@/components/Global/Search';
 import StatusIcon from '@/components/Global/StatusIcon';
@@ -108,7 +146,11 @@ import TableFilter from '@/components/Global/TableFilter';
 import TableToolbar from '@/components/Global/TableToolbar';
 import TableToolbarExport from '@/components/Global/TableToolbarExport';
 import TableCellCount from '@/components/Global/TableCellCount';
-
+import BVPaginationMixin, {
+  currentPage,
+  perPage,
+  itemsPerPageOptions,
+} from '@/components/Mixins/BVPaginationMixin';
 import BVTableSelectableMixin, {
   selectedRows,
   tableHeaderCheckboxModel,
@@ -121,10 +163,10 @@ import TableSortMixin from '@/components/Mixins/TableSortMixin';
 import SearchFilterMixin, {
   searchFilter,
 } from '@/components/Mixins/SearchFilterMixin';
-
 export default {
   name: 'Sensors',
   components: {
+    Alert,
     PageTitle,
     Search,
     StatusIcon,
@@ -134,6 +176,7 @@ export default {
     TableToolbarExport,
   },
   mixins: [
+    BVPaginationMixin,
     TableFilterMixin,
     BVTableSelectableMixin,
     LoadingBarMixin,
@@ -166,30 +209,9 @@ export default {
           tdClass: 'text-nowrap',
         },
         {
-          key: 'lowerCritical',
-          formatter: this.dataFormatter,
-          label: this.$t('pageSensors.table.lowerCritical'),
-        },
-        {
-          key: 'lowerCaution',
-          formatter: this.dataFormatter,
-          label: this.$t('pageSensors.table.lowerWarning'),
-        },
-
-        {
           key: 'currentValue',
           formatter: this.dataFormatter,
           label: this.$t('pageSensors.table.currentValue'),
-        },
-        {
-          key: 'upperCaution',
-          formatter: this.dataFormatter,
-          label: this.$t('pageSensors.table.upperWarning'),
-        },
-        {
-          key: 'upperCritical',
-          formatter: this.dataFormatter,
-          label: this.$t('pageSensors.table.upperCritical'),
         },
       ],
       tableFilters: [
@@ -200,6 +222,9 @@ export default {
         },
       ],
       activeFilters: [],
+      currentPage: currentPage,
+      itemsPerPageOptions: itemsPerPageOptions,
+      perPage: perPage,
       searchFilter: searchFilter,
       searchTotalFilteredRows: 0,
       selectedRows: selectedRows,
