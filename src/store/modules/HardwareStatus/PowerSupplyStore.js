@@ -24,7 +24,6 @@ const PowerSupplyStore = {
           PartNumber,
           SerialNumber,
           SparePartNumber,
-          Location,
           Status = {},
         } = powerSupply;
         return {
@@ -40,7 +39,6 @@ const PowerSupplyStore = {
           model: Model,
           name: Name,
           sparePartNumber: SparePartNumber,
-          locationNumber: Location?.PartLocation?.ServiceLabel,
           statusState: Status.State,
           uri: powerSupply['@odata.id'],
         };
