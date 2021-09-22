@@ -177,7 +177,7 @@ export default {
   },
   methods: {
     onModalOk({ ipAddress, port }) {
-      const protocolIpAddress = 'smtp://' + ipAddress;
+      const protocolIpAddress = 'snmp://' + ipAddress;
       const destination = port
         ? protocolIpAddress + ':' + port
         : protocolIpAddress;
