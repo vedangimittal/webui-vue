@@ -3,7 +3,7 @@
     <page-title />
     <b-row>
       <b-col md="8" xl="6">
-        <alert variant="info" class="mb-4">
+        <alert v-if="!isServerOff()" variant="warning" class="mb-4">
           <div class="font-weight-bold">
             {{ $t('pageMemory.alert.heading') }}
           </div>
@@ -48,10 +48,16 @@
                 id="logical-memory-size-option"
                 v-model="form.logicalMemorySizeOption"
                 :options="logicalMemorySizeOptions"
+                :disabled="!isServerOff()"
               >
               </b-form-select>
             </b-form-group>
-            <b-button variant="primary" type="submit" class="mt-3 mb-3">
+            <b-button
+              variant="primary"
+              type="submit"
+              class="mt-3 mb-3"
+              :disabled="!isServerOff()"
+            >
               {{ $t('pageMemory.updateLogicalMemorySize') }}
             </b-button>
           </b-form>
@@ -72,18 +78,55 @@
       </b-row>
       <b-row>
         <b-col md="8" xl="6">
-          <b-form>
+          <b-form @submit.prevent="updatePageSetup()">
             <b-form-group
               :label="$t('pageMemory.maxNumHugePages')"
               label-for="system-memory-page-setup"
               class="mb-3"
             >
               <b-form-input
-                id="input-system-memory-page-setup"
-                v-model="systemMemoryPageSetup"
-                data-test-id="system-memory-page-setup"
+                id="max-huge page-memory"
+                v-model.number="maxHugePageLimit"
+                data-test-id="max-huge page-memory"
                 :disabled="true"
               ></b-form-input>
+            </b-form-group>
+            <b-form-group
+              :label="$t('pageMemory.requestedHugePageMemory')"
+              label-for="system-memory-page-setup"
+              class="mb-3"
+            >
+              <b-form-input
+                id="input-system-memory-page-setup"
+                v-model.number="systemMemoryPageSetup"
+                data-test-id="system-memory-page-setup"
+                type="number"
+                :disabled="!isPageSetupEditable()"
+                :state="getValidationState($v.systemMemoryPageSetup)"
+              ></b-form-input>
+              <b-form-invalid-feedback role="alert">
+                <template
+                  v-if="
+                    !$v.systemMemoryPageSetup.minLength ||
+                    !$v.systemMemoryPageSetup.maxLength
+                  "
+                >
+                  {{
+                    $t('global.form.valueMustBeBetween', {
+                      min: 0,
+                      max: maxHugePageLimit,
+                    })
+                  }}
+                </template>
+              </b-form-invalid-feedback>
+              <b-button
+                variant="primary"
+                type="submit"
+                class="mt-3 mb-3"
+                :disabled="!isPageSetupEditable()"
+              >
+                {{ $t('pageMemory.updatePageSetup') }}
+              </b-button>
             </b-form-group>
           </b-form>
         </b-col>
@@ -93,11 +136,11 @@
     <page-section
       id="inputIoAdapterCapacity"
       ref="inputIoAdapterCapacity"
-      :section-title="$t('pageMemory.ioApdapterEnlargedCapacityTitle')"
+      :section-title="$t('pageMemory.ioAdapterEnlargedCapacityTitle')"
     >
       <b-row>
         <b-col md="8" xl="6">
-          <p>{{ $t('pageMemory.ioApdapterEnlargedCapacity') }}</p>
+          <p>{{ $t('pageMemory.ioAdapterEnlargedCapacity') }}</p>
         </b-col>
       </b-row>
       <b-row>
@@ -114,6 +157,7 @@
                 data-test-id="io-adapter-capacity"
                 type="number"
                 :state="getValidationState($v.ioAdapterCapacity)"
+                :disabled="!isServerOff()"
               ></b-form-input>
               <b-form-invalid-feedback role="alert">
                 <template
@@ -131,10 +175,61 @@
                 </template>
               </b-form-invalid-feedback>
             </b-form-group>
-            <b-button variant="primary" type="submit" class="mt-3 mb-3">
+            <b-button
+              variant="primary"
+              type="submit"
+              class="mt-3"
+              :disabled="!isServerOff()"
+            >
               {{ $t('pageMemory.updateIoAdapterEnlargedCapacity') }}
             </b-button>
           </b-form>
+        </b-col>
+      </b-row>
+    </page-section>
+    <div class="section-divider mb-3"></div>
+    <page-section
+      id="toggleActiveMemoryMirroring"
+      ref="toggleActiveMemoryMirroring"
+      :section-title="$t('pageMemory.activeMemoryMirroringTitle')"
+      class="mb-1"
+    >
+      <b-row>
+        <b-col md="8" xl="6">
+          <p>{{ $t('pageMemory.activeMemoryMirroringDescription') }}</p>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3 mb-3">
+        <b-col
+          md="8"
+          xl="6"
+          class="mb-3 d-flex align-items-center justify-content-between"
+        >
+          <dl class="mr-3 w-75">
+            <dt>
+              {{ $t('pageMemory.activeMemoryMirroring') }}
+            </dt>
+            <dd v-if="!isActiveMemoryMirroringEditable()">
+              <span v-if="activeMemoryMirroringState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </dd>
+            <dd v-else>
+              <b-form-checkbox
+                id="activeMemoryMirroringSwitch"
+                v-model="activeMemoryMirroringState"
+                switch
+                :disabled="!isActiveMemoryMirroringEditable()"
+                @change="changeActiveMemoryMirroringState"
+              >
+                <span v-if="activeMemoryMirroringState">
+                  {{ $t('global.status.enabled') }}
+                </span>
+                <span v-else>{{ $t('global.status.disabled') }}</span>
+              </b-form-checkbox>
+            </dd>
+          </dl>
         </b-col>
       </b-row>
     </page-section>
@@ -181,7 +276,13 @@ export default {
           id: 'inputIoAdapterCapacity',
           dataRef: 'inputIoAdapterCapacity',
           href: '#inputIoAdapterCapacity',
-          linkText: this.$t('pageMemory.ioApdapterEnlargedCapacityTitle'),
+          linkText: this.$t('pageMemory.ioAdapterEnlargedCapacityTitle'),
+        },
+        {
+          id: 'toggleActiveMemoryMirroring',
+          dataRef: 'toggleActiveMemoryMirroring',
+          href: '#toggleActiveMemoryMirroring',
+          linkText: this.$t('pageMemory.activeMemoryMirroringTitle'),
         },
       ],
     };
@@ -191,6 +292,17 @@ export default {
       'logicalMemorySizeOptions',
       'logicalMemorySize',
     ]),
+    activeMemoryMirroringState: {
+      get() {
+        return this.$store.getters['resourceMemory/memoryMirroringMode'];
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    maxHugePageLimit() {
+      return this.$store.getters['resourceMemory/maxNumHugePages'];
+    },
     ioAdapterCapacity: {
       get() {
         return this.$store.getters['resourceMemory/ioAdapterCapacity'];
@@ -202,8 +314,18 @@ export default {
     },
     systemMemoryPageSetup: {
       get() {
-        return this.$store.getters['resourceMemory/maxNumHugePages'];
+        return this.$store.getters['resourceMemory/numHugePages'];
       },
+      set(value) {
+        this.$v.$touch();
+        this.$store.commit('resourceMemory/setNumHugePages', value);
+      },
+    },
+    serverStatus() {
+      return this.$store.getters['global/serverStatus'];
+    },
+    hmcManaged() {
+      return this.$store.getters['resourceMemory/hmcManaged'];
     },
   },
   watch: {
@@ -211,17 +333,22 @@ export default {
       this.form.logicalMemorySizeOption = value;
     },
   },
-  validations: {
+  validations() {
     // Empty validations to leverage vuelidate form states
     // to check for changed values
-    form: {
-      logicalMemorySizeOption: {},
-    },
-    ioAdapterCapacity: {
-      minValue: minValue(0),
-      maxValue: maxValue(255),
-    },
-    systemMemoryPageSetup: {},
+    return {
+      form: {
+        logicalMemorySizeOption: {},
+      },
+      ioAdapterCapacity: {
+        minValue: minValue(0),
+        maxValue: maxValue(255),
+      },
+      systemMemoryPageSetup: {
+        minValue: minValue(0),
+        maxValue: maxValue(this.maxHugePageLimit),
+      },
+    };
   },
   created() {
     this.startLoader();
@@ -229,15 +356,38 @@ export default {
       this.$store.dispatch('resourceMemory/getMemorySizeOptions'),
       this.$store.dispatch('resourceMemory/getLogicalMemorySize'),
       this.$store.dispatch('resourceMemory/getIoAdapterCapacity'),
+      this.$store.dispatch('resourceMemory/getNumHugePages'),
       this.$store.dispatch('resourceMemory/getMaxNumHugePages'),
+      this.$store.dispatch('resourceMemory/getHmcManaged'),
+      this.$store.dispatch('resourceMemory/getActiveMemoryMirroring'),
     ]).finally(() => this.endLoader());
   },
   methods: {
+    isServerOff() {
+      return this.serverStatus === 'off' ? true : false;
+    },
+    isHmcManaged() {
+      return this.hmcManaged === 'Enabled' ? true : false;
+    },
+    isPageSetupEditable() {
+      return this.isServerOff() && !this.isHmcManaged();
+    },
     handleSubmit() {
       this.startLoader();
       let logicalMemorySize = this.form.logicalMemorySizeOption;
       this.$store
         .dispatch('resourceMemory/saveSettings', logicalMemorySize)
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message))
+        .finally(() => {
+          this.$v.form.$reset();
+          this.endLoader();
+        });
+    },
+    updatePageSetup() {
+      this.startLoader();
+      this.$store
+        .dispatch('resourceMemory/savePageSetup')
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message))
         .finally(() => {
@@ -255,6 +405,15 @@ export default {
           this.$v.form.$reset();
           this.endLoader();
         });
+    },
+    isActiveMemoryMirroringEditable() {
+      return this.isServerOff() && !this.isHmcManaged();
+    },
+    changeActiveMemoryMirroringState(state) {
+      this.$store
+        .dispatch('resourceMemory/saveActiveMemoryMirroringMode', state)
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
     },
   },
 };

@@ -8,12 +8,18 @@ const ResourceMemoryStore = {
     logicalMemorySize: null,
     ioAdapterCapacity: null,
     maxNumHugePages: null,
+    numHugePages: null,
+    hmcManaged: null,
+    memoryMirroringMode: null,
   },
   getters: {
     logicalMemorySizeOptions: (state) => state.logicalMemorySizeOptions,
     logicalMemorySize: (state) => state.logicalMemorySize,
     ioAdapterCapacity: (state) => state.ioAdapterCapacity,
     maxNumHugePages: (state) => state.maxNumHugePages,
+    numHugePages: (state) => state.numHugePages,
+    hmcManaged: (state) => state.hmcManaged,
+    memoryMirroringMode: (state) => state.memoryMirroringMode,
   },
   mutations: {
     setLogicalMemorySizeOptions: (state, logicalMemorySizeOptions) =>
@@ -24,6 +30,11 @@ const ResourceMemoryStore = {
       (state.ioAdapterCapacity = ioAdapterCapacity),
     setMaxNumHugePages: (state, maxNumHugePages) =>
       (state.maxNumHugePages = maxNumHugePages),
+    setNumHugePages: (state, numHugePages) =>
+      (state.numHugePages = numHugePages),
+    setHmcManaged: (state, hmcManaged) => (state.hmcManaged = hmcManaged),
+    setMemoryMirroringMode: (state, memoryMirroringMode) =>
+      (state.memoryMirroringMode = memoryMirroringMode),
   },
   actions: {
     async getMemorySizeOptions({ commit }) {
@@ -50,6 +61,20 @@ const ResourceMemoryStore = {
         )
         .catch((error) => console.log(error));
     },
+    async getHmcManaged({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const hmcMananged = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'pvm_hmc_managed'
+          );
+          let hmcManangedValue = hmcMananged[0].CurrentValue;
+          commit('setHmcManaged', hmcManangedValue);
+        })
+        .catch((error) => console.log(error));
+    },
     async getIoAdapterCapacity({ commit }) {
       return await api
         .get(
@@ -74,10 +99,87 @@ const ResourceMemoryStore = {
           const maxNumberHugePages = RegistryEntries.Attributes.filter(
             (Attribute) => Attribute.AttributeName == 'hb_max_number_huge_pages'
           );
-          let systemMemoryPageSetup = maxNumberHugePages[0].CurrentValue;
-          commit('setMaxNumHugePages', systemMemoryPageSetup);
+          let maxNumberHugePagesLimit = maxNumberHugePages[0].CurrentValue;
+          commit('setMaxNumHugePages', maxNumberHugePagesLimit);
         })
         .catch((error) => console.log(error));
+    },
+    async getNumHugePages({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const numberHugePages = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'hb_number_huge_pages'
+          );
+          let systemMemoryPageSetup = numberHugePages[0].CurrentValue;
+          commit('setNumHugePages', systemMemoryPageSetup);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getActiveMemoryMirroring({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const activeMemoryMirroringMode = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'hb_memory_mirror_mode'
+          );
+          let activeMemoryMirroringModeValue =
+            activeMemoryMirroringMode[0].CurrentValue;
+          let mirroringModeValue =
+            activeMemoryMirroringModeValue == 'Enabled' ? true : false;
+          commit('setMemoryMirroringMode', mirroringModeValue);
+        })
+        .catch((error) => console.log(error));
+    },
+    async saveActiveMemoryMirroringMode(
+      { commit },
+      activeMemoryMirroringModeValue
+    ) {
+      let updatedMirroringModeValue = activeMemoryMirroringModeValue
+        ? 'Enabled'
+        : 'Disabled';
+      commit('setMemoryMirroringMode', activeMemoryMirroringModeValue);
+      const updatedMirroringMode = {
+        Attributes: { hb_memory_mirror_mode: updatedMirroringModeValue },
+      };
+      return api
+        .patch('/redfish/v1/Systems/system/Bios/Settings', updatedMirroringMode)
+        .then(() => {
+          return i18n.t(
+            'pageMemory.toast.successSavingActiveMemoryMirroringMode'
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+          commit('setMemoryMirroringMode', !activeMemoryMirroringModeValue);
+          throw new Error(
+            i18n.t('pageMemory.toast.errorSavingActiveMemoryMirroringMode')
+          );
+        });
+    },
+    async savePageSetup({ commit }) {
+      const updatedNumHugePages = {
+        Attributes: {
+          hb_number_huge_pages: this.state.resourceMemory.numHugePages,
+        },
+      };
+      return await api
+        .patch('/redfish/v1/Systems/system/Bios/Settings', updatedNumHugePages)
+        .then(() => {
+          commit(
+            'setNumHugePages',
+            updatedNumHugePages.Attributes.hb_number_huge_pages
+          );
+          return i18n.t('pageMemory.toast.successSavingPageSetup');
+        })
+        .catch((error) => {
+          console.log('error', error);
+          throw new Error(i18n.t('pageMemory.toast.errorSavingPageSetup'));
+        });
     },
     async saveEnlargedCapacity({ commit }) {
       const updatedIoEnlargedCapacity = {
