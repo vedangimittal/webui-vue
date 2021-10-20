@@ -1,289 +1,384 @@
-import api from '@/store/api';
-import i18n from '@/i18n';
+<template>
+  <b-container fluid="xl">
+    <page-title />
+    <b-row>
+      <b-col md="8">
+        <b-row v-if="!modifySSHPolicyDisabled" class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mr-3 w-75">
+              <dt id="ssh-label">{{ $t('pagePolicies.ssh') }}</dt>
+              <dd id="ssh-description">
+                {{ $t('pagePolicies.sshDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="sshSwitch"
+              v-model="sshProtocolState"
+              data-test-id="policies-toggle-bmcShell"
+              aria-labelledby="ssh-label"
+              aria-describedby="ssh-description"
+              switch
+              @change="changeSshProtocolState"
+            >
+              <span v-if="sshProtocolState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt id="ipmi-label">{{ $t('pagePolicies.ipmi') }}</dt>
+              <dd id="ipmi-description">
+                {{ $t('pagePolicies.ipmiDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="ipmiSwitch"
+              v-model="ipmiProtocolState"
+              data-test-id="polices-toggle-networkIpmi"
+              aria-labelledby="ipmi-label"
+              aria-describedby="ipmi-description"
+              switch
+              @change="changeIpmiProtocolState"
+            >
+              <span v-if="ipmiProtocolState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt id="host-tpm-label">{{ $t('pagePolicies.hostTpm') }}</dt>
+              <dd id="host-tpm-description">
+                {{ $t('pagePolicies.hostTpmDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="host-tpm-policy"
+              v-model="tpmPolicyState"
+              aria-labelledby="host-tpm-label"
+              aria-describedby="host-tpm-description"
+              switch
+              @change="changeTpmPolicyState"
+            >
+              <span v-if="tpmPolicyState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt>{{ $t('pagePolicies.vtpm') }}</dt>
+              <dd>
+                {{ $t('pagePolicies.vtpmDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="vtpmSwitch"
+              v-model="vtpmState"
+              data-test-id="policies-toggle-vtpm"
+              switch
+              @change="changeVtpmState"
+            >
+              <span class="sr-only">
+                {{ $t('pagePolicies.vtpm') }}
+              </span>
+              <span v-if="vtpmState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt>
+                {{ $t('pagePolicies.rtad') }}
+                <info-tooltip :title="$t('pagePolicies.rtadInfoIcon')">
+                  <icon-time />
+                </info-tooltip>
+              </dt>
+              <dd>
+                {{ $t('pagePolicies.rtadDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="rtadSwitch"
+              v-model="rtadState"
+              data-test-id="policies-toggle-rtad"
+              switch
+              @change="changeRtadState"
+            >
+              <span class="sr-only">
+                {{ $t('pagePolicies.rtad') }}
+              </span>
+              <span v-if="rtadState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt>{{ $t('pagePolicies.usbFirmwareUpdatePolicy') }}</dt>
+              <dd>
+                {{ $t('pagePolicies.usbFirmwareUpdatePolicyDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="usbFirmwareUpdatePolicySwitch"
+              v-model="usbFirmwareUpdatePolicyState"
+              :disabled="!(isAdminUser || isServiceUser)"
+              data-test-id="policies-toggle-usbFirmwareUpdatePolicy"
+              switch
+              @change="changeUsbFirmwareUpdatePolicyState"
+            >
+              <span class="sr-only">
+                {{ $t('pagePolicies.usbFirmwareUpdatePolicy') }}
+              </span>
+              <span v-if="usbFirmwareUpdatePolicyState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt>{{ $t('pagePolicies.secureVersion') }}</dt>
+              <dd>
+                {{ $t('pagePolicies.secureVersionDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="svleSwitch"
+              v-model="svleState"
+              data-test-id="policies-toggle-svle"
+              switch
+              @change="changeSvleState"
+            >
+              <span class="sr-only">
+                {{ $t('pagePolicies.secureVersion') }}
+              </span>
+              <span v-if="svleState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt>
+                {{ $t('pagePolicies.hostUsb') }}
+                <info-tooltip :title="$t('global.status.nextReboot')">
+                  <icon-time />
+                </info-tooltip>
+              </dt>
+              <dd>
+                {{ $t('pagePolicies.hostUsbDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="hostUsbSwitch"
+              v-model="hostUsbState"
+              data-test-id="policies-toggle-hostUsb"
+              switch
+              @change="changeHostUsbState"
+            >
+              <span class="sr-only">
+                {{ $t('pagePolicies.hostUsb') }}
+              </span>
+              <span v-if="hostUsbState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+      </b-col>
+    </b-row>
+  </b-container>
+</template>
 
-const PoliciesStore = {
-  namespaced: true,
-  state: {
-    sshProtocolEnabled: false,
-    ipmiProtocolEnabled: false,
-    rtadEnabled: 'Disabled',
-    vtpmEnabled: 'Disabled',
-    svleEnabled: 'Disabled',
-    tpmPolicyEnabled: false,
-    usbFirmwareUpdatePolicyEnabled: false,
-    hostUsbEnabled: 'Enabled',
+<script>
+import PageTitle from '@/components/Global/PageTitle';
+import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
+import BVToastMixin from '@/components/Mixins/BVToastMixin';
+import InfoTooltip from '@/components/Global/InfoTooltip';
+import IconTime from '@carbon/icons-vue/es/time/16';
+
+export default {
+  name: 'Policies',
+  components: { IconTime, InfoTooltip, PageTitle },
+  mixins: [LoadingBarMixin, BVToastMixin],
+  beforeRouteLeave(to, from, next) {
+    this.hideLoader();
+    next();
   },
-  getters: {
-    sshProtocolEnabled: (state) => state.sshProtocolEnabled,
-    ipmiProtocolEnabled: (state) => state.ipmiProtocolEnabled,
-    rtadEnabled: (state) => state.rtadEnabled,
-    vtpmEnabled: (state) => state.vtpmEnabled,
-    svleEnabled: (state) => state.svleEnabled,
-    tpmPolicyEnabled: (state) => state.tpmPolicyEnabled,
-    usbFirmwareUpdatePolicyEnabled: (state) =>
-      state.usbFirmwareUpdatePolicyEnabled,
-    hostUsbEnabled: (state) => state.hostUsbEnabled,
+  data() {
+    return {
+      modifySSHPolicyDisabled:
+        process.env.VUE_APP_MODIFY_SSH_POLICY_DISABLED === 'true',
+    };
   },
-  mutations: {
-    setSshProtocolEnabled: (state, sshProtocolEnabled) =>
-      (state.sshProtocolEnabled = sshProtocolEnabled),
-    setIpmiProtocolEnabled: (state, ipmiProtocolEnabled) =>
-      (state.ipmiProtocolEnabled = ipmiProtocolEnabled),
-    setRtadEnabled: (state, rtadEnabled) => (state.rtadEnabled = rtadEnabled),
-    setVtpmEnabled: (state, vtpmEnabled) => (state.vtpmEnabled = vtpmEnabled),
-    setSvleEnabled: (state, svleEnabled) => (state.svleEnabled = svleEnabled),
-    setTpmPolicyEnabled: (state, tpmPolicyEnabled) =>
-      (state.tpmPolicyEnabled = tpmPolicyEnabled),
-    setUsbFirmwareUpdatePolicyEnabled: (
-      state,
-      usbFirmwareUpdatePolicyEnabled
-    ) =>
-      (state.usbFirmwareUpdatePolicyEnabled = usbFirmwareUpdatePolicyEnabled),
-    setHostUsbEnabled: (state, hostUsbEnabled) =>
-      (state.hostUsbEnabled = hostUsbEnabled),
+  computed: {
+    usbFirmwareUpdatePolicyState: {
+      get() {
+        return this.$store.getters['policies/usbFirmwareUpdatePolicyEnabled'];
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    currentUser() {
+      return this.$store.getters['global/currentUser'];
+    },
+    isServiceUser() {
+      return this.$store.getters['global/isServiceUser'];
+    },
+    isAdminUser() {
+      return this.$store.getters['global/isAdminUser'];
+    },
+    sshProtocolState: {
+      get() {
+        return this.$store.getters['policies/sshProtocolEnabled'];
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    ipmiProtocolState: {
+      get() {
+        return this.$store.getters['policies/ipmiProtocolEnabled'];
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    rtadState: {
+      get() {
+        return this.$store.getters['policies/rtadEnabled'] === 'Enabled';
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    vtpmState: {
+      get() {
+        return this.$store.getters['policies/vtpmEnabled'] === 'Enabled';
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    svleState: {
+      get() {
+        return this.$store.getters['policies/svleEnabled'] === 'Enabled';
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    tpmPolicyState: {
+      get() {
+        return this.$store.getters['policies/tpmPolicyEnabled'];
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    hostUsbState: {
+      get() {
+        return this.$store.getters['policies/hostUsbEnabled'] === 'Enabled';
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
   },
-  actions: {
-    async getNetworkProtocolStatus({ commit }) {
-      return await api
-        .get('/redfish/v1/Managers/bmc/NetworkProtocol')
-        .then((response) => {
-          const sshProtocol = response.data.SSH.ProtocolEnabled;
-          const ipmiProtocol = response.data.IPMI.ProtocolEnabled;
-          commit('setSshProtocolEnabled', sshProtocol);
-          commit('setIpmiProtocolEnabled', ipmiProtocol);
-        })
-        .catch((error) => console.log(error));
+  created() {
+    this.startLoader();
+    Promise.all([
+      this.$store.dispatch('policies/getBiosStatus'),
+      this.$store.dispatch('policies/getNetworkProtocolStatus'),
+      this.$store.dispatch('policies/getUsbFirmwareUpdatePolicyEnabled'),
+      this.$store.dispatch('policies/getTpmPolicy'),
+      this.$store.dispatch('userManagement/getUsers'),
+      this.checkForUserData(),
+    ]).finally(() => {
+      this.endLoader();
+    });
+  },
+  methods: {
+    changeUsbFirmwareUpdatePolicyState(state) {
+      this.$store
+        .dispatch('policies/saveUsbFirmwareUpdatePolicyEnabled', state)
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
     },
-    async getUsbFirmwareUpdatePolicyEnabled({ commit }) {
-      return await api
-        .get('/redfish/v1/Managers/bmc')
-        .then((response) => {
-          commit(
-            'setUsbFirmwareUpdatePolicyEnabled',
-            response.data.Oem.IBM.USBCodeUpdateEnabled
-          );
-        })
-        .catch((error) => console.log(error));
+    changeHostUsbState(state) {
+      this.$store
+        .dispatch('policies/saveHostUsbEnabled', state ? 'Enabled' : 'Disabled')
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
     },
-    async getBiosStatus({ commit }) {
-      return await api
-        .get('/redfish/v1/Systems/system/Bios')
-        .then((response) => {
-          commit('setRtadEnabled', response.data.Attributes.pvm_rtad);
-          commit('setVtpmEnabled', response.data.Attributes.pvm_vtpm);
-          commit(
-            'setSvleEnabled',
-            response.data.Attributes.hb_secure_ver_lockin_enabled
-          );
-          commit(
-            'setHostUsbEnabled',
-            response.data.Attributes.hb_host_usb_enablement
-          );
-        })
-        .catch((error) => console.log(error));
+    changeIpmiProtocolState(state) {
+      this.$store
+        .dispatch('policies/saveIpmiProtocolState', state)
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
     },
-    async getTpmPolicy({ commit }) {
-      // TODO: remove hardcoded endpoint when fix is available
-      return await api
-        .get('/redfish/v1/Systems/system')
-        .then((response) => {
-          const tpmState = response.data.Boot.TrustedModuleRequiredToBoot;
-          commit('setTpmPolicyEnabled', tpmState === 'Required');
-        })
-        .catch((error) => console.log(error));
+    changeSshProtocolState(state) {
+      this.$store
+        .dispatch('policies/saveSshProtocolState', state)
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
     },
-    async saveTpmPolicy({ commit }, protocolEnabled) {
-      commit('setTpmPolicyEnabled', protocolEnabled);
-      const data = {
-        Boot: {
-          TrustedModuleRequiredToBoot: protocolEnabled,
-        },
-      };
-      // TODO: remove hardcoded endpoint when fix is available
-      return api
-        .patch('/redfish/v1/Systems/system', data)
-        .then(() => {
-          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
-            policy: i18n.t('pagePolicies.hostTpm'),
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          commit('setTpmPolicyEnabled', !protocolEnabled);
-          throw new Error(
-            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
-              policy: i18n.t('pagePolicies.hostTpm'),
-            })
-          );
-        });
+    changeRtadState(state) {
+      this.$store
+        .dispatch('policies/saveRtadState', state ? 'Enabled' : 'Disabled')
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
     },
-    async saveUsbFirmwareUpdatePolicyEnabled({ commit }, updatedUsbCode) {
-      commit('setUsbFirmwareUpdatePolicyEnabled', updatedUsbCode);
-      const oem = {
-        Oem: {
-          IBM: {
-            USBCodeUpdateEnabled: updatedUsbCode,
-          },
-        },
-      };
-      return await api
-        .patch('/redfish/v1/Managers/bmc', oem)
-        .then(() => {
-          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
-            policy: i18n.t('pagePolicies.usbFirmwareUpdatePolicy'),
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          commit('setUsbFirmwareUpdatePolicyEnabled', !updatedUsbCode);
-          throw new Error(
-            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
-              policy: i18n.t('pagePolicies.usbFirmwareUpdatePolicy'),
-            })
-          );
-        });
+    changeVtpmState(state) {
+      this.$store
+        .dispatch('policies/saveVtpmState', state ? 'Enabled' : 'Disabled')
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
     },
-    async saveIpmiProtocolState({ commit }, protocolEnabled) {
-      commit('setIpmiProtocolEnabled', protocolEnabled);
-      const ipmi = {
-        IPMI: {
-          ProtocolEnabled: protocolEnabled,
-        },
-      };
-      return await api
-        .patch('/redfish/v1/Managers/bmc/NetworkProtocol', ipmi)
-        .then(() => {
-          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
-            policy: i18n.t('pagePolicies.ipmi'),
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          commit('setIpmiProtocolEnabled', !protocolEnabled);
-          throw new Error(
-            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
-              policy: i18n.t('pagePolicies.ipmi'),
-            })
-          );
-        });
+    changeSvleState(state) {
+      this.$store
+        .dispatch('policies/saveSvleState', state ? 'Enabled' : 'Disabled')
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
     },
-    async saveSshProtocolState({ commit }, protocolEnabled) {
-      commit('setSshProtocolEnabled', protocolEnabled);
-      const ssh = {
-        SSH: {
-          ProtocolEnabled: protocolEnabled,
-        },
-      };
-      return await api
-        .patch('/redfish/v1/Managers/bmc/NetworkProtocol', ssh)
-        .then(() => {
-          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
-            policy: i18n.t('pagePolicies.ssh'),
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          commit('setSshProtocolEnabled', !protocolEnabled);
-          throw new Error(
-            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
-              policy: i18n.t('pagePolicies.ssh'),
-            })
-          );
-        });
+    changeTpmPolicyState(state) {
+      this.$store
+        .dispatch('policies/saveTpmPolicy', state)
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
     },
-    async saveRtadState({ commit }, updatedRtad) {
-      commit('setRtadEnabled', updatedRtad);
-      return await api
-        .patch('/redfish/v1/Systems/system/Bios/Settings', {
-          Attributes: {
-            pvm_rtad: updatedRtad,
-          },
-        })
-        .then(() => {
-          return i18n.t('pagePolicies.toast.successNextBootToast', {
-            policy: i18n.t('pagePolicies.rtad'),
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          commit('setRtadEnabled', !updatedRtad);
-          throw new Error(
-            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
-              policy: i18n.t('pagePolicies.rtad'),
-            })
-          );
-        });
-    },
-    async saveVtpmState({ commit }, updatedVtpm) {
-      commit('setVtpmEnabled', updatedVtpm);
-      return await api
-        .patch('/redfish/v1/Systems/system/Bios/Settings', {
-          Attributes: {
-            pvm_vtpm: updatedVtpm,
-          },
-        })
-        .then(() => {
-          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
-            policy: i18n.t('pagePolicies.vtpm'),
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          commit('setVtpmEnabled', !updatedVtpm);
-          throw new Error(
-            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
-              policy: i18n.t('pagePolicies.vtpm'),
-            })
-          );
-        });
-    },
-    async saveSvleState({ commit }, updatedSvle) {
-      commit('setSvleEnabled', updatedSvle);
-      return await api
-        .patch('/redfish/v1/Systems/system/Bios/Settings', {
-          Attributes: {
-            hb_secure_ver_lockin_enabled: updatedSvle,
-          },
-        })
-        .then(() => {
-          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
-            policy: i18n.t('pagePolicies.secureVersion'),
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          commit('setSvleEnabled', !updatedSvle);
-          throw new Error(
-            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
-              policy: i18n.t('pagePolicies.secureVersion'),
-            })
-          );
-        });
-    },
-    async saveHostUsbEnabled({ commit }, updatedHostUsb) {
-      commit('setHostUsbEnabled', updatedHostUsb);
-      return await api
-        .patch('/redfish/v1/Systems/system/Bios/Settings', {
-          Attributes: {
-            hb_host_usb_enablement: updatedHostUsb,
-          },
-        })
-        .then(() => {
-          return i18n.t('pagePolicies.toast.successNextBootToast', {
-            policy: i18n.t('pagePolicies.hostUsb'),
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          commit('setHostUsbEnabled', !updatedHostUsb);
-          throw new Error(
-            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
-              policy: i18n.t('pagePolicies.hostUsb'),
-            })
-          );
-        });
+    checkForUserData() {
+      if (!this.currentUser) {
+        this.$store.dispatch('userManagement/getUsers');
+        this.$store.dispatch('global/getCurrentUser');
+      }
     },
   },
 };
-
-export default PoliciesStore;
+</script>
