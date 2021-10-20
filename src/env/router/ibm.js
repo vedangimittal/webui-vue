@@ -25,8 +25,10 @@ import SerialOverLan from '@/views/Operations/SerialOverLan';
 import SerialOverLanConsole from '@/views/Operations/SerialOverLan/SerialOverLanConsole';
 import ServerPowerOperations from '@/views/Operations/ServerPowerOperations';
 import Certificates from '@/views/SecurityAndAccess/Certificates';
+import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
 import SnmpAlerts from '@/views/Settings/SnmpAlerts';
+
 import i18n from '@/i18n';
 
 // Custom components
@@ -214,6 +216,14 @@ const routes = [
         component: SnmpAlerts,
         meta: {
           title: i18n.t('appPageTitle.snmpAlerts'),
+        },
+      },
+      {
+        path: '/resource-management/memory',
+        name: 'memory',
+        component: Memory,
+        meta: {
+          title: i18n.t('appPageTitle.memory'),
         },
       },
       {

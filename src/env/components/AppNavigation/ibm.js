@@ -137,6 +137,11 @@ const AppNavigationMixin = {
           icon: 'iconResourceManagement',
           children: [
             {
+              id: 'memory',
+              label: this.$t('appNavigation.memory'),
+              route: '/resource-management/memory',
+            },
+            {
               id: 'power',
               label: this.$t('appNavigation.power'),
               route: '/resource-management/power',

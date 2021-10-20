@@ -656,6 +656,15 @@ exports[`AppNavigation.vue should render correctly 1`] = `
               >
                 <a
                   class="nav-link"
+                  data-test-id="nav-item-memory"
+                  href="#/resource-management/memory"
+                >
+                  
+                  appNavigation.memory
+                
+                </a>
+                <a
+                  class="nav-link"
                   data-test-id="nav-item-power"
                   href="#/resource-management/power"
                 >
@@ -1333,6 +1342,15 @@ exports[`AppNavigation.vue should render with nav-container open 1`] = `
               <li
                 class="nav-item"
               >
+                <a
+                  class="nav-link"
+                  data-test-id="nav-item-memory"
+                  href="#/resource-management/memory"
+                >
+                  
+                  appNavigation.memory
+                
+                </a>
                 <a
                   class="nav-link"
                   data-test-id="nav-item-power"

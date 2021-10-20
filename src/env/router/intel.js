@@ -24,6 +24,7 @@ import SerialOverLanConsole from '@/views/Operations/SerialOverLan/SerialOverLan
 import ServerPowerOperations from '@/views/Operations/ServerPowerOperations';
 import Certificates from '@/views/SecurityAndAccess/Certificates';
 import VirtualMedia from '@/views/Operations/VirtualMedia';
+import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
 import i18n from '@/i18n';
 
@@ -193,6 +194,14 @@ const routes = [
         component: Network,
         meta: {
           title: i18n.t('appPageTitle.network'),
+        },
+      },
+      {
+        path: '/resource-management/memory',
+        name: 'memory',
+        component: Memory,
+        meta: {
+          title: i18n.t('appPageTitle.memory'),
         },
       },
       {

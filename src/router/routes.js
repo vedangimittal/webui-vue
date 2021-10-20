@@ -28,6 +28,7 @@ import SerialOverLanConsole from '@/views/Operations/SerialOverLan/SerialOverLan
 import ServerPowerOperations from '@/views/Operations/ServerPowerOperations';
 import Certificates from '@/views/SecurityAndAccess/Certificates';
 import VirtualMedia from '@/views/Operations/VirtualMedia';
+import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
 import SnmpAlerts from '@/views/Settings/SnmpAlerts';
 import i18n from '@/i18n';
@@ -238,6 +239,14 @@ const routes = [
         component: PowerRestorePolicy,
         meta: {
           title: i18n.t('appPageTitle.powerRestorePolicy'),
+        },
+      },
+      {
+        path: '/resource-management/memory',
+        name: 'memory',
+        component: Memory,
+        meta: {
+          title: i18n.t('appPageTitle.memory'),
         },
       },
       {
