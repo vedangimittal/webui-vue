@@ -204,11 +204,6 @@ const AppNavigationMixin = {
               route: '/operations/factory-reset',
               restrictTo: [],
             },
-            {
-              id: 'snmp-alerts',
-              label: this.$t('appNavigation.snmpAlerts'),
-              route: '/settings/snmp-alerts',
-            },
           ],
         },
         {
@@ -251,11 +246,6 @@ const AppNavigationMixin = {
               label: this.$t('appNavigation.keyClear'),
               route: '/operations/key-clear',
               restrictTo: ['Administrator', 'OemIBMServiceAgent'],
-            },
-            {
-              id: 'field-core-override',
-              label: this.$t('appNavigation.fieldCoreOverride'),
-              route: '/resource-management/field-core-override',
             },
           ],
         },
