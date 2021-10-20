@@ -3,11 +3,11 @@
     <page-title />
     <b-row>
       <b-col md="8">
-        <b-row v-if="!modifySSHPolicyDisabled" class="setting-section">
+        <b-row v-if="!modifySSHPolicyDisabled" class="section-divider">
           <b-col class="d-flex align-items-center justify-content-between">
             <dl class="mr-3 w-75">
-              <dt>{{ $t('pagePolicies.ssh') }}</dt>
-              <dd>
+              <dt id="ssh-label">{{ $t('pagePolicies.ssh') }}</dt>
+              <dd id="ssh-description">
                 {{ $t('pagePolicies.sshDescription') }}
               </dd>
             </dl>
@@ -15,12 +15,11 @@
               id="sshSwitch"
               v-model="sshProtocolState"
               data-test-id="policies-toggle-bmcShell"
+              aria-labelledby="ssh-label"
+              aria-describedby="ssh-description"
               switch
               @change="changeSshProtocolState"
             >
-              <span class="sr-only">
-                {{ $t('pagePolicies.ssh') }}
-              </span>
               <span v-if="sshProtocolState">
                 {{ $t('global.status.enabled') }}
               </span>
@@ -28,11 +27,11 @@
             </b-form-checkbox>
           </b-col>
         </b-row>
-        <b-row class="setting-section">
+        <b-row class="section-divider">
           <b-col class="d-flex align-items-center justify-content-between">
             <dl class="mt-3 mr-3 w-75">
-              <dt>{{ $t('pagePolicies.ipmi') }}</dt>
-              <dd>
+              <dt id="ipmi-label">{{ $t('pagePolicies.ipmi') }}</dt>
+              <dd id="ipmi-description">
                 {{ $t('pagePolicies.ipmiDescription') }}
               </dd>
             </dl>
@@ -40,12 +39,11 @@
               id="ipmiSwitch"
               v-model="ipmiProtocolState"
               data-test-id="polices-toggle-networkIpmi"
+              aria-labelledby="ipmi-label"
+              aria-describedby="ipmi-description"
               switch
               @change="changeIpmiProtocolState"
             >
-              <span class="sr-only">
-                {{ $t('pagePolicies.ipmi') }}
-              </span>
               <span v-if="ipmiProtocolState">
                 {{ $t('global.status.enabled') }}
               </span>
@@ -53,7 +51,30 @@
             </b-form-checkbox>
           </b-col>
         </b-row>
-        <b-row class="setting-section">
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt id="host-tpm-label">{{ $t('pagePolicies.hostTpm') }}</dt>
+              <dd id="host-tpm-description">
+                {{ $t('pagePolicies.hostTpmDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="host-tpm-policy"
+              v-model="tpmPolicyState"
+              aria-labelledby="host-tpm-label"
+              aria-describedby="host-tpm-description"
+              switch
+              @change="changeTpmPolicyState"
+            >
+              <span v-if="tpmPolicyState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+        <b-row class="section-divider">
           <b-col class="d-flex align-items-center justify-content-between">
             <dl class="mt-3 mr-3 w-75">
               <dt>{{ $t('pagePolicies.vtpm') }}</dt>
@@ -78,10 +99,15 @@
             </b-form-checkbox>
           </b-col>
         </b-row>
-        <b-row class="setting-section">
+        <b-row class="section-divider">
           <b-col class="d-flex align-items-center justify-content-between">
             <dl class="mt-3 mr-3 w-75">
-              <dt>{{ $t('pagePolicies.rtad') }}</dt>
+              <dt>
+                {{ $t('pagePolicies.rtad') }}
+                <info-tooltip :title="$t('pagePolicies.rtadInfoIcon')">
+                  <icon-time />
+                </info-tooltip>
+              </dt>
               <dd>
                 {{ $t('pagePolicies.rtadDescription') }}
               </dd>
@@ -103,6 +129,87 @@
             </b-form-checkbox>
           </b-col>
         </b-row>
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt>{{ $t('pagePolicies.usbFirmwareUpdatePolicy') }}</dt>
+              <dd>
+                {{ $t('pagePolicies.usbFirmwareUpdatePolicyDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="usbFirmwareUpdatePolicySwitch"
+              v-model="usbFirmwareUpdatePolicyState"
+              :disabled="!(isAdminUser || isServiceUser)"
+              data-test-id="policies-toggle-usbFirmwareUpdatePolicy"
+              switch
+              @change="changeUsbFirmwareUpdatePolicyState"
+            >
+              <span class="sr-only">
+                {{ $t('pagePolicies.usbFirmwareUpdatePolicy') }}
+              </span>
+              <span v-if="usbFirmwareUpdatePolicyState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt>{{ $t('pagePolicies.secureVersion') }}</dt>
+              <dd>
+                {{ $t('pagePolicies.secureVersionDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="svleSwitch"
+              v-model="svleState"
+              data-test-id="policies-toggle-svle"
+              switch
+              @change="changeSvleState"
+            >
+              <span class="sr-only">
+                {{ $t('pagePolicies.secureVersion') }}
+              </span>
+              <span v-if="svleState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
+        <b-row class="section-divider">
+          <b-col class="d-flex align-items-center justify-content-between">
+            <dl class="mt-3 mr-3 w-75">
+              <dt>
+                {{ $t('pagePolicies.hostUsb') }}
+                <info-tooltip :title="$t('global.status.nextReboot')">
+                  <icon-time />
+                </info-tooltip>
+              </dt>
+              <dd>
+                {{ $t('pagePolicies.hostUsbDescription') }}
+              </dd>
+            </dl>
+            <b-form-checkbox
+              id="hostUsbSwitch"
+              v-model="hostUsbState"
+              data-test-id="policies-toggle-hostUsb"
+              switch
+              @change="changeHostUsbState"
+            >
+              <span class="sr-only">
+                {{ $t('pagePolicies.hostUsb') }}
+              </span>
+              <span v-if="hostUsbState">
+                {{ $t('global.status.enabled') }}
+              </span>
+              <span v-else>{{ $t('global.status.disabled') }}</span>
+            </b-form-checkbox>
+          </b-col>
+        </b-row>
       </b-col>
     </b-row>
   </b-container>
@@ -110,13 +217,14 @@
 
 <script>
 import PageTitle from '@/components/Global/PageTitle';
-
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
+import InfoTooltip from '@/components/Global/InfoTooltip';
+import IconTime from '@carbon/icons-vue/es/time/16';
 
 export default {
   name: 'Policies',
-  components: { PageTitle },
+  components: { IconTime, InfoTooltip, PageTitle },
   mixins: [LoadingBarMixin, BVToastMixin],
   beforeRouteLeave(to, from, next) {
     this.hideLoader();
@@ -129,6 +237,23 @@ export default {
     };
   },
   computed: {
+    usbFirmwareUpdatePolicyState: {
+      get() {
+        return this.$store.getters['policies/usbFirmwareUpdatePolicyEnabled'];
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    currentUser() {
+      return this.$store.getters['global/currentUser'];
+    },
+    isServiceUser() {
+      return this.$store.getters['global/isServiceUser'];
+    },
+    isAdminUser() {
+      return this.$store.getters['global/isAdminUser'];
+    },
     sshProtocolState: {
       get() {
         return this.$store.getters['policies/sshProtocolEnabled'];
@@ -147,11 +272,7 @@ export default {
     },
     rtadState: {
       get() {
-        if (this.$store.getters['policies/rtadEnabled'] === 'Enabled') {
-          return true;
-        } else {
-          return false;
-        }
+        return this.$store.getters['policies/rtadEnabled'] === 'Enabled';
       },
       set(newValue) {
         return newValue;
@@ -159,11 +280,31 @@ export default {
     },
     vtpmState: {
       get() {
-        if (this.$store.getters['policies/vtpmEnabled'] === 'Enabled') {
-          return true;
-        } else {
-          return false;
-        }
+        return this.$store.getters['policies/vtpmEnabled'] === 'Enabled';
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    svleState: {
+      get() {
+        return this.$store.getters['policies/svleEnabled'] === 'Enabled';
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    tpmPolicyState: {
+      get() {
+        return this.$store.getters['policies/tpmPolicyEnabled'];
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+    hostUsbState: {
+      get() {
+        return this.$store.getters['policies/hostUsbEnabled'] === 'Enabled';
       },
       set(newValue) {
         return newValue;
@@ -175,9 +316,27 @@ export default {
     Promise.all([
       this.$store.dispatch('policies/getBiosStatus'),
       this.$store.dispatch('policies/getNetworkProtocolStatus'),
-    ]).finally(() => this.endLoader());
+      this.$store.dispatch('policies/getUsbFirmwareUpdatePolicyEnabled'),
+      this.$store.dispatch('policies/getTpmPolicy'),
+      this.$store.dispatch('userManagement/getUsers'),
+      this.checkForUserData(),
+    ]).finally(() => {
+      this.endLoader();
+    });
   },
   methods: {
+    changeUsbFirmwareUpdatePolicyState(state) {
+      this.$store
+        .dispatch('policies/saveUsbFirmwareUpdatePolicyEnabled', state)
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
+    },
+    changeHostUsbState(state) {
+      this.$store
+        .dispatch('policies/saveHostUsbEnabled', state ? 'Enabled' : 'Disabled')
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
+    },
     changeIpmiProtocolState(state) {
       this.$store
         .dispatch('policies/saveIpmiProtocolState', state)
@@ -202,12 +361,24 @@ export default {
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message));
     },
+    changeSvleState(state) {
+      this.$store
+        .dispatch('policies/saveSvleState', state ? 'Enabled' : 'Disabled')
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
+    },
+    changeTpmPolicyState(state) {
+      this.$store
+        .dispatch('policies/saveTpmPolicy', state)
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
+    },
+    checkForUserData() {
+      if (!this.currentUser) {
+        this.$store.dispatch('userManagement/getUsers');
+        this.$store.dispatch('global/getCurrentUser');
+      }
+    },
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.setting-section {
-  border-bottom: 1px solid gray('300');
-}
-</style>

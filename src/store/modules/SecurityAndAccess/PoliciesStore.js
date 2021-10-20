@@ -8,12 +8,21 @@ const PoliciesStore = {
     ipmiProtocolEnabled: false,
     rtadEnabled: 'Disabled',
     vtpmEnabled: 'Disabled',
+    svleEnabled: 'Disabled',
+    tpmPolicyEnabled: false,
+    usbFirmwareUpdatePolicyEnabled: false,
+    hostUsbEnabled: 'Enabled',
   },
   getters: {
     sshProtocolEnabled: (state) => state.sshProtocolEnabled,
     ipmiProtocolEnabled: (state) => state.ipmiProtocolEnabled,
     rtadEnabled: (state) => state.rtadEnabled,
     vtpmEnabled: (state) => state.vtpmEnabled,
+    svleEnabled: (state) => state.svleEnabled,
+    tpmPolicyEnabled: (state) => state.tpmPolicyEnabled,
+    usbFirmwareUpdatePolicyEnabled: (state) =>
+      state.usbFirmwareUpdatePolicyEnabled,
+    hostUsbEnabled: (state) => state.hostUsbEnabled,
   },
   mutations: {
     setSshProtocolEnabled: (state, sshProtocolEnabled) =>
@@ -22,6 +31,16 @@ const PoliciesStore = {
       (state.ipmiProtocolEnabled = ipmiProtocolEnabled),
     setRtadEnabled: (state, rtadEnabled) => (state.rtadEnabled = rtadEnabled),
     setVtpmEnabled: (state, vtpmEnabled) => (state.vtpmEnabled = vtpmEnabled),
+    setSvleEnabled: (state, svleEnabled) => (state.svleEnabled = svleEnabled),
+    setTpmPolicyEnabled: (state, tpmPolicyEnabled) =>
+      (state.tpmPolicyEnabled = tpmPolicyEnabled),
+    setUsbFirmwareUpdatePolicyEnabled: (
+      state,
+      usbFirmwareUpdatePolicyEnabled
+    ) =>
+      (state.usbFirmwareUpdatePolicyEnabled = usbFirmwareUpdatePolicyEnabled),
+    setHostUsbEnabled: (state, hostUsbEnabled) =>
+      (state.hostUsbEnabled = hostUsbEnabled),
   },
   actions: {
     async getNetworkProtocolStatus({ commit }) {
@@ -35,14 +54,94 @@ const PoliciesStore = {
         })
         .catch((error) => console.log(error));
     },
+    async getUsbFirmwareUpdatePolicyEnabled({ commit }) {
+      return await api
+        .get('/redfish/v1/Managers/bmc')
+        .then((response) => {
+          commit(
+            'setUsbFirmwareUpdatePolicyEnabled',
+            response.data.Oem.IBM.USBCodeUpdateEnabled
+          );
+        })
+        .catch((error) => console.log(error));
+    },
     async getBiosStatus({ commit }) {
       return await api
         .get('/redfish/v1/Systems/system/Bios')
         .then((response) => {
           commit('setRtadEnabled', response.data.Attributes.pvm_rtad);
           commit('setVtpmEnabled', response.data.Attributes.pvm_vtpm);
+          commit(
+            'setSvleEnabled',
+            response.data.Attributes.hb_secure_ver_lockin_enabled
+          );
+          commit(
+            'setHostUsbEnabled',
+            response.data.Attributes.hb_host_usb_enablement
+          );
         })
         .catch((error) => console.log(error));
+    },
+    async getTpmPolicy({ commit }) {
+      // TODO: remove hardcoded endpoint when fix is available
+      return await api
+        .get('/redfish/v1/Systems/system')
+        .then((response) => {
+          const tpmState = response.data.Boot.TrustedModuleRequiredToBoot;
+          commit('setTpmPolicyEnabled', tpmState === 'Required');
+        })
+        .catch((error) => console.log(error));
+    },
+    async saveTpmPolicy({ commit }, protocolEnabled) {
+      commit('setTpmPolicyEnabled', protocolEnabled);
+      const data = {
+        Boot: {
+          TrustedModuleRequiredToBoot: protocolEnabled,
+        },
+      };
+      // TODO: remove hardcoded endpoint when fix is available
+      return api
+        .patch('/redfish/v1/Systems/system', data)
+        .then(() => {
+          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
+            policy: i18n.t('pagePolicies.hostTpm'),
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          commit('setTpmPolicyEnabled', !protocolEnabled);
+          throw new Error(
+            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
+              policy: i18n.t('pagePolicies.hostTpm'),
+            })
+          );
+        });
+    },
+    async saveUsbFirmwareUpdatePolicyEnabled({ commit }, updatedUsbCode) {
+      commit('setUsbFirmwareUpdatePolicyEnabled', updatedUsbCode);
+      const oem = {
+        Oem: {
+          IBM: {
+            USBCodeUpdateEnabled: updatedUsbCode,
+          },
+        },
+      };
+      return await api
+        .patch('/redfish/v1/Managers/bmc', oem)
+        .then(() => {
+          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
+            policy: i18n.t('pagePolicies.usbFirmwareUpdatePolicy'),
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          commit('setUsbFirmwareUpdatePolicyEnabled', !updatedUsbCode);
+          throw new Error(
+            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
+              policy: i18n.t('pagePolicies.usbFirmwareUpdatePolicy'),
+            })
+          );
+        });
     },
     async saveIpmiProtocolState({ commit }, protocolEnabled) {
       commit('setIpmiProtocolEnabled', protocolEnabled);
@@ -54,20 +153,18 @@ const PoliciesStore = {
       return await api
         .patch('/redfish/v1/Managers/bmc/NetworkProtocol', ipmi)
         .then(() => {
-          if (protocolEnabled) {
-            return i18n.t('pagePolicies.toast.successIpmiEnabled');
-          } else {
-            return i18n.t('pagePolicies.toast.successIpmiDisabled');
-          }
+          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
+            policy: i18n.t('pagePolicies.ipmi'),
+          });
         })
         .catch((error) => {
           console.log(error);
           commit('setIpmiProtocolEnabled', !protocolEnabled);
-          if (protocolEnabled) {
-            throw new Error(i18n.t('pagePolicies.toast.errorIpmiEnabled'));
-          } else {
-            throw new Error(i18n.t('pagePolicies.toast.errorIpmiDisabled'));
-          }
+          throw new Error(
+            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
+              policy: i18n.t('pagePolicies.ipmi'),
+            })
+          );
         });
     },
     async saveSshProtocolState({ commit }, protocolEnabled) {
@@ -80,20 +177,18 @@ const PoliciesStore = {
       return await api
         .patch('/redfish/v1/Managers/bmc/NetworkProtocol', ssh)
         .then(() => {
-          if (protocolEnabled) {
-            return i18n.t('pagePolicies.toast.successSshEnabled');
-          } else {
-            return i18n.t('pagePolicies.toast.successSshDisabled');
-          }
+          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
+            policy: i18n.t('pagePolicies.ssh'),
+          });
         })
         .catch((error) => {
           console.log(error);
           commit('setSshProtocolEnabled', !protocolEnabled);
-          if (protocolEnabled) {
-            throw new Error(i18n.t('pagePolicies.toast.errorSshEnabled'));
-          } else {
-            throw new Error(i18n.t('pagePolicies.toast.errorSshDisabled'));
-          }
+          throw new Error(
+            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
+              policy: i18n.t('pagePolicies.ssh'),
+            })
+          );
         });
     },
     async saveRtadState({ commit }, updatedRtad) {
@@ -105,19 +200,18 @@ const PoliciesStore = {
           },
         })
         .then(() => {
-          if (updatedRtad === 'Enabled') {
-            return i18n.t('pagePolicies.toast.successRtadEnabled');
-          } else {
-            return i18n.t('pagePolicies.toast.successRtadDisabled');
-          }
+          return i18n.t('pagePolicies.toast.successNextBootToast', {
+            policy: i18n.t('pagePolicies.rtad'),
+          });
         })
         .catch((error) => {
           console.log(error);
-          if (updatedRtad === 'Enabled') {
-            throw new Error(i18n.t('pagePolicies.toast.errorRtadEnabled'));
-          } else {
-            throw new Error(i18n.t('pagePolicies.toast.errorRtadDisabled'));
-          }
+          commit('setRtadEnabled', !updatedRtad);
+          throw new Error(
+            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
+              policy: i18n.t('pagePolicies.rtad'),
+            })
+          );
         });
     },
     async saveVtpmState({ commit }, updatedVtpm) {
@@ -129,19 +223,64 @@ const PoliciesStore = {
           },
         })
         .then(() => {
-          if (updatedVtpm === 'Enabled') {
-            return i18n.t('pagePolicies.toast.successVtpmEnabled');
-          } else {
-            return i18n.t('pagePolicies.toast.successVtpmDisabled');
-          }
+          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
+            policy: i18n.t('pagePolicies.vtpm'),
+          });
         })
         .catch((error) => {
           console.log(error);
-          if (updatedVtpm === 'Enabled') {
-            throw new Error(i18n.t('pagePolicies.toast.errorVtpmEnabled'));
-          } else {
-            throw new Error(i18n.t('pagePolicies.toast.errorVtpmDisabled'));
-          }
+          commit('setVtpmEnabled', !updatedVtpm);
+          throw new Error(
+            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
+              policy: i18n.t('pagePolicies.vtpm'),
+            })
+          );
+        });
+    },
+    async saveSvleState({ commit }, updatedSvle) {
+      commit('setSvleEnabled', updatedSvle);
+      return await api
+        .patch('/redfish/v1/Systems/system/Bios/Settings', {
+          Attributes: {
+            hb_secure_ver_lockin_enabled: updatedSvle,
+          },
+        })
+        .then(() => {
+          return i18n.t('pagePolicies.toast.successNetworkPolicyUpdate', {
+            policy: i18n.t('pagePolicies.secureVersion'),
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          commit('setSvleEnabled', !updatedSvle);
+          throw new Error(
+            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
+              policy: i18n.t('pagePolicies.secureVersion'),
+            })
+          );
+        });
+    },
+    async saveHostUsbEnabled({ commit }, updatedHostUsb) {
+      commit('setHostUsbEnabled', updatedHostUsb);
+      return await api
+        .patch('/redfish/v1/Systems/system/Bios/Settings', {
+          Attributes: {
+            hb_host_usb_enablement: updatedHostUsb,
+          },
+        })
+        .then(() => {
+          return i18n.t('pagePolicies.toast.successNextBootToast', {
+            policy: i18n.t('pagePolicies.hostUsb'),
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          commit('setHostUsbEnabled', !updatedHostUsb);
+          throw new Error(
+            i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
+              policy: i18n.t('pagePolicies.hostUsb'),
+            })
+          );
         });
     },
   },
