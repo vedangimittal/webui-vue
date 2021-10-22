@@ -80,20 +80,83 @@
         </b-button>
       </b-form-group>
     </b-form>
+
+    <page-section :section-title="$t('pagePower.powerSaverModesTitle')">
+      <b-row class="mb-3">
+        <b-col xl="10">
+          <b-button v-b-toggle.collapse-role-table variant="link">
+            <icon-chevron />
+            {{ $t('pagePower.powerSaverModesDropdownLabel') }}
+          </b-button>
+          <b-collapse id="collapse-role-table" class="mt-3">
+            <table-power-saver-modes />
+          </b-collapse>
+        </b-col>
+      </b-row>
+      <b-form
+        id="form-power-saver"
+        novalidate
+        @submit.prevent="handlePowerSaveSubmit"
+      >
+        <b-form-group :disabled="loading">
+          <b-row>
+            <b-col>
+              <b-form-group :label="$t('pagePower.selectModeLabel')">
+                <b-form-radio-group
+                  id="power-save-modes"
+                  v-model="currentPowerMode"
+                  stacked
+                >
+                  <b-form-radio value="Static">
+                    {{ $t('pagePower.selectMode.static') }}
+                  </b-form-radio>
+                  <b-form-radio v-model="currentPowerMode" value="PowerSaving">
+                    {{ $t('pagePower.selectMode.powerSaver') }}
+                  </b-form-radio>
+                  <b-form-radio
+                    v-model="currentPowerMode"
+                    value="MaximumPerformance"
+                  >
+                    {{ $t('pagePower.selectMode.maximumPerformance') }}
+                  </b-form-radio>
+                </b-form-radio-group>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-button variant="primary" type="submit" form="form-power-saver">
+            {{ $t('pagePower.submitButton') }}
+          </b-button>
+        </b-form-group>
+      </b-form>
+      <modal-power-saver-modes
+        :title="newModeValue || currentPowerMode"
+        @ok="savePowerSaverMode"
+      />
+    </page-section>
   </b-container>
 </template>
 
 <script>
 import PageTitle from '@/components/Global/PageTitle';
+import PageSection from '@/components/Global/PageSection';
 import LoadingBarMixin, { loading } from '@/components/Mixins/LoadingBarMixin';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import { requiredIf, between } from 'vuelidate/lib/validators';
 import { mapGetters } from 'vuex';
+import IconChevron from '@carbon/icons-vue/es/chevron--up/20';
+import ModalPowerSaverModes from './ModalPowerSaverModes';
+import TablePowerSaverModes from './TablePowerSaverModes';
 
 export default {
   name: 'Power',
-  components: { PageTitle },
+  components: {
+    PageTitle,
+    PageSection,
+    IconChevron,
+    ModalPowerSaverModes,
+    TablePowerSaverModes,
+  },
   mixins: [VuelidateMixin, BVToastMixin, LoadingBarMixin],
   beforeRouteLeave(to, from, next) {
     this.hideLoader();
@@ -102,6 +165,7 @@ export default {
   data() {
     return {
       loading,
+      newModeValue: null,
     };
   },
   computed: {
@@ -139,11 +203,22 @@ export default {
         this.$store.dispatch('powerControl/setPowerCapUpdatedValue', value);
       },
     },
+    currentPowerMode: {
+      get() {
+        return this.$store.getters['powerControl/powerSaverMode'];
+      },
+      set(mode) {
+        this.newModeValue = mode;
+      },
+    },
   },
   created() {
     this.startLoader();
     this.$store
       .dispatch('powerControl/getPowerControl')
+      .finally(() => this.endLoader());
+    this.$store
+      .dispatch('powerControl/getPowerMode')
       .finally(() => this.endLoader());
   },
   validations: {
@@ -164,6 +239,23 @@ export default {
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message))
         .finally(() => this.endLoader());
+    },
+    handlePowerSaveSubmit() {
+      if (this.newModeValue != null) {
+        this.showConfirmationModal();
+      }
+    },
+    showConfirmationModal() {
+      this.$bvModal.show('power-modal-saver');
+    },
+    savePowerSaverMode() {
+      this.$store
+        .dispatch(
+          'powerControl/setPowerSaverMode',
+          this.newModeValue || this.currentPowerMode
+        )
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
     },
   },
 };

@@ -1,0 +1,64 @@
+<template>
+  <b-modal
+    id="power-modal-saver"
+    ref="modal"
+    :title="$t(`pagePower.modalEnablePowerSaverMode.title${title}`)"
+    @hidden="resetForm"
+  >
+    <p>
+      <strong>
+        {{ $t('pagePower.modalEnablePowerSaverMode.subTitle') }}
+      </strong>
+    </p>
+    <p>{{ $t('pagePower.modalEnablePowerSaverMode.content') }}</p>
+    <template #modal-footer="{ cancel }">
+      <b-button variant="secondary" @click="cancel()">
+        {{ $t('pagePower.modalEnablePowerSaverMode.cancelButton') }}
+      </b-button>
+      <b-button variant="primary" @click="handleSubmit">
+        {{ $t(`pagePower.modalEnablePowerSaverMode.title${title}`) }}
+      </b-button>
+    </template>
+  </b-modal>
+</template>
+
+<script>
+import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
+import BVToastMixin from '@/components/Mixins/BVToastMixin';
+export default {
+  components: {},
+  mixins: [VuelidateMixin, BVToastMixin],
+  props: {
+    title: {
+      type: String,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      confirmed: false,
+    };
+  },
+  validations: {
+    confirmed: {
+      mustBeTrue: (value) => value === true,
+    },
+  },
+  methods: {
+    closeModal() {
+      this.$nextTick(() => {
+        this.$refs.modal.hide();
+      });
+    },
+    handleSubmit() {
+      this.$v.$touch();
+      this.$emit('ok');
+      this.closeModal();
+    },
+    resetForm() {
+      this.confirmed = false;
+      this.$v.$reset();
+    },
+  },
+};
+</script>

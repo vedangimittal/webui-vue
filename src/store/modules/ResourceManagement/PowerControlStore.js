@@ -7,11 +7,13 @@ const PowerControlStore = {
     powerCapValue: null,
     powerCapUri: '',
     powerConsumptionValue: null,
+    powerSaverMode: null,
   },
   getters: {
     powerCapValue: (state) => state.powerCapValue,
     powerCapUri: (state) => state.powerCapUri,
     powerConsumptionValue: (state) => state.powerConsumptionValue,
+    powerSaverMode: (state) => state.powerSaverMode,
   },
   mutations: {
     setPowerCapValue: (state, powerCapValue) =>
@@ -19,6 +21,8 @@ const PowerControlStore = {
     setPowerCapUri: (state, powerCapUri) => (state.powerCapUri = powerCapUri),
     setPowerConsumptionValue: (state, powerConsumptionValue) =>
       (state.powerConsumptionValue = powerConsumptionValue),
+    setPowerSaverMode: (state, powerSaverMode) =>
+      (state.powerSaverMode = powerSaverMode),
   },
   actions: {
     setPowerCapUpdatedValue({ commit }, value) {
@@ -68,6 +72,27 @@ const PowerControlStore = {
           throw new Error(
             i18n.t('pageServerPowerOperations.toast.errorSaveSettings')
           );
+        });
+    },
+    async getPowerMode({ commit }) {
+      return await api
+        .get('/redfish/v1/Systems/system')
+        .then((response) => {
+          const currentPowerMode = response.data.PowerMode;
+          commit('setPowerSaverMode', currentPowerMode);
+        })
+        .catch((error) => {
+          console.log('Power control', error);
+        });
+    },
+    async setPowerSaverMode(_, powerSaverMode) {
+      const data = { PowerMode: powerSaverMode };
+      return await api
+        .patch('/redfish/v1/Systems/system', data)
+        .then(() => i18n.t('pagePower.toast.successPowerSaver'))
+        .catch((error) => {
+          console.log(error);
+          throw new Error(i18n.t('pagePower.toast.errorPowerSaver'));
         });
     },
   },
