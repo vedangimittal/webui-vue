@@ -1,10 +1,41 @@
 <template>
   <b-container fluid="xl">
     <page-title />
+    <b-row v-if="selectedDumpType">
+      <b-col md="8" xl="6">
+        <alert variant="info" class="mb-4">
+          <div class="font-weight-bold">
+            {{ $t(`pageDumps.alert.${selectedDumpType}DumpHeading`) }}
+          </div>
+          <p>
+            {{ $t(`pageDumps.alert.${selectedDumpType}DumpMessage`) }}
+            <span v-if="selectedDumpType === 'bmc'">
+              {{
+                hmcManaged === 'Disabled'
+                  ? $t(`pageDumps.alert.refreshMessage`)
+                  : ''
+              }}
+            </span>
+            <span v-else>
+              {{ $t(`pageDumps.alert.refreshMessage`) }}
+            </span>
+          </p>
+          <p v-if="selectedDumpType === 'resource'">
+            {{ $t(`pageDumps.alert.resourceDumpMessage2`) }}
+          </p>
+          <p v-if="selectedDumpType === 'bmc' && hmcManaged === 'Enabled'">
+            {{ $t(`pageDumps.alert.bmcDumpMessageHmcEnabled`) }}
+          </p>
+          <p v-if="selectedDumpType === 'system'">
+            {{ $t(`pageDumps.alert.systemDumpMessageHmc${hmcManaged}`) }}
+          </p>
+        </alert>
+      </b-col>
+    </b-row>
     <b-row>
       <b-col sm="6" lg="5" xl="4">
         <page-section :section-title="$t('pageDumps.initiateDump')">
-          <dumps-form />
+          <dumps-form @updateDumpInfo="updateDumpInfo" />
         </page-section>
       </b-col>
     </b-row>
@@ -60,28 +91,9 @@
             :empty-filtered-text="$t('global.table.emptySearchMessage')"
             :filter="searchFilter"
             :busy="isBusy"
-            @filtered="onChangeSearchFilter"
+            @filtered="onFiltered"
             @row-selected="onRowSelected($event, filteredTableItems.length)"
           >
-            <!-- Checkbox column -->
-            <template #head(checkbox)>
-              <b-form-checkbox
-                v-model="tableHeaderCheckboxModel"
-                :indeterminate="tableHeaderCheckboxIndeterminate"
-                @change="onChangeHeaderCheckbox($refs.table)"
-              >
-                <span class="sr-only">{{ $t('global.table.selectAll') }}</span>
-              </b-form-checkbox>
-            </template>
-            <template #cell(checkbox)="row">
-              <b-form-checkbox
-                v-model="row.rowSelected"
-                @change="toggleSelectRow($refs.table, row.index)"
-              >
-                <span class="sr-only">{{ $t('global.table.selectItem') }}</span>
-              </b-form-checkbox>
-            </template>
-
             <!-- Date and Time column -->
             <template #cell(dateTime)="{ value }">
               <p class="mb-0">{{ value | formatDate }}</p>
@@ -144,6 +156,7 @@
 </template>
 
 <script>
+import Alert from '@/components/Global/Alert';
 import IconDelete from '@carbon/icons-vue/es/trash-can/20';
 import IconDownload from '@carbon/icons-vue/es/download/20';
 import DumpsForm from './DumpsForm';
@@ -156,8 +169,6 @@ import TableRowAction from '@/components/Global/TableRowAction';
 import TableToolbar from '@/components/Global/TableToolbar';
 import BVTableSelectableMixin, {
   selectedRows,
-  tableHeaderCheckboxModel,
-  tableHeaderCheckboxIndeterminate,
 } from '@/components/Mixins/BVTableSelectableMixin';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import BVPaginationMixin, {
@@ -174,6 +185,7 @@ import TableFilterMixin from '@/components/Mixins/TableFilterMixin';
 
 export default {
   components: {
+    Alert,
     DumpsForm,
     IconDelete,
     IconDownload,
@@ -203,10 +215,12 @@ export default {
   data() {
     return {
       isBusy: true,
+      selectedDumpType: null,
       fields: [
         {
-          key: 'checkbox',
-          sortable: false,
+          key: 'id',
+          label: this.$t('pageDumps.table.id'),
+          sortable: true,
         },
         {
           key: 'dateTime',
@@ -216,11 +230,6 @@ export default {
         {
           key: 'dumpType',
           label: this.$t('pageDumps.table.dumpType'),
-          sortable: true,
-        },
-        {
-          key: 'id',
-          label: this.$t('pageDumps.table.id'),
           sortable: true,
         },
         {
@@ -262,8 +271,6 @@ export default {
       searchFilter,
       searchTotalFilteredRows: 0,
       selectedRows,
-      tableHeaderCheckboxIndeterminate,
-      tableHeaderCheckboxModel,
     };
   },
   computed: {
@@ -303,15 +310,29 @@ export default {
         this.activeFilters
       );
     },
+    isInPhypStandby() {
+      return this.$store.getters['global/isInPhypStandby'];
+    },
+    hmcManaged() {
+      return this.$store.getters['resourceMemory/hmcManaged'];
+    },
   },
   created() {
     this.startLoader();
-    this.$store.dispatch('dumps/getBmcDumpEntries').finally(() => {
+    Promise.all([
+      this.$store.dispatch('dumps/getAllDumps'),
+      this.$store.dispatch('userManagement/getUsers'),
+      this.$store.dispatch('resourceMemory/getHmcManaged'),
+      this.$store.dispatch('global/getBootProgress'),
+    ]).finally(() => {
       this.endLoader();
       this.isBusy = false;
     });
   },
   methods: {
+    updateDumpInfo(selectedDumpType) {
+      this.selectedDumpType = selectedDumpType;
+    },
     convertBytesToMegabytes(bytes) {
       return parseFloat((bytes / 1000000).toFixed(3));
     },
