@@ -1,6 +1,15 @@
 <template>
   <b-container fluid="xl">
     <page-title />
+    <b-row>
+      <b-col xl="12" class="text-right">
+        <b-button variant="dark" type="button" @click="openConsoleWindow()">
+          <icon-launch />
+          {{ $t('pagePostCodeLogs.viewCodesInRealtime') }}
+        </b-button>
+      </b-col>
+    </b-row>
+    <div class="section-divider mb-4 mt-4"></div>
     <b-row class="align-items-start">
       <b-col sm="8" xl="6" class="d-sm-flex align-items-end mb-4">
         <search
@@ -150,6 +159,7 @@
 <script>
 import IconDownload from '@carbon/icons-vue/es/download/20';
 import IconExport from '@carbon/icons-vue/es/document--export/20';
+import IconLaunch from '@carbon/icons-vue/es/launch/20';
 import { omit } from 'lodash';
 import PageTitle from '@/components/Global/PageTitle';
 import Search from '@/components/Global/Search';
@@ -182,6 +192,7 @@ import SearchFilterMixin, {
 export default {
   components: {
     IconExport,
+    IconLaunch,
     IconDownload,
     PageTitle,
     Search,
@@ -305,6 +316,13 @@ export default {
     });
   },
   methods: {
+    openConsoleWindow() {
+      window.open(
+        '#/console/post-codes',
+        '_blank',
+        'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=200,height=200'
+      );
+    },
     exportAllLogsString() {
       {
         return this.$store.getters['postCodeLogs/allPostCodes'].map(

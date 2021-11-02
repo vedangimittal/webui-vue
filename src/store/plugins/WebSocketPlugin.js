@@ -10,10 +10,15 @@
 const WebSocketPlugin = (store) => {
   let ws;
   const data = {
-    paths: ['/xyz/openbmc_project/state/host0', '/xyz/openbmc_project/logging'],
+    paths: [
+      '/xyz/openbmc_project/state/host0',
+      '/xyz/openbmc_project/logging',
+      '/xyz/openbmc_project/state/boot/raw0',
+    ],
     interfaces: [
       'xyz.openbmc_project.State.Host',
       'xyz.openbmc_project.Logging.Entry',
+      'xyz.openbmc_project.State.Boot.Raw',
     ],
   };
 
@@ -33,7 +38,14 @@ const WebSocketPlugin = (store) => {
       const data = JSON.parse(event.data);
       const eventInterface = data.interface;
       const path = data.path;
-
+      if (eventInterface === 'xyz.openbmc_project.State.Boot.Raw') {
+        if (path === '/xyz/openbmc_project/state/boot/raw0') {
+          const { properties: { Value } = {} } = data;
+          if (Value) {
+            store.commit('global/setPostCodeValue', Value);
+          }
+        }
+      }
       if (eventInterface === 'xyz.openbmc_project.State.Host') {
         const { properties: { CurrentHostState } = {} } = data;
         if (CurrentHostState) {

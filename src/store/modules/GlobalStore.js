@@ -34,6 +34,7 @@ const GlobalStore = {
     modelType: null,
     serialNumber: null,
     serverStatus: 'unreachable',
+    postCodeValue: null,
     languagePreference: localStorage.getItem('storedLanguage') || 'en-US',
     isUtcDisplay: localStorage.getItem('storedUtcDisplay')
       ? JSON.parse(localStorage.getItem('storedUtcDisplay'))
@@ -46,6 +47,7 @@ const GlobalStore = {
     modelType: (state) => state.modelType,
     serialNumber: (state) => state.serialNumber,
     serverStatus: (state) => state.serverStatus,
+    postCodeValue: (state) => state.postCodeValue,
     bmcTime: (state) => state.bmcTime,
     languagePreference: (state) => state.languagePreference,
     isUtcDisplay: (state) => state.isUtcDisplay,
@@ -60,6 +62,8 @@ const GlobalStore = {
     setBmcTime: (state, bmcTime) => (state.bmcTime = bmcTime),
     setServerStatus: (state, serverState) =>
       (state.serverStatus = serverStateMapper(serverState)),
+    setPostCodeValue: (state, postCodeValue) =>
+      (state.postCodeValue = postCodeValue),
     setLanguagePreference: (state, language) =>
       (state.languagePreference = language),
     setUsername: (state, username) => (state.username = username),
