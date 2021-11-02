@@ -99,6 +99,14 @@ const routes = [
           title: i18n.t('appPageTitle.postCodes'),
         },
       },
+      {
+        path: 'post-codes',
+        name: 'post-codes',
+        component: PostCodes,
+        meta: {
+          title: i18n.t('appPageTitle.postCodes'),
+        },
+      },
     ],
   },
   {
