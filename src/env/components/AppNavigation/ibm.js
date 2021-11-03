@@ -247,6 +247,11 @@ const AppNavigationMixin = {
               route: '/operations/key-clear',
               restrictTo: ['Administrator', 'OemIBMServiceAgent'],
             },
+            {
+              id: 'capacity-on-demand',
+              label: this.$t('appNavigation.capacityOnDemand'),
+              route: '/resource-management/capacity-on-demand',
+            },
           ],
         },
       ],
