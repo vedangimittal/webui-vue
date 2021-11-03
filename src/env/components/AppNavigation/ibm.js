@@ -146,6 +146,11 @@ const AppNavigationMixin = {
               label: this.$t('appNavigation.power'),
               route: '/resource-management/power',
             },
+            {
+              id: 'capacity-on-demand',
+              label: this.$t('appNavigation.capacityOnDemand'),
+              route: '/resource-management/capacity-on-demand',
+            },
           ],
         },
       ],
