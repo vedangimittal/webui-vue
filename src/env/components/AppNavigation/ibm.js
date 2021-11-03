@@ -20,7 +20,7 @@ const AppNavigationMixin = {
   },
   data() {
     return {
-      navigationItems: [
+      navigationData: [
         {
           id: 'overview',
           label: this.$t('appNavigation.overview'),
@@ -28,106 +28,39 @@ const AppNavigationMixin = {
           icon: 'iconOverview',
         },
         {
-          id: 'logs',
-          label: this.$t('appNavigation.logs'),
-          icon: 'iconLogs',
-          children: [
-            {
-              id: 'dumps',
-              label: this.$t('appNavigation.dumps'),
-              route: '/logs/dumps',
-            },
-            {
-              id: 'event-logs',
-              label: this.$t('appNavigation.eventLogs'),
-              route: '/logs/event-logs',
-            },
-            {
-              id: 'post-code-logs',
-              label: this.$t('appNavigation.postCodeLogs'),
-              route: '/logs/post-code-logs',
-            },
-          ],
-        },
-        {
-          id: 'hardware-status',
-          label: this.$t('appNavigation.hardwareStatus'),
-          icon: 'iconHealth',
-          children: [
-            {
-              id: 'inventory',
-              label: this.$t('appNavigation.inventory'),
-              route: '/hardware-status/inventory',
-            },
-            {
-              id: 'sensors',
-              label: this.$t('appNavigation.sensors'),
-              route: '/hardware-status/sensors',
-            },
-          ],
-        },
-        {
           id: 'operations',
           label: this.$t('appNavigation.operations'),
           icon: 'iconControl',
-          children: this.operationsNavigationItems(),
-        },
-        {
-          id: 'settings',
-          label: this.$t('appNavigation.settings'),
-          icon: 'iconSettings',
           children: [
             {
-              id: 'date-time',
-              label: this.$t('appNavigation.dateTime'),
-              route: '/settings/date-time',
+              id: 'server-power-operations',
+              label: this.$t('appNavigation.serverPowerOperations'),
+              route: '/operations/server-power-operations',
+              restrictTo: [],
             },
             {
-              id: 'network',
-              label: this.$t('appNavigation.network'),
-              route: '/settings/network',
+              id: 'host-console',
+              label: this.$t('appNavigation.hostConsole'),
+              route: '/operations/host-console',
+              restrictTo: [],
             },
             {
-              id: 'power-restore-policy',
-              label: this.$t('appNavigation.powerRestorePolicy'),
-              route: '/settings/power-restore-policy',
+              id: 'service-login',
+              label: this.$t('appPageTitle.serviceLogin'),
+              route: '/operations/service-login',
+              restrictTo: ['OemIBMServiceAgent'],
             },
             {
-              id: 'snmp-alerts',
-              label: this.$t('appNavigation.snmpAlerts'),
-              route: '/settings/snmp-alerts',
-            },
-          ],
-        },
-        {
-          id: 'security-and-access',
-          label: this.$t('appNavigation.securityAndAccess'),
-          icon: 'iconSecurityAndAccess',
-          children: [
-            {
-              id: 'sessions',
-              label: this.$t('appNavigation.sessions'),
-              route: '/security-and-access/sessions',
+              id: 'firmware',
+              label: this.$t('appNavigation.firmware'),
+              route: '/operations/firmware',
+              restrictTo: [],
             },
             {
-              id: 'ldap',
-              label: this.$t('appNavigation.ldap'),
-              route: '/security-and-access/ldap',
-            },
-            {
-              id: 'user-management',
-              label: this.$t('appNavigation.userManagement'),
-              route: '/security-and-access/user-management',
-            },
-            {
-              id: 'policies',
-              label: this.$t('appNavigation.policies'),
-              route: '/security-and-access/policies',
-            },
-            {
-              id: 'certificates',
-              label: this.$t('appNavigation.certificates'),
-              route: '/security-and-access/certificates',
+              id: 'reboot-bmc',
+              label: this.$t('appNavigation.rebootBmc'),
+              route: '/operations/reboot-bmc',
+              restrictTo: [],
             },
           ],
         },
@@ -140,66 +73,214 @@ const AppNavigationMixin = {
               id: 'memory',
               label: this.$t('appNavigation.memory'),
               route: '/resource-management/memory',
+              restrictTo: [],
             },
             {
               id: 'power',
               label: this.$t('appNavigation.power'),
               route: '/resource-management/power',
+              restrictTo: [],
             },
             {
               id: 'capacity-on-demand',
               label: this.$t('appNavigation.capacityOnDemand'),
               route: '/resource-management/capacity-on-demand',
+              restrictTo: [],
             },
             {
               id: 'field-core-override',
               label: this.$t('appNavigation.fieldCoreOverride'),
               route: '/resource-management/field-core-override',
+              restrictTo: [],
+            },
+            {
+              id: 'lateral-cast-out-control',
+              label: this.$t('appNavigation.lateralCastOutControl'),
+              route: '/resource-management/lateral-cast-out-control',
+              restrictTo: [],
+            },
+          ],
+        },
+        {
+          id: 'hardware-status',
+          label: this.$t('appNavigation.hardwareStatus'),
+          icon: 'iconHealth',
+          children: [
+            {
+              id: 'inventory',
+              label: this.$t('appNavigation.inventory'),
+              route: '/hardware-status/inventory',
+              restrictTo: [],
+            },
+            {
+              id: 'sensors',
+              label: this.$t('appNavigation.sensors'),
+              route: '/hardware-status/sensors',
+              restrictTo: [],
+            },
+            {
+              id: 'hardware-deconfiguration',
+              label: this.$t('appNavigation.deconfigurationHardware'),
+              route: '/settings/hardware-deconfiguration',
+              restrictTo: [],
+            },
+            {
+              id: 'pcie-topology',
+              label: this.$t('appNavigation.pcieTopology'),
+              route: '/hardware-status/pcie-topology',
+              restrictTo: [],
+            },
+            {
+              id: 'concurrent-maintenance',
+              label: this.$t('appNavigation.concurrentMaintenance'),
+              route: '/hardware-status/concurrent-maintenance',
+              restrictTo: ['Everest'],
+            },
+          ],
+        },
+        {
+          id: 'logs',
+          label: this.$t('appNavigation.logs'),
+          icon: 'iconLogs',
+          children: [
+            {
+              id: 'post-code-logs',
+              label: this.$t('appNavigation.postCodeLogs'),
+              route: '/logs/post-code-logs',
+              restrictTo: [],
+            },
+            {
+              id: 'event-logs',
+              label: this.$t('appNavigation.eventLogs'),
+              route: '/logs/event-logs',
+              restrictTo: [],
+            },
+            {
+              id: 'dumps',
+              label: this.$t('appNavigation.dumps'),
+              route: '/logs/dumps',
+              restrictTo: [],
+            },
+            {
+              id: 'deconfiguration-records',
+              label: this.$t('appNavigation.deconfigurationRecords'),
+              route: '/logs/deconfiguration-records',
+              restrictTo: [],
+            },
+          ],
+        },
+        {
+          id: 'settings',
+          label: this.$t('appNavigation.settings'),
+          icon: 'iconSettings',
+          children: [
+            {
+              id: 'date-time',
+              label: this.$t('appNavigation.dateTime'),
+              route: '/settings/date-time',
+              restrictTo: [],
+            },
+            {
+              id: 'network',
+              label: this.$t('appNavigation.network'),
+              route: '/settings/network',
+              restrictTo: [],
+            },
+            {
+              id: 'power-restore-policy',
+              label: this.$t('appNavigation.powerRestorePolicy'),
+              route: '/settings/power-restore-policy',
+              restrictTo: [],
+            },
+            {
+              id: 'snmp-alerts',
+              label: this.$t('appNavigation.snmpAlerts'),
+              route: '/settings/snmp-alerts',
+              restrictTo: [],
+            },
+            {
+              id: 'factory-reset',
+              label: this.$t('appNavigation.factoryReset'),
+              route: '/operations/factory-reset',
+              restrictTo: [],
+            },
+          ],
+        },
+        {
+          id: 'security-and-access',
+          label: this.$t('appNavigation.securityAndAccess'),
+          icon: 'iconSecurityAndAccess',
+          children: [
+            {
+              id: 'sessions',
+              label: this.$t('appNavigation.sessions'),
+              route: '/security-and-access/sessions',
+              restrictTo: [],
+            },
+            {
+              id: 'user-management',
+              label: this.$t('appNavigation.userManagement'),
+              route: '/security-and-access/user-management',
+              restrictTo: [],
+            },
+            {
+              id: 'ldap',
+              label: this.$t('appNavigation.ldap'),
+              route: '/security-and-access/ldap',
+              restrictTo: [],
+            },
+            {
+              id: 'certificates',
+              label: this.$t('appNavigation.certificates'),
+              route: '/security-and-access/certificates',
+              restrictTo: [],
+            },
+            {
+              id: 'policies',
+              label: this.$t('appNavigation.policies'),
+              route: '/security-and-access/policies',
+              restrictTo: [],
+            },
+            {
+              id: 'key-clear',
+              label: this.$t('appNavigation.keyClear'),
+              route: '/operations/key-clear',
+              restrictTo: ['Administrator', 'OemIBMServiceAgent'],
             },
           ],
         },
       ],
     };
   },
-  methods: {
-    operationsNavigationItems() {
-      const username = this.$store.getters['global/username'];
-      let operationNavigationItems = [
-        {
-          id: 'factory-reset',
-          label: this.$t('appNavigation.factoryReset'),
-          route: '/operations/factory-reset',
-        },
-        {
-          id: 'firmware',
-          label: this.$t('appNavigation.firmware'),
-          route: '/operations/firmware',
-        },
-        {
-          id: 'reboot-bmc',
-          label: this.$t('appNavigation.rebootBmc'),
-          route: '/operations/reboot-bmc',
-        },
-        {
-          id: 'serial-over-lan',
-          label: this.$t('appNavigation.serialOverLan'),
-          route: '/operations/serial-over-lan',
-        },
-        {
-          id: 'server-power-operations',
-          label: this.$t('appNavigation.serverPowerOperations'),
-          route: '/operations/server-power-operations',
-        },
-      ];
-      let pageKeyClear = {
-        id: 'key-clear',
-        label: this.$t('appNavigation.keyClear'),
-        route: '/operations/key-clear',
-      };
-      if (username === 'service' || username === 'admin') {
-        operationNavigationItems.splice(2, 0, pageKeyClear);
+  computed: {
+    roleId() {
+      return this.$store?.getters?.['global/currentUser']?.RoleId;
+    },
+    model() {
+      if (this.systemInfo?.startsWith('9043')) {
+        return 'Everest';
+      } else {
+        return 'NotEverest';
       }
-      return operationNavigationItems;
+    },
+    systemInfo() {
+      return this.$store?.getters['global/modelType'];
+    },
+    navigationItems() {
+      return this.navigationData.map((section) => {
+        section.children?.map((page) => {
+          if (page.restrictTo.length > 0) {
+            const isPageNeeded =
+              page.restrictTo.filter(
+                (requiredRole) =>
+                  requiredRole === this.roleId || requiredRole === this.model
+              ).length > 0;
+            if (!isPageNeeded)
+              return section.children.splice(section.children.indexOf(page), 1);
+          }
+        });
+        return section;
+      });
     },
   },
 };
