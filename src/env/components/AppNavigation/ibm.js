@@ -262,6 +262,11 @@ const AppNavigationMixin = {
               label: this.$t('appNavigation.fieldCoreOverride'),
               route: '/resource-management/field-core-override',
             },
+            {
+              id: 'capacity-on-demand',
+              label: this.$t('appNavigation.capacityOnDemand'),
+              route: '/resource-management/capacity-on-demand',
+            },
           ],
         },
       ],
