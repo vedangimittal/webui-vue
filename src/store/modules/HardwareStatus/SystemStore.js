@@ -28,6 +28,7 @@ const SystemStore = {
         data.MemorySummary?.Status?.HealthRollup;
       system.memorySummaryState = data.MemorySummary?.Status?.State;
       system.model = data.Model;
+      system.processorSummaryCoreCount = data.ProcessorSummary?.CoreCount;
       system.processorSummaryCount = data.ProcessorSummary?.Count;
       system.processorSummaryCoreCount = data.ProcessorSummary?.CoreCount;
       system.processorSummaryHealth = data.ProcessorSummary?.Status?.Health;

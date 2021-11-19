@@ -5,7 +5,9 @@
     class="btn-tooltip btn-icon-only"
     :title="title"
   >
-    <icon-tooltip />
+    <slot>
+      <icon-tooltip />
+    </slot>
     <span class="sr-only">{{ $t('global.ariaLabel.tooltip') }}</span>
   </b-button>
 </template>
