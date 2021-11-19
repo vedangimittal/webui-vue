@@ -97,7 +97,7 @@ const ResourceMemoryStore = {
         .patch('/redfish/v1/Systems/system/Bios/Settings', updatedMemorySize)
         .then(() => {
           commit(
-            'setlogicalMemorySize',
+            'setLogicalMemorySize',
             updatedMemorySize.Attributes.hb_memory_region_size
           );
           return i18n.t('pageMemory.toast.successSavingLogicalMemory');
