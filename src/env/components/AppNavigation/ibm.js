@@ -247,6 +247,11 @@ const AppNavigationMixin = {
               route: '/operations/key-clear',
               restrictTo: ['Administrator', 'OemIBMServiceAgent'],
             },
+            {
+              id: 'field-core-override',
+              label: this.$t('appNavigation.fieldCoreOverride'),
+              route: '/resource-management/field-core-override',
+            },
           ],
         },
       ],
