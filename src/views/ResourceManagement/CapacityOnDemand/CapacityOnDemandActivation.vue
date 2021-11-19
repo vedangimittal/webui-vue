@@ -18,6 +18,7 @@
               <b-form-input
                 id="input-license-key"
                 v-model="licenseKey"
+                :maxlength="maxLength"
                 :state="getValidationState($v.licenseKey)"
                 :placeholder="$t('pageCapacityOnDemand.activation.placeholder')"
                 @blur="$v.licenseKey.$touch()"
@@ -50,14 +51,15 @@ export default {
   data() {
     return {
       licenseKey: '',
+      maxLength: 34,
     };
   },
   validations() {
     return {
       licenseKey: {
         required,
-        minLength: minLength(34),
-        maxLength: maxLength(34),
+        minLength: minLength(this.maxLength),
+        maxLength: maxLength(this.maxLength),
       },
     };
   },
@@ -66,7 +68,7 @@ export default {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         this.$store
-          .dispatch('licenses/activateLicense')
+          .dispatch('licenses/activateLicense', this.licenseKey)
           .then((success) => this.successToast(success))
           .catch(({ message }) => this.errorToast(message));
       }
