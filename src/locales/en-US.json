@@ -588,6 +588,25 @@
       "configurationChangeSuccess": "Configuration successfully saved."
     }
   },
+  "pageFieldCoreOverride": {
+    "changeConfiguration": "Change configuration",
+    "configuredCores": "Configured cores",
+    "currentConfiguration": "Current configuration",
+    "enableFieldCoreOverride": "Enable field core override",
+    "enterValue": "Enter value",
+    "licensedCores": "Licensed cores",
+    "pageDescription": "View or change the processor cores that will be configured by the firmware.",
+    "totalInstalledCores": "Total installed cores",
+    "scheduledForNextReboot": "Scheduled for next reboot",
+    "alert": {
+      "title": "Applying changes",
+      "description": "Changes made will take effect on next reboot."
+    },
+    "toast": {
+      "configurationChangeError": "Configuration failed to save.",
+      "configurationChangeSuccess": "Configuration successfully saved."
+    }
+  },
   "pageFirmware": {
     "cardActionSwitchToRunning": "Switch to running",
     "cardBodyVersion": "Version",
