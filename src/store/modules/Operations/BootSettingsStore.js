@@ -1,22 +1,45 @@
 import api from '@/store/api';
 import i18n from '@/i18n';
-
 const BootSettingsStore = {
   namespaced: true,
   state: {
+    attributeKeys: [
+      'pvm_system_operating_mode',
+      'pvm_system_power_off_policy',
+      'pvm_stop_at_standby',
+      'pvm_default_os_type',
+      'pvm_rpa_boot_mode',
+      'pvm_os_boot_type',
+    ],
+    attributeValues: null,
+    automaticRetryConfigValue: '',
+    biosAttributes: null,
     bootSourceOptions: [],
     bootSource: null,
+    bootFault: '',
     overrideEnabled: null,
+    powerRestorePolicyValue: '',
   },
   getters: {
+    attributeValues: (state) => state.attributeValues,
+    automaticRetryConfigValue: (state) => state.automaticRetryConfigValue,
+    biosAttributes: (state) => state.biosAttributes,
     bootSourceOptions: (state) => state.bootSourceOptions,
     bootSource: (state) => state.bootSource,
     overrideEnabled: (state) => state.overrideEnabled,
+    powerRestorePolicyValue: (state) => state.powerRestorePolicyValue,
+    bootFaultValue: (state) => state.bootFault,
   },
   mutations: {
+    setAttributeValues: (state, attributeValues) =>
+      (state.attributeValues = attributeValues),
+    setBiosAttributes: (state, biosAttributes) =>
+      (state.biosAttributes = biosAttributes),
     setBootSourceOptions: (state, bootSourceOptions) =>
       (state.bootSourceOptions = bootSourceOptions),
     setBootSource: (state, bootSource) => (state.bootSource = bootSource),
+    setStopBootOnFaultValue: (state, bootFault) =>
+      (state.bootFault = bootFault),
     setOverrideEnabled: (state, overrideEnabled) => {
       if (overrideEnabled === 'Once') {
         state.overrideEnabled = true;
@@ -25,8 +48,22 @@ const BootSettingsStore = {
         state.overrideEnabled = false;
       }
     },
+    setPowerRestorePolicyValue: (state, powerRestorePolicyValue) =>
+      (state.powerRestorePolicyValue = powerRestorePolicyValue),
+    setAutomaticRetryConfigValue: (state, automaticRetryConfigValue) =>
+      (state.automaticRetryConfigValue = automaticRetryConfigValue),
   },
   actions: {
+    async getOperatingModeSettings({ commit }) {
+      return await api
+        .get('/redfish/v1/Systems/system')
+        .then(({ data: { PowerRestorePolicy, Boot } }) => {
+          commit('setPowerRestorePolicyValue', PowerRestorePolicy);
+          commit('setAutomaticRetryConfigValue', Boot.AutomaticRetryConfig);
+          commit('setStopBootOnFaultValue', Boot.StopBootOnFault);
+        })
+        .catch((error) => console.log(error));
+    },
     async getBootSettings({ commit }) {
       return await api
         .get('/redfish/v1/Systems/system')
@@ -43,7 +80,6 @@ const BootSettingsStore = {
     saveBootSettings({ commit, dispatch }, { bootSource, overrideEnabled }) {
       const data = { Boot: {} };
       data.Boot.BootSourceOverrideTarget = bootSource;
-
       if (overrideEnabled) {
         data.Boot.BootSourceOverrideEnabled = 'Once';
       } else if (bootSource === 'None') {
@@ -51,7 +87,6 @@ const BootSettingsStore = {
       } else {
         data.Boot.BootSourceOverrideEnabled = 'Continuous';
       }
-
       return api
         .patch('/redfish/v1/Systems/system', data)
         .then((response) => {
@@ -67,12 +102,18 @@ const BootSettingsStore = {
           return error;
         });
     },
-    async saveSettings({ dispatch }, { bootSource, overrideEnabled }) {
+    async saveSettings(
+      { dispatch },
+      { bootSource, overrideEnabled, biosSettings }
+    ) {
       const promises = [];
-      if (bootSource !== null || overrideEnabled !== null) {
+      if (bootSource || overrideEnabled) {
         promises.push(
           dispatch('saveBootSettings', { bootSource, overrideEnabled })
         );
+      }
+      if (biosSettings) {
+        promises.push(dispatch('saveBiosSettings', biosSettings));
       }
       return await api.all(promises).then(
         api.spread((...responses) => {
@@ -90,7 +131,106 @@ const BootSettingsStore = {
         })
       );
     },
+    async getBiosAttributes({ commit }) {
+      return await api
+        .get('/redfish/v1/Systems/system/Bios')
+        .then(({ data: { Attributes } }) => {
+          const filteredAttribute = this.state.serverBootSettings.attributeKeys
+            .filter((key) => Object.keys(Attributes).includes(key))
+            .reduce((obj, key) => {
+              return {
+                ...obj,
+                [key]: Attributes[key],
+              };
+            }, {});
+          commit('setBiosAttributes', filteredAttribute);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getAttributeValues({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(
+          ({
+            data: {
+              RegistryEntries: { Attributes },
+            },
+          }) => {
+            //Array for state BIOS attributes is created
+            const filteredAttributeValues = this.state.serverBootSettings.attributeKeys
+              .reduce((arr, attriValue) => {
+                return [
+                  ...arr,
+                  ...Attributes.filter(
+                    (value) => attriValue === value.AttributeName
+                  ),
+                ];
+              }, [])
+              //Array of objects with the key as value and text is created
+              .reduce((obj, attributeObj) => {
+                return {
+                  ...obj,
+                  [attributeObj?.AttributeName]: attributeObj.Value.map(
+                    (item) => {
+                      return {
+                        value: item.ValueName,
+                        text:
+                          [
+                            'pvm_os_boot_type',
+                            'pvm_rpa_boot_mode',
+                            'pvm_stop_at_standby',
+                            'pvm_system_operating_mode',
+                          ].indexOf(attributeObj.AttributeName) >= 0
+                            ? i18n.t(
+                                `pageServerPowerOperations.biosSettings.attributeValues.${attributeObj.AttributeName}.${item.ValueName}`
+                              )
+                            : item.ValueName,
+                      };
+                    }
+                  ),
+                };
+              }, {});
+            commit('setAttributeValues', filteredAttributeValues);
+          }
+        )
+        .catch((error) => console.log(error));
+    },
+    saveBiosSettings({ dispatch }, biosSettings) {
+      return api
+        .patch('/redfish/v1/Systems/system/Bios/Settings', {
+          Attributes: biosSettings,
+        })
+        .then((response) => {
+          dispatch('saveOperatingModeSettings');
+          return response;
+        })
+        .catch((error) => {
+          console.log(error);
+          return error;
+        });
+    },
+    saveOperatingModeSettings({ dispatch }) {
+      return api
+        .patch('/redfish/v1/Systems/system', {
+          PowerRestorePolicy: this.state.serverBootSettings
+            .powerRestorePolicyValue,
+          Boot: {
+            AutomaticRetryConfig: this.state.serverBootSettings
+              .automaticRetryConfigValue,
+            StopBootOnFault: this.state.serverBootSettings.bootFault,
+          },
+        })
+        .then((response) => {
+          dispatch('getBiosAttributes');
+          return response;
+        })
+        .catch((error) => {
+          console.log(error);
+          return error;
+        });
+    },
   },
 };
-
 export default BootSettingsStore;
