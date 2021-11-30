@@ -4,7 +4,9 @@
       <template v-for="(attriValuesArr, key) of attributeValues">
         <b-col
           v-if="
-            attriValuesArr.length > 2 && key !== 'pvm_system_power_off_policy'
+            attriValuesArr.length > 2 &&
+            key !== 'pvm_system_power_off_policy' &&
+            validateAttributeKeys(attributeKeys.pvm_default_os_type, key)
           "
           :key="key"
           sm="8"
@@ -23,7 +25,14 @@
             </b-form-select>
           </b-form-group>
         </b-col>
-        <b-col v-else :key="key" class="mb-3" sm="12">
+        <b-col
+          v-else-if="
+            validateAttributeKeys(attributeKeys.pvm_default_os_type, key)
+          "
+          :key="key"
+          class="mb-3"
+          sm="12"
+        >
           <div
             :class="{
               'form-background p-3':
@@ -48,26 +57,6 @@
                   >
                     {{ values.text }}
                   </b-form-radio>
-                  <b-form-checkbox
-                    v-model="automaticRetryConfig"
-                    class="mt-3"
-                    :disabled="manualModeSelected"
-                    >{{
-                      $t(
-                        `pageServerPowerOperations.biosSettings.attributeValues.automaticRetryConfig`
-                      )
-                    }}
-                  </b-form-checkbox>
-                  <b-form-checkbox
-                    v-model="bootFault"
-                    class="mt-3 mb-3"
-                    :disabled="manualModeSelected"
-                    >{{
-                      $t(
-                        `pageServerPowerOperations.biosSettings.attributeValues.stopBootOnFault`
-                      )
-                    }}
-                  </b-form-checkbox>
                 </b-col>
                 <div
                   v-if="
@@ -193,13 +182,53 @@
         </b-col>
       </template>
     </b-row>
+    <b-row class="mb-3">
+      <b-col xl="10">
+        <b-button v-b-toggle.collapse-role-table variant="link">
+          <icon-chevron />
+          {{
+            $t('pageServerPowerOperations.biosSettings.powerSettingDescription')
+          }}
+        </b-button>
+        <b-collapse id="collapse-role-table" class="mt-3">
+          <b-table stacked="sm" hover :items="serverFirmwareItems" caption-top>
+            <template #table-caption>
+              {{ $t('pageServerPowerOperations.biosSettings.serverFirmware') }}
+            </template>
+          </b-table>
+          <b-table
+            stacked="sm"
+            hover
+            :items="defaultPartitionItems"
+            caption-top
+          >
+            <template #table-caption>
+              {{
+                $t('pageServerPowerOperations.biosSettings.defaultPartition')
+              }}
+            </template>
+          </b-table>
+          <b-table stacked="sm" hover :items="aixPartitionItems" caption-top>
+            <template #table-caption>
+              {{ $t('pageServerPowerOperations.biosSettings.aixLinux') }}
+            </template>
+          </b-table>
+          <b-table stacked="sm" hover :items="ibmiItems" caption-top>
+            <template #table-caption>
+              {{ $t('pageServerPowerOperations.biosSettings.ibmIPartition') }}
+            </template>
+          </b-table>
+        </b-collapse>
+      </b-col>
+    </b-row>
   </div>
 </template>
 <script>
 import Alert from '@/components/Global/Alert';
+import IconChevron from '@carbon/icons-vue/es/chevron--up/20';
 export default {
   name: 'BiosSettings',
-  components: { Alert },
+  components: { Alert, IconChevron },
   props: {
     attributeValues: {
       type: Object,
@@ -215,6 +244,142 @@ export default {
       powerRestorePolicy: this.$store.getters[
         'serverBootSettings/powerRestorePolicyValue'
       ],
+      serverFirmwareItems: [
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.serverFirmwareItems.setting.autoStartOnly'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.serverFirmwareItems.description.autoStartOnly'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.serverFirmwareItems.setting.autoStartAlways'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.serverFirmwareItems.description.autoStartAlways'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.serverFirmwareItems.setting.standBy'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.serverFirmwareItems.description.standBy'
+          ),
+        },
+      ],
+      defaultPartitionItems: [
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.defaultPartitionItems.setting.aix'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.defaultPartitionItems.description.aix'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.defaultPartitionItems.setting.linux'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.defaultPartitionItems.description.linux'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.defaultPartitionItems.setting.ibmI'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.defaultPartitionItems.description.ibmI'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.defaultPartitionItems.setting.default'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.defaultPartitionItems.description.default'
+          ),
+        },
+      ],
+      aixPartitionItems: [
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.aixPartitionItems.setting.partitionBoot'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.aixPartitionItems.description.partitionBoot'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.aixPartitionItems.setting.serviceBoot'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.aixPartitionItems.description.serviceBoot'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.aixPartitionItems.setting.bootToSms'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.aixPartitionItems.description.bootToSms'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.aixPartitionItems.setting.bootToOpenFirware'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.aixPartitionItems.description.bootToOpenFirware'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.aixPartitionItems.setting.serviceBootMode'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.aixPartitionItems.description.serviceBootMode'
+          ),
+        },
+      ],
+      ibmiItems: [
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.ibmiItems.setting.a'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.ibmiItems.description.a'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.ibmiItems.setting.b'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.ibmiItems.description.b'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.ibmiItems.setting.c'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.ibmiItems.description.c'
+          ),
+        },
+        {
+          setting: this.$t(
+            'pageServerPowerOperations.biosSettings.ibmiItems.setting.d'
+          ),
+          description: this.$t(
+            'pageServerPowerOperations.biosSettings.ibmiItems.description.d'
+          ),
+        },
+      ],
     };
   },
   computed: {
@@ -224,39 +389,8 @@ export default {
     manualModeSelected() {
       return this.selectedOperatingMode === this.manualMode;
     },
-    automaticRetryConfig: {
-      get() {
-        return (
-          this.$store.getters[
-            'serverBootSettings/automaticRetryConfigValue'
-          ] === 'RetryAttempts'
-        );
-      },
-      set(value) {
-        let configValue = value ? 'RetryAttempts' : 'Disabled';
-        this.$store.commit(
-          'serverBootSettings/setAutomaticRetryConfigValue',
-          configValue
-        );
-      },
-    },
     powerPolicy() {
       return this.$store.getters['serverBootSettings/powerRestorePolicyValue'];
-    },
-    bootFault: {
-      get() {
-        return (
-          this.$store.getters['serverBootSettings/bootFaultValue'] ===
-          'AnyFault'
-        );
-      },
-      set(value) {
-        let bootValue = value ? 'AnyFault' : 'Never';
-        this.$store.commit(
-          'serverBootSettings/setStopBootOnFaultValue',
-          bootValue
-        );
-      },
     },
   },
   created() {
@@ -295,12 +429,28 @@ export default {
         );
         this.$store.commit(
           'serverBootSettings/setStopBootOnFaultValue',
-          'AnyFault'
+          'Never'
         );
         this.$store.commit(
           'serverBootSettings/setPowerRestorePolicyValue',
           'AlwaysOff'
         );
+      }
+    },
+    validateAttributeKeys(defaultPartitionEnvironment, key) {
+      if (key === 'pvm_rpa_boot_mode') {
+        return (
+          defaultPartitionEnvironment === 'Default' ||
+          defaultPartitionEnvironment === 'AIX' ||
+          defaultPartitionEnvironment === 'Linux'
+        );
+      } else if (key === 'pvm_os_boot_type') {
+        return !(
+          defaultPartitionEnvironment === 'AIX' ||
+          defaultPartitionEnvironment === 'Linux'
+        );
+      } else {
+        return true;
       }
     },
   },

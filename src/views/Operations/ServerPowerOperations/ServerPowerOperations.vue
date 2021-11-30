@@ -6,7 +6,29 @@
         <page-section
           :section-title="$t('pageServerPowerOperations.currentStatus')"
         >
-          <div class="form-background pt-3 pl-3">
+          <b-row v-if="isInPhypStandby">
+            <b-col>
+              <alert variant="info">
+                <span class="font-weight-bold">
+                  {{ $t('pageServerPowerOperations.phypStandby') }}
+                </span>
+                <p>{{ $t('pageServerPowerOperations.osRuntimeMessage') }}</p>
+                <template #action>
+                  <b-button
+                    variant="link"
+                    class="d-flex justify-content-between align-items-center"
+                    @click="standbyToRuntime"
+                  >
+                    <span class="pr-1">
+                      {{ $t('pageServerPowerOperations.osRuntimeButton') }}
+                    </span>
+                    <icon-arrow-right />
+                  </b-button>
+                </template>
+              </alert>
+            </b-col>
+          </b-row>
+          <div v-if="!isInPhypStandby" class="form-background pt-3 pl-3">
             <b-row>
               <b-col sm="3">
                 <dl>
@@ -53,9 +75,6 @@
         <page-section
           :section-title="$t('pageServerPowerOperations.operations')"
         >
-          <alert :show="oneTimeBootEnabled" variant="warning">
-            {{ $t('pageServerPowerOperations.oneTimeBootWarning') }}
-          </alert>
           <template v-if="isOperationInProgress">
             <alert variant="info">
               {{ $t('pageServerPowerOperations.operationInProgress') }}
@@ -148,10 +167,17 @@ import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import BootSettings from './BootSettings';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 import Alert from '@/components/Global/Alert';
+import ArrowRight16 from '@carbon/icons-vue/es/arrow--right/16';
 
 export default {
   name: 'ServerPowerOperations',
-  components: { PageTitle, PageSection, BootSettings, Alert },
+  components: {
+    PageTitle,
+    PageSection,
+    BootSettings,
+    Alert,
+    IconArrowRight: ArrowRight16,
+  },
   mixins: [BVToastMixin, LoadingBarMixin],
   beforeRouteLeave(to, from, next) {
     this.hideLoader();
@@ -159,6 +185,7 @@ export default {
   },
   data() {
     return {
+      phypStandby: false,
       form: {
         rebootOption: 'orderly',
         shutdownOption: 'orderly',
@@ -166,6 +193,19 @@ export default {
     };
   },
   computed: {
+    isInPhypStandby() {
+      if (!this.phypStandby) {
+        const bootProgress = this.$store.getters['global/bootProgress'];
+        if (bootProgress === 'SystemHardwareInitializationComplete') {
+          return true;
+        } else {
+          return false;
+        }
+      } else return false;
+    },
+    bmc() {
+      return this.$store.getters['bmc/bmc'];
+    },
     serverStatus() {
       return this.$store.getters['global/serverStatus'];
     },
@@ -177,6 +217,9 @@ export default {
     },
     oneTimeBootEnabled() {
       return this.$store.getters['serverBootSettings/overrideEnabled'];
+    },
+    systemDumpActive() {
+      return this.$store?.getters['serverBootSettings/systemDumpActive'];
     },
   },
   created() {
@@ -190,44 +233,68 @@ export default {
       this.$store.dispatch('serverBootSettings/getOperatingModeSettings'),
       this.$store.dispatch('serverBootSettings/getBootSettings'),
       this.$store.dispatch('controls/getLastPowerOperationTime'),
+      this.$store.dispatch('bmc/getBmcInfo'),
+      this.$store.dispatch('global/getBootProgress'),
       bootSettingsPromise,
     ]).finally(() => this.endLoader());
   },
   methods: {
     powerOn() {
-      this.$store.dispatch('controls/serverPowerOn');
-    },
-    rebootServer() {
-      const modalMessage = this.$t(
-        'pageServerPowerOperations.modal.confirmRebootMessage'
-      );
-      const modalOptions = {
-        title: this.$t('pageServerPowerOperations.modal.confirmRebootTitle'),
-        okTitle: this.$t('global.action.confirm'),
-        cancelTitle: this.$t('global.action.cancel'),
-      };
-
-      if (this.form.rebootOption === 'orderly') {
-        this.$bvModal
-          .msgBoxConfirm(modalMessage, modalOptions)
-          .then((confirmed) => {
-            if (confirmed) this.$store.dispatch('controls/serverSoftReboot');
-          });
-      } else if (this.form.rebootOption === 'immediate') {
-        this.$bvModal
-          .msgBoxConfirm(modalMessage, modalOptions)
-          .then((confirmed) => {
-            if (confirmed) this.$store.dispatch('controls/serverHardReboot');
-          });
+      if (
+        this.bmc.powerState === 'On' &&
+        this.bmc.statusState === 'Enabled' &&
+        this.bmc.health === 'OK'
+      ) {
+        this.$store.dispatch('controls/serverPowerOn');
+      } else {
+        this.errorToast(
+          this.$t('pageServerPowerOperations.toast.errorPowerOn')
+        );
       }
     },
+    rebootServer() {
+      this.$store.dispatch('serverBootSettings/getBiosAttributes').then(() => {
+        const modalMessage = `${
+          this.systemDumpActive
+            ? this.$t('pageServerPowerOperations.modal.confirmRebootMessage2')
+            : ''
+        } ${this.$t('pageServerPowerOperations.modal.confirmRebootMessage')}`;
+        const modalOptions = {
+          title: this.$t('pageServerPowerOperations.modal.confirmRebootTitle'),
+          okVariant: this.systemDumpActive ? 'danger' : 'primary',
+          okTitle: this.systemDumpActive
+            ? this.$t('pageServerPowerOperations.reboot')
+            : this.$t('global.action.confirm'),
+          cancelTitle: this.$t('global.action.cancel'),
+        };
+
+        if (this.form.rebootOption === 'orderly') {
+          this.$bvModal
+            .msgBoxConfirm(modalMessage, modalOptions)
+            .then((confirmed) => {
+              if (confirmed) this.$store.dispatch('controls/serverSoftReboot');
+            });
+        } else if (this.form.rebootOption === 'immediate') {
+          this.$bvModal
+            .msgBoxConfirm(modalMessage, modalOptions)
+            .then((confirmed) => {
+              if (confirmed) this.$store.dispatch('controls/serverHardReboot');
+            });
+        }
+      });
+    },
     shutdownServer() {
-      const modalMessage = this.$t(
-        'pageServerPowerOperations.modal.confirmShutdownMessage'
-      );
+      const modalMessage = `${
+        this.systemDumpActive
+          ? this.$t('pageServerPowerOperations.modal.confirmShutdownMessage2')
+          : ''
+      } ${this.$t('pageServerPowerOperations.modal.confirmShutdownMessage')}`;
       const modalOptions = {
         title: this.$t('pageServerPowerOperations.modal.confirmShutdownTitle'),
-        okTitle: this.$t('global.action.confirm'),
+        okTitle: this.systemDumpActive
+          ? this.$t('pageServerPowerOperations.shutDown')
+          : this.$t('global.action.confirm'),
+        okVariant: this.systemDumpActive ? 'danger' : 'primary',
         cancelTitle: this.$t('global.action.cancel'),
       };
 
@@ -245,6 +312,16 @@ export default {
             if (confirmed) this.$store.dispatch('controls/serverHardPowerOff');
           });
       }
+    },
+    standbyToRuntime() {
+      this.$store
+        .dispatch('serverBootSettings/standbyToRuntime')
+        .then((message) => {
+          this.phypStandby = true;
+          this.isInPhypStandby;
+          this.successToast(message);
+        })
+        .catch(({ message }) => this.errorToast(message));
     },
   },
 };
