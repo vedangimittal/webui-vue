@@ -13,7 +13,21 @@
         </alert>
       </b-col>
     </b-row>
+    <!-- Quicklinks section -->
+    <page-section :section-title="$t('pageCapacityOnDemand.quickLinks')">
+      <div v-for="item in quickLinks" :key="item.id">
+        <b-link
+          :href="item.href"
+          :data-ref="item.dataRef"
+          @click.prevent="scrollToOffset"
+        >
+          <icon-jump-link /> {{ item.linkText }}
+        </b-link>
+      </div>
+    </page-section>
     <page-section
+      id="logicalMemorySizeOption"
+      ref="logicalMemorySizeOption"
       :section-title="$t('pageMemory.logicalMemorySize')"
       class="mb-4"
     >
@@ -46,6 +60,39 @@
     </page-section>
     <div class="section-divider mb-3 mt-3"></div>
     <page-section
+      id="inputSystemMemoryPageSetup"
+      ref="inputSystemMemoryPageSetup"
+      :section-title="$t('pageMemory.systemMemoryPageSetupTitle')"
+      class="mb-1"
+    >
+      <b-row>
+        <b-col md="8" xl="6">
+          <p>{{ $t('pageMemory.systemMemoryPageSetup') }}</p>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col md="8" xl="6">
+          <b-form>
+            <b-form-group
+              :label="$t('pageMemory.maxNumHugePages')"
+              label-for="system-memory-page-setup"
+              class="mb-3"
+            >
+              <b-form-input
+                id="input-system-memory-page-setup"
+                v-model="systemMemoryPageSetup"
+                data-test-id="system-memory-page-setup"
+                :disabled="true"
+              ></b-form-input>
+            </b-form-group>
+          </b-form>
+        </b-col>
+      </b-row>
+    </page-section>
+    <div class="section-divider mb-3 mt-3"></div>
+    <page-section
+      id="inputIoAdapterCapacity"
+      ref="inputIoAdapterCapacity"
       :section-title="$t('pageMemory.ioApdapterEnlargedCapacityTitle')"
     >
       <b-row>
@@ -95,9 +142,11 @@
 </template>
 
 <script>
+import JumpLink16 from '@carbon/icons-vue/es/jump-link/16';
 import { mapState } from 'vuex';
 import Alert from '@/components/Global/Alert';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
+import JumpLinkMixin from '@/components/Mixins/JumpLinkMixin';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 import PageTitle from '@/components/Global/PageTitle';
 import PageSection from '@/components/Global/PageSection';
@@ -106,8 +155,8 @@ import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
 
 export default {
   name: 'Memory',
-  components: { Alert, PageSection, PageTitle },
-  mixins: [VuelidateMixin, BVToastMixin, LoadingBarMixin],
+  components: { Alert, PageSection, PageTitle, IconJumpLink: JumpLink16 },
+  mixins: [VuelidateMixin, BVToastMixin, LoadingBarMixin, JumpLinkMixin],
   data() {
     return {
       form: {
@@ -115,6 +164,26 @@ export default {
           'resourceMemory/logicalMemorySize'
         ],
       },
+      quickLinks: [
+        {
+          id: 'logicalMemorySizeOption',
+          dataRef: 'logicalMemorySizeOption',
+          href: '#logicalMemorySizeOption',
+          linkText: this.$t('pageMemory.logicalMemorySize'),
+        },
+        {
+          id: 'inputSystemMemoryPageSetup',
+          dataRef: 'inputSystemMemoryPageSetup',
+          href: '#inputSystemMemoryPageSetup',
+          linkText: this.$t('pageMemory.systemMemoryPageSetupTitle'),
+        },
+        {
+          id: 'inputIoAdapterCapacity',
+          dataRef: 'inputIoAdapterCapacity',
+          href: '#inputIoAdapterCapacity',
+          linkText: this.$t('pageMemory.ioApdapterEnlargedCapacityTitle'),
+        },
+      ],
     };
   },
   computed: {
@@ -129,6 +198,11 @@ export default {
       set(value) {
         this.$v.$touch();
         this.$store.commit('resourceMemory/setIoAdapterCapacity', value);
+      },
+    },
+    systemMemoryPageSetup: {
+      get() {
+        return this.$store.getters['resourceMemory/maxNumHugePages'];
       },
     },
   },
@@ -147,6 +221,7 @@ export default {
       minValue: minValue(0),
       maxValue: maxValue(255),
     },
+    systemMemoryPageSetup: {},
   },
   created() {
     this.startLoader();
@@ -154,6 +229,7 @@ export default {
       this.$store.dispatch('resourceMemory/getMemorySizeOptions'),
       this.$store.dispatch('resourceMemory/getLogicalMemorySize'),
       this.$store.dispatch('resourceMemory/getIoAdapterCapacity'),
+      this.$store.dispatch('resourceMemory/getMaxNumHugePages'),
     ]).finally(() => this.endLoader());
   },
   methods: {

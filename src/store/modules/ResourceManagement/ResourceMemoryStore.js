@@ -7,11 +7,13 @@ const ResourceMemoryStore = {
     logicalMemorySizeOptions: [],
     logicalMemorySize: null,
     ioAdapterCapacity: null,
+    maxNumHugePages: null,
   },
   getters: {
     logicalMemorySizeOptions: (state) => state.logicalMemorySizeOptions,
     logicalMemorySize: (state) => state.logicalMemorySize,
     ioAdapterCapacity: (state) => state.ioAdapterCapacity,
+    maxNumHugePages: (state) => state.maxNumHugePages,
   },
   mutations: {
     setLogicalMemorySizeOptions: (state, logicalMemorySizeOptions) =>
@@ -20,6 +22,8 @@ const ResourceMemoryStore = {
       (state.logicalMemorySize = logicalMemorySize),
     setIoAdapterCapacity: (state, ioAdapterCapacity) =>
       (state.ioAdapterCapacity = ioAdapterCapacity),
+    setMaxNumHugePages: (state, maxNumHugePages) =>
+      (state.maxNumHugePages = maxNumHugePages),
   },
   actions: {
     async getMemorySizeOptions({ commit }) {
@@ -58,6 +62,20 @@ const ResourceMemoryStore = {
           );
           let ioEnlargedAdapterCapacity = ioAdapterCapacity[0].CurrentValue;
           commit('setIoAdapterCapacity', ioEnlargedAdapterCapacity);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getMaxNumHugePages({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const maxNumberHugePages = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'hb_max_number_huge_pages'
+          );
+          let systemMemoryPageSetup = maxNumberHugePages[0].CurrentValue;
+          commit('setMaxNumHugePages', systemMemoryPageSetup);
         })
         .catch((error) => console.log(error));
     },
