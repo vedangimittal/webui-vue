@@ -34,7 +34,7 @@ const PowerSupplyStore = {
           efficiencyPercent: EfficiencyRatings[0].EfficiencyPercent,
           firmwareVersion: FirmwareVersion,
           identifyLed: LocationIndicatorActive,
-          locationNumber: Location,
+          locationNumber: Location?.PartLocation?.ServiceLabel,
           manufacturer: Manufacturer,
           model: Model,
           name: Name,
