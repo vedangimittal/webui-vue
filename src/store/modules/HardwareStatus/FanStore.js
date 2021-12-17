@@ -29,9 +29,9 @@ const FanStore = {
           serialNumber: SerialNumber,
           healthRollup: Status.HealthRollup,
           identifyLed: LocationIndicatorActive,
-          locationNumber: Location,
+          locationNumber: Location?.PartLocation?.ServiceLabel,
           name: Name,
-          speedPercent: SpeedPercent.Reading,
+          speedPercent: SpeedPercent?.Reading,
           statusState: Status.State,
           uri: fan['@odata.id'],
         };
