@@ -97,7 +97,7 @@
                 <dd>{{ dataFormatter(item.statusHealth) }}</dd>
                 <!-- Efficiency percent -->
                 <dt>{{ $t('pageInventory.table.efficiencyPercent') }}:</dt>
-                <dd>{{ tableFormatter(item.efficiencyPercent) }}</dd>
+                <dd>{{ dataFormatter(item.efficiencyPercent) }}</dd>
               </dl>
             </b-col>
           </b-row>
