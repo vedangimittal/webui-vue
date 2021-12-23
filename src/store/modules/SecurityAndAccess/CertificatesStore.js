@@ -1,6 +1,5 @@
 import api from '@/store/api';
 import i18n from '@/i18n';
-
 export const CERTIFICATE_TYPES = [
   {
     type: 'HTTPS Certificate',
@@ -20,15 +19,25 @@ export const CERTIFICATE_TYPES = [
     // the term 'TrustStore Certificate' wasn't recognized/was unfamilar
     label: i18n.t('pageCertificates.caCertificate'),
   },
+  {
+    type: 'ServiceLogin Certificate',
+    location: '/redfish/v1/AccountService/Accounts/service',
+    label: i18n.t('pageCertificates.serviceLoginCertificate'),
+  },
 ];
-
 const getCertificateProp = (type, prop) => {
   const certificate = CERTIFICATE_TYPES.find(
     (certificate) => certificate.type === type
   );
   return certificate ? certificate[prop] : null;
 };
-
+const convertFileToBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 const CertificatesStore = {
   namespaced: true,
   state: {
@@ -84,11 +93,36 @@ const CertificatesStore = {
                     .map((certificate) => certificate.type)
                     .includes(type)
               );
-
               commit('setCertificates', certificates);
               commit('setAvailableUploadTypes', availableUploadTypes);
             })
           );
+        });
+    },
+    async addNewACFCertificate({ dispatch }, { file, type }) {
+      const base64File = await convertFileToBase64(file);
+      const fileObj = {
+        Oem: {
+          IBM: {
+            ACF: {
+              ACFFile: base64File.split('base64,')[1].slice(0, -1),
+            },
+          },
+        },
+      };
+      return await api
+        .patch(getCertificateProp(type, 'location'), fileObj, {
+          headers: { 'Content-Type': 'application/octet-stream' },
+        })
+        .then(() => dispatch('getCertificates'))
+        .then(() =>
+          i18n.t('pageCertificates.toast.successAddCertificate', {
+            certificate: getCertificateProp(type, 'label'),
+          })
+        )
+        .catch((error) => {
+          console.log(error);
+          throw new Error(i18n.t('pageCertificates.toast.errorAddCertificate'));
         });
     },
     async addNewCertificate({ dispatch }, { file, type }) {
@@ -115,7 +149,6 @@ const CertificatesStore = {
       data.CertificateString = certificateString;
       data.CertificateType = 'PEM';
       data.CertificateUri = { '@odata.id': location };
-
       return await api
         .post(
           '/redfish/v1/CertificateService/Actions/CertificateService.ReplaceCertificate',
@@ -168,7 +201,6 @@ const CertificatesStore = {
         alternateName,
       } = userData;
       const data = {};
-
       data.CertificateCollection = {
         '@odata.id': getCertificateProp(certificateType, 'location'),
       };
@@ -180,13 +212,11 @@ const CertificatesStore = {
       data.CommonName = commonName;
       data.KeyPairAlgorithm = keyPairAlgorithm;
       data.AlternativeNames = alternateName;
-
       if (keyCurveId) data.KeyCurveId = keyCurveId;
       if (keyBitLength) data.KeyBitLength = keyBitLength;
       if (challengePassword) data.ChallengePassword = challengePassword;
       if (contactPerson) data.ContactPerson = contactPerson;
       if (emailAddress) data.Email = emailAddress;
-
       return await api
         .post(
           '/redfish/v1/CertificateService/Actions/CertificateService.GenerateCSR',
@@ -198,5 +228,4 @@ const CertificatesStore = {
     },
   },
 };
-
 export default CertificatesStore;

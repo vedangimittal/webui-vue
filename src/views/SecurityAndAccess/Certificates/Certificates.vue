@@ -65,7 +65,6 @@
           <template #cell(validFrom)="{ value }">
             {{ value | formatDate }}
           </template>
-
           <template #cell(validUntil)="{ value }">
             <status-icon
               v-if="getDaysUntilExpired(value) < 31"
@@ -73,7 +72,6 @@
             />
             {{ value | formatDate }}
           </template>
-
           <template #cell(actions)="{ value, item }">
             <table-row-action
               v-for="(action, index) in value"
@@ -92,28 +90,23 @@
         </b-table>
       </b-col>
     </b-row>
-
     <!-- Modals -->
     <modal-upload-certificate :certificate="modalCertificate" @ok="onModalOk" />
     <modal-generate-csr />
   </b-container>
 </template>
-
 <script>
 import IconAdd from '@carbon/icons-vue/es/add--alt/20';
 import IconReplace from '@carbon/icons-vue/es/renew/20';
 import IconTrashcan from '@carbon/icons-vue/es/trash-can/20';
-
 import ModalGenerateCsr from './ModalGenerateCsr';
 import ModalUploadCertificate from './ModalUploadCertificate';
 import PageTitle from '@/components/Global/PageTitle';
 import TableRowAction from '@/components/Global/TableRowAction';
 import StatusIcon from '@/components/Global/StatusIcon';
 import Alert from '@/components/Global/Alert';
-
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
-
 export default {
   name: 'Certificates',
   components: {
@@ -266,11 +259,19 @@ export default {
     },
     addNewCertificate(file, type) {
       this.startLoader();
-      this.$store
-        .dispatch('certificates/addNewCertificate', { file, type })
-        .then((success) => this.successToast(success))
-        .catch(({ message }) => this.errorToast(message))
-        .finally(() => this.endLoader());
+      if (type === 'ServiceLogin Certificate') {
+        this.$store
+          .dispatch('certificates/addNewACFCertificate', { file, type })
+          .then((success) => this.successToast(success))
+          .catch(({ message }) => this.errorToast(message))
+          .finally(() => this.endLoader());
+      } else {
+        this.$store
+          .dispatch('certificates/addNewCertificate', { file, type })
+          .then((success) => this.successToast(success))
+          .catch(({ message }) => this.errorToast(message))
+          .finally(() => this.endLoader());
+      }
     },
     replaceCertificate(file, type, location) {
       this.startLoader();
