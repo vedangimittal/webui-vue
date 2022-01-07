@@ -38,6 +38,8 @@ const FirmwareStore = {
   mutations: {
     setActiveBmcFirmwareId: (state, id) => (state.bmcActiveFirmwareId = id),
     setActiveHostFirmwareId: (state, id) => (state.hostActiveFirmwareId = id),
+    setAccessExpirationDate: (state, expirationDate) =>
+      (state.accessKeyExpirationDate = expirationDate),
     setBmcFirmware: (state, firmware) => (state.bmcFirmware = firmware),
     setHostFirmware: (state, firmware) => (state.hostFirmware = firmware),
     setApplyTime: (state, applyTime) => (state.applyTime = applyTime),

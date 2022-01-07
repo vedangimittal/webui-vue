@@ -22,12 +22,16 @@
       :section-title="$t('pageFirmware.sectionTitleUpdateFirmware')"
     >
       <b-row>
-        <b-col sm="8" md="6" xl="4">
+        <b-col class="mb-4" sm="8" md="6" xl="4">
           <!-- Update form -->
           <form-update
             :is-server-off="isServerOff"
             :is-page-disabled="isPageDisabled"
           />
+        </b-col>
+        <b-col sm="8" md="6" xl="4">
+          <!-- Access key expiration -->
+          <firmware-access-key />
         </b-col>
       </b-row>
     </page-section>
@@ -37,6 +41,7 @@
 <script>
 import AlertsServerPower from './FirmwareAlertServerPower';
 import BmcCards from './FirmwareCardsBmc';
+import FirmwareAccessKey from './FirmwareAccessKey';
 import FormUpdate from './FirmwareFormUpdate';
 import HostCards from './FirmwareCardsHost';
 import PageSection from '@/components/Global/PageSection';
@@ -49,6 +54,7 @@ export default {
   components: {
     AlertsServerPower,
     BmcCards,
+    FirmwareAccessKey,
     FormUpdate,
     HostCards,
     PageSection,
@@ -85,9 +91,10 @@ export default {
   },
   created() {
     this.startLoader();
-    this.$store
-      .dispatch('firmware/getFirmwareInformation')
-      .finally(() => this.endLoader());
+    Promise.all([
+      this.$store.dispatch('licenses/getLicenses'),
+      this.$store.dispatch('firmware/getFirmwareInformation'),
+    ]).finally(() => this.endLoader());
   },
 };
 </script>
