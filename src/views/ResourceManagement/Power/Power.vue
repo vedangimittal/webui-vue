@@ -1,163 +1,51 @@
 <template>
   <b-container fluid="xl">
     <page-title :description="$t('pagePower.description')" />
-
-    <b-row>
-      <b-col sm="8" md="6" xl="12">
-        <dl>
-          <dt>{{ $t('pagePower.powerConsumption') }}</dt>
-          <dd>
-            {{
-              powerConsumptionValue
-                ? `${powerConsumptionValue} W`
-                : $t('global.status.notAvailable')
-            }}
-          </dd>
-        </dl>
+    <b-row v-if="safeMode">
+      <b-col md="9" xl="6">
+        <alert variant="danger" class="mb-4">
+          <p>
+            {{ $t('pagePower.alert.message') }}
+          </p>
+          <p>
+            {{ $t('pagePower.alert.message2') }}
+            <b-link to="/logs/event-logs">
+              {{ $t('pagePower.alert.message2Link') }}</b-link
+            >
+          </p>
+          <p>
+            {{ $t('pagePower.alert.message3') }}
+            <b-link to="/operations/server-power-operations">
+              {{ $t('pagePower.alert.message3Link') }}</b-link
+            >
+          </p>
+        </alert>
       </b-col>
     </b-row>
-
-    <b-form @submit.prevent="submitForm">
-      <b-form-group :disabled="loading">
-        <b-row>
-          <b-col sm="8" md="6" xl="12">
-            <b-form-group :label="$t('pagePower.powerCapSettingLabel')">
-              <b-form-checkbox
-                v-model="isPowerCapFieldEnabled"
-                data-test-id="power-checkbox-togglePowerCapField"
-                name="power-cap-setting"
-              >
-                {{ $t('pagePower.powerCapSettingData') }}
-              </b-form-checkbox>
-            </b-form-group>
-          </b-col>
-        </b-row>
-
-        <b-row>
-          <b-col sm="8" md="6" xl="3">
-            <b-form-group
-              id="input-group-1"
-              :label="$t('pagePower.powerCapLabel')"
-              label-for="input-1"
-            >
-              <b-form-text id="power-help-text">
-                {{
-                  $t('pagePower.powerCapLabelTextInfo', {
-                    min: 1,
-                    max: 10000,
-                  })
-                }}
-              </b-form-text>
-
-              <b-form-input
-                id="input-1"
-                v-model.number="powerCapValue"
-                :disabled="!isPowerCapFieldEnabled"
-                data-test-id="power-input-powerCapValue"
-                type="number"
-                aria-describedby="power-help-text"
-                :state="getValidationState($v.powerCapValue)"
-              ></b-form-input>
-
-              <b-form-invalid-feedback id="input-live-feedback" role="alert">
-                <template v-if="!$v.powerCapValue.required">
-                  {{ $t('global.form.fieldRequired') }}
-                </template>
-                <template v-else-if="!$v.powerCapValue.between">
-                  {{ $t('global.form.invalidValue') }}
-                </template>
-              </b-form-invalid-feedback>
-            </b-form-group>
-          </b-col>
-        </b-row>
-
-        <b-button
-          variant="primary"
-          type="submit"
-          data-test-id="power-button-savePowerCapValue"
-        >
-          {{ $t('global.action.save') }}
-        </b-button>
-      </b-form-group>
-    </b-form>
-
-    <page-section :section-title="$t('pagePower.powerSaverModesTitle')">
-      <b-row class="mb-3">
-        <b-col xl="10">
-          <b-button v-b-toggle.collapse-role-table variant="link">
-            <icon-chevron />
-            {{ $t('pagePower.powerSaverModesDropdownLabel') }}
-          </b-button>
-          <b-collapse id="collapse-role-table" class="mt-3">
-            <table-power-saver-modes />
-          </b-collapse>
-        </b-col>
-      </b-row>
-      <b-form
-        id="form-power-saver"
-        novalidate
-        @submit.prevent="handlePowerSaveSubmit"
-      >
-        <b-form-group :disabled="loading">
-          <b-row>
-            <b-col>
-              <b-form-group :label="$t('pagePower.selectModeLabel')">
-                <b-form-radio-group
-                  id="power-save-modes"
-                  v-model="currentPowerMode"
-                  stacked
-                >
-                  <b-form-radio value="Static">
-                    {{ $t('pagePower.selectMode.static') }}
-                  </b-form-radio>
-                  <b-form-radio v-model="currentPowerMode" value="PowerSaving">
-                    {{ $t('pagePower.selectMode.powerSaver') }}
-                  </b-form-radio>
-                  <b-form-radio
-                    v-model="currentPowerMode"
-                    value="MaximumPerformance"
-                  >
-                    {{ $t('pagePower.selectMode.maximumPerformance') }}
-                  </b-form-radio>
-                </b-form-radio-group>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-button variant="primary" type="submit" form="form-power-saver">
-            {{ $t('pagePower.submitButton') }}
-          </b-button>
-        </b-form-group>
-      </b-form>
-      <modal-power-saver-modes
-        :title="newModeValue || currentPowerMode"
-        @ok="savePowerSaverMode"
-      />
-    </page-section>
+    <power-cap :safe-mode="safeMode" />
+    <power-performance-modes :safe-mode="safeMode" />
+    <power-idle-saver :safe-mode="safeMode" />
   </b-container>
 </template>
 
 <script>
 import PageTitle from '@/components/Global/PageTitle';
-import PageSection from '@/components/Global/PageSection';
 import LoadingBarMixin, { loading } from '@/components/Mixins/LoadingBarMixin';
-import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
-import BVToastMixin from '@/components/Mixins/BVToastMixin';
-import { requiredIf, between } from 'vuelidate/lib/validators';
-import { mapGetters } from 'vuex';
-import IconChevron from '@carbon/icons-vue/es/chevron--up/20';
-import ModalPowerSaverModes from './ModalPowerSaverModes';
-import TablePowerSaverModes from './TablePowerSaverModes';
+import PowerCap from './PowerCap';
+import PowerPerformanceModes from './PowerPerformanceModes';
+import PowerIdleSaver from './PowerIdleSaver';
+import Alert from '@/components/Global/Alert';
 
 export default {
   name: 'Power',
   components: {
     PageTitle,
-    PageSection,
-    IconChevron,
-    ModalPowerSaverModes,
-    TablePowerSaverModes,
+    PowerCap,
+    PowerPerformanceModes,
+    PowerIdleSaver,
+    Alert,
   },
-  mixins: [VuelidateMixin, BVToastMixin, LoadingBarMixin],
+  mixins: [LoadingBarMixin],
   beforeRouteLeave(to, from, next) {
     this.hideLoader();
     next();
@@ -165,98 +53,15 @@ export default {
   data() {
     return {
       loading,
-      newModeValue: null,
     };
   },
   computed: {
-    ...mapGetters({
-      powerConsumptionValue: 'powerControl/powerConsumptionValue',
-    }),
-
-    /**
-      Computed property isPowerCapFieldEnabled is used to enable or disable the input field.
-      The input field is enabled when the powercapValue property is not null.
-   **/
-    isPowerCapFieldEnabled: {
-      get() {
-        return this.powerCapValue !== null;
-      },
-      set(value) {
-        this.$v.$reset();
-        let newValue = null;
-        if (value) {
-          if (this.powerCapValue) {
-            newValue = this.powerCapValue;
-          } else {
-            newValue = '';
-          }
-        }
-        this.$store.dispatch('powerControl/setPowerCapUpdatedValue', newValue);
-      },
-    },
-    powerCapValue: {
-      get() {
-        return this.$store.getters['powerControl/powerCapValue'];
-      },
-      set(value) {
-        this.$v.$touch();
-        this.$store.dispatch('powerControl/setPowerCapUpdatedValue', value);
-      },
-    },
-    currentPowerMode: {
-      get() {
-        return this.$store.getters['powerControl/powerSaverMode'];
-      },
-      set(mode) {
-        this.newModeValue = mode;
-      },
+    safeMode() {
+      return this.$store.getters['global/safeMode'];
     },
   },
   created() {
-    this.startLoader();
-    this.$store
-      .dispatch('powerControl/getPowerControl')
-      .finally(() => this.endLoader());
-    this.$store
-      .dispatch('powerControl/getPowerMode')
-      .finally(() => this.endLoader());
-  },
-  validations: {
-    powerCapValue: {
-      between: between(1, 10000),
-      required: requiredIf(function () {
-        return this.isPowerCapFieldEnabled;
-      }),
-    },
-  },
-  methods: {
-    submitForm() {
-      this.$v.$touch();
-      if (this.$v.$invalid) return;
-      this.startLoader();
-      this.$store
-        .dispatch('powerControl/setPowerControl', this.powerCapValue)
-        .then((message) => this.successToast(message))
-        .catch(({ message }) => this.errorToast(message))
-        .finally(() => this.endLoader());
-    },
-    handlePowerSaveSubmit() {
-      if (this.newModeValue != null) {
-        this.showConfirmationModal();
-      }
-    },
-    showConfirmationModal() {
-      this.$bvModal.show('power-modal-saver');
-    },
-    savePowerSaverMode() {
-      this.$store
-        .dispatch(
-          'powerControl/setPowerSaverMode',
-          this.newModeValue || this.currentPowerMode
-        )
-        .then((message) => this.successToast(message))
-        .catch(({ message }) => this.errorToast(message));
-    },
+    this.$store.dispatch('global/getSystemInfo');
   },
 };
 </script>
