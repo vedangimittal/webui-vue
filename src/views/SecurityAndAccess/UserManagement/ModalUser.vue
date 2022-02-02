@@ -62,6 +62,7 @@
               </b-form-radio>
             </b-form-group>
             <b-form-group
+              v-if="form.username != 'service'"
               :label="$t('pageUserManagement.modal.username')"
               label-for="username"
             >
@@ -125,6 +126,7 @@
           </b-col>
           <b-col>
             <b-form-group
+              v-if="form.username != 'service'"
               :label="$t('pageUserManagement.modal.userPassword')"
               label-for="password"
             >
@@ -167,6 +169,7 @@
               </input-password-toggle>
             </b-form-group>
             <b-form-group
+              v-if="notService"
               :label="$t('pageUserManagement.modal.confirmUserPassword')"
               label-for="password-confirmation"
             >
@@ -264,6 +267,9 @@ export default {
   computed: {
     newUser() {
       return this.user ? false : true;
+    },
+    notService() {
+      return this.form.username != 'service';
     },
     accountSettings() {
       return this.$store.getters['userManagement/accountSettings'];
