@@ -80,7 +80,6 @@
             </p>
           </div>
 
-          <!-- Access key information -->
           <div>
             <h3 class="h4 mb-3">
               {{ $t('pageCapacityOnDemand.orderInfo.accessKeyInfo') }}
@@ -89,14 +88,21 @@
               {{
                 $t('pageCapacityOnDemand.orderInfo.firmwareAccessKeyExpiration')
               }}
-              <span class="font-weight-bold">
-                {{ firmwareAccessKeyInfo.expirationDate | formatDate }}
+              <span v-if="hasLicenses" class="font-weight-bold">--</span>
+              <span v-else class="font-weight-bold">
+                {{
+                  dataFormatter(firmwareAccessKeyInfo.expirationDate)
+                    | formatDate
+                }}
               </span>
             </p>
             <p>
               {{ $t('pageCapacityOnDemand.orderInfo.aixAccessKeyExpiration') }}
-              <span class="font-weight-bold">
-                {{ aixAccessKeyInfo.expirationDate | formatDate }}
+              <span v-if="hasLicenses" class="font-weight-bold">--</span>
+              <span v-else class="font-weight-bold">
+                {{
+                  dataFormatter(aixAccessKeyInfo.expirationDate) | formatDate
+                }}
               </span>
             </p>
           </div>
@@ -109,10 +115,12 @@
 <script>
 import { mapGetters } from 'vuex';
 import PageSection from '@/components/Global/PageSection';
+import DataFormatterMixin from '@/components/Mixins/DataFormatterMixin';
 
 export default {
   name: 'CapacityOnDemandOrderInfo',
   components: { PageSection },
+  mixins: [DataFormatterMixin],
   computed: {
     ...mapGetters('licenses', [
       'processorInfo',
@@ -120,6 +128,11 @@ export default {
       'firmwareAccessKeyInfo',
       'aixAccessKeyInfo',
     ]),
+    hasLicenses() {
+      // This logic checks to see if there are any licences in the store.
+      // If there are none, the result is true, otherwise false.
+      return !Object.keys(this.$store.getters['licenses/licenses']).length;
+    },
     systemInfo() {
       return this.$store.getters['system/systems']?.[0] || {};
     },
