@@ -28,7 +28,7 @@
             :class="{
               'form-background p-3':
                 key === 'pvm_system_operating_mode' &&
-                (manualModeSelected || selectedOperatingMode === normalMode),
+                (manualModeSelected || currentOperatingMode !== normalMode),
             }"
           >
             <b-form-group
@@ -201,10 +201,6 @@ export default {
   name: 'BiosSettings',
   components: { Alert },
   props: {
-    attributes: {
-      type: Object,
-      default: null,
-    },
     attributeValues: {
       type: Object,
       default: null,
@@ -216,13 +212,15 @@ export default {
       normalMode: 'Normal',
       currentOperatingMode: '',
       selectedOperatingMode: '',
-      attributeKeys: { ...this.attributes },
       powerRestorePolicy: this.$store.getters[
         'serverBootSettings/powerRestorePolicyValue'
       ],
     };
   },
   computed: {
+    attributeKeys() {
+      return this.$store.getters['serverBootSettings/biosAttributes'];
+    },
     manualModeSelected() {
       return this.selectedOperatingMode === this.manualMode;
     },

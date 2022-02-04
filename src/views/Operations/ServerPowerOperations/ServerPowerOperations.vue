@@ -130,7 +130,7 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col v-if="hasBootSourceOptions" sm="8" md="7" lg="7" xl="9">
+      <b-col sm="8" md="7" lg="7" xl="9">
         <page-section
           :section-title="$t('pageServerPowerOperations.serverBootSettings')"
         >
@@ -177,12 +177,6 @@ export default {
     },
     oneTimeBootEnabled() {
       return this.$store.getters['serverBootSettings/overrideEnabled'];
-    },
-    hasBootSourceOptions() {
-      let bootOptions = this.$store.getters[
-        'serverBootSettings/bootSourceOptions'
-      ];
-      return bootOptions.length !== 0;
     },
   },
   created() {
