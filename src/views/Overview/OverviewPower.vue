@@ -18,6 +18,20 @@
           <dd v-else>{{ powerCapValue }} W</dd>
         </dl>
       </b-col>
+      <b-col sm="6">
+        <dl>
+          <dt>{{ $t('pagePower.idlePower') }}</dt>
+          <dd v-if="idlePowerData.Enabled">
+            {{ $t('global.status.enabled') }}
+          </dd>
+          <dd v-else>{{ $t('global.status.disabled') }}</dd>
+          <dt>{{ $t('pageOverview.powerMode') }}</dt>
+          <dd v-if="powerControlModeValue">
+            {{ powerControlModeValue }}
+          </dd>
+          <dd v-else>{{ $t('global.status.disabled') }}</dd>
+        </dl>
+      </b-col>
     </b-row>
   </overview-card>
 </template>
@@ -37,6 +51,8 @@ export default {
     ...mapGetters({
       powerCapValue: 'powerControl/powerCapValue',
       powerConsumptionValue: 'powerControl/powerConsumptionValue',
+      powerControlModeValue: 'powerControl/powerControlModeValue',
+      idlePowerData: 'powerControl/idlePower',
     }),
   },
   created() {
