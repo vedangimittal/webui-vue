@@ -88,6 +88,11 @@
                 <dt>{{ $t('pageInventory.table.model') }}:</dt>
                 <dd>{{ dataFormatter(item.model) }}</dd>
               </dl>
+              <dl>
+                <!-- Manufacturer -->
+                <dt>{{ $t('pageInventory.table.manufacturer') }}:</dt>
+                <dd>{{ dataFormatter(item.manufacturer) }}</dd>
+              </dl>
             </b-col>
             <b-col sm="6" xl="6">
               <dl>
@@ -104,6 +109,11 @@
                 <!-- Enabled-->
                 <dt>{{ $t('pageInventory.table.enabled') }}:</dt>
                 <dd>{{ dataFormatter(item.enabled) }}</dd>
+              </dl>
+              <dl>
+                <!-- Firmware revision-->
+                <dt>{{ $t('pageInventory.table.firmwareRevision') }}:</dt>
+                <dd>{{ dataFormatter(item.firmwareRevision) }}</dd>
               </dl>
             </b-col>
           </b-row>
@@ -130,6 +140,11 @@
                 <dt>{{ $t('pageInventory.table.capacityMiB') }}:</dt>
                 <dd>{{ dataFormatter(item.capacityMiB) }}</dd>
               </dl>
+              <dl>
+                <!-- Rank count -->
+                <dt>{{ $t('pageInventory.table.rankCount') }}:</dt>
+                <dd>{{ dataFormatter(item.rankCount) }}</dd>
+              </dl>
             </b-col>
             <b-col sm="6" xl="6">
               <dl>
@@ -146,6 +161,14 @@
                 <!-- Operating Speed Mhz -->
                 <dt>{{ $t('pageInventory.table.operatingSpeedMhz') }}:</dt>
                 <dd>{{ dataFormatter(item.operatingSpeedMhz) }} MHz</dd>
+              </dl>
+              <dl>
+                <!-- Allowed Speeds MHz -->
+                <dt>{{ $t('pageInventory.table.allowedSpeedsMHz') }}:</dt>
+                <dd v-if="item.allowedSpeedsMHz.length > 0">
+                  {{ dataFormatter(item.allowedSpeedsMHz) }} MHz
+                </dd>
+                <dd v-else>--</dd>
               </dl>
             </b-col>
           </b-row>
