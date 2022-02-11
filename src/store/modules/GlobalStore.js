@@ -31,6 +31,8 @@ const GlobalStore = {
   state: {
     assetTag: null,
     bmcTime: null,
+    acfInstalled: false,
+    expirationDate: null,
     modelType: null,
     serialNumber: null,
     serverStatus: 'unreachable',
@@ -49,6 +51,8 @@ const GlobalStore = {
     serverStatus: (state) => state.serverStatus,
     postCodeValue: (state) => state.postCodeValue,
     bmcTime: (state) => state.bmcTime,
+    acfInstalled: (state) => state.acfInstalled,
+    expirationDate: (state) => state.expirationDate,
     languagePreference: (state) => state.languagePreference,
     isUtcDisplay: (state) => state.isUtcDisplay,
     username: (state) => state.username,
@@ -60,6 +64,10 @@ const GlobalStore = {
     setSerialNumber: (state, serialNumber) =>
       (state.serialNumber = serialNumber),
     setBmcTime: (state, bmcTime) => (state.bmcTime = bmcTime),
+    setAcfInstalled: (state, acfInstalled) =>
+      (state.acfInstalled = acfInstalled),
+    setExpirationDate: (state, expirationDate) =>
+      (state.expirationDate = expirationDate),
     setServerStatus: (state, serverState) =>
       (state.serverStatus = serverStateMapper(serverState)),
     setPostCodeValue: (state, postCodeValue) =>
@@ -83,6 +91,15 @@ const GlobalStore = {
           const bmcDateTime = response.data.DateTime;
           const date = new Date(bmcDateTime);
           commit('setBmcTime', date);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getServiceLogin({ commit }) {
+      return await api
+        .get('/redfish/v1/AccountService/Accounts/service')
+        .then((response) => {
+          commit('setAcfInstalled', response.data.Oem.IBM.ACF.ACFInstalled);
+          commit('setExpirationDate', response.data.Oem.IBM.ACF.ExpirationDate);
         })
         .catch((error) => console.log(error));
     },
