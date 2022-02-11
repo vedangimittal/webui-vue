@@ -341,6 +341,15 @@ exports[`AppNavigation.vue should render correctly 1`] = `
                 </a>
                 <a
                   class="nav-link"
+                  data-test-id="nav-item-service-login"
+                  href="#/operations/service-login"
+                >
+                  
+                  appNavigation.serviceLogin
+                
+                </a>
+                <a
+                  class="nav-link"
                   data-test-id="nav-item-serial-over-lan"
                   href="#/operations/serial-over-lan"
                 >
@@ -1025,6 +1034,15 @@ exports[`AppNavigation.vue should render with nav-container open 1`] = `
                 >
                   
                   appNavigation.rebootBmc
+                
+                </a>
+                <a
+                  class="nav-link"
+                  data-test-id="nav-item-service-login"
+                  href="#/operations/service-login"
+                >
+                  
+                  appNavigation.serviceLogin
                 
                 </a>
                 <a
