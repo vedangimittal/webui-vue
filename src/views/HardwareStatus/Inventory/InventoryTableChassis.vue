@@ -52,58 +52,6 @@
                 <!-- Name -->
                 <dt>{{ $t('pageInventory.table.name') }}:</dt>
                 <dd>{{ dataFormatter(item.name) }}</dd>
-                <!-- Part number -->
-                <dt>{{ $t('pageInventory.table.partNumber') }}:</dt>
-                <dd>{{ dataFormatter(item.partNumber) }}</dd>
-                <!-- Serial Number -->
-                <dt>{{ $t('pageInventory.table.serialNumber') }}:</dt>
-                <dd>{{ dataFormatter(item.serialNumber) }}</dd>
-                <!-- Model -->
-                <dt>{{ $t('pageInventory.table.model') }}:</dt>
-                <dd class="mb-2">
-                  {{ dataFormatter(item.model) }}
-                </dd>
-                <!-- Asset tag -->
-                <dt>{{ $t('pageInventory.table.assetTag') }}:</dt>
-                <dd class="mb-2">
-                  {{ dataFormatter(item.assetTag) }}
-                </dd>
-              </dl>
-            </b-col>
-            <b-col class="mt-2" sm="6" xl="6">
-              <dl>
-                <!-- Status state -->
-                <dt>{{ $t('pageInventory.table.statusState') }}:</dt>
-                <dd>{{ dataFormatter(item.statusState) }}</dd>
-                <!-- Power state -->
-                <dt>{{ $t('pageInventory.table.power') }}:</dt>
-                <dd>{{ dataFormatter(item.power) }}</dd>
-                <!-- Health rollup -->
-                <dt>{{ $t('pageInventory.table.healthRollup') }}:</dt>
-                <dd>{{ dataFormatter(item.healthRollup) }}</dd>
-              </dl>
-            </b-col>
-          </b-row>
-          <div class="section-divider mb-3 mt-3"></div>
-          <b-row>
-            <b-col class="mt-2" sm="6" xl="6">
-              <dl>
-                <!-- Manufacturer -->
-                <dt>{{ $t('pageInventory.table.manufacturer') }}:</dt>
-                <dd>{{ dataFormatter(item.manufacturer) }}</dd>
-                <!-- Chassis Type -->
-                <dt>{{ $t('pageInventory.table.chassisType') }}:</dt>
-                <dd>{{ dataFormatter(item.chassisType) }}</dd>
-              </dl>
-            </b-col>
-            <b-col class="mt-2" sm="6" xl="6">
-              <dl>
-                <!-- Min power -->
-                <dt>{{ $t('pageInventory.table.minPowerWatts') }}:</dt>
-                <dd>{{ dataFormatter(item.minPowerWatts) }}</dd>
-                <!-- Max power -->
-                <dt>{{ $t('pageInventory.table.maxPowerWatts') }}:</dt>
-                <dd>{{ dataFormatter(item.maxPowerWatts) }}</dd>
               </dl>
             </b-col>
           </b-row>
