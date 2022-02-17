@@ -40,18 +40,34 @@
       </template>
 
       <b-form-group :label="$t('pageCertificates.modal.certificateFile')">
-        <form-file
-          id="certificate-file"
-          v-model="form.file"
-          accept=".pem"
-          :state="getValidationState($v.form.file)"
-        >
-          <template #invalid>
-            <b-form-invalid-feedback role="alert">
-              {{ $t('global.form.required') }}
-            </b-form-invalid-feedback>
-          </template>
-        </form-file>
+        <template v-if="form.certificateType === 'ServiceLogin Certificate'">
+          <form-file
+            id="certificate-file"
+            v-model="form.file"
+            accept=".acf"
+            :state="getValidationState($v.form.file)"
+          >
+            <template #invalid>
+              <b-form-invalid-feedback role="alert">
+                {{ $t('global.form.required') }}
+              </b-form-invalid-feedback>
+            </template>
+          </form-file>
+        </template>
+        <template v-else>
+          <form-file
+            id="certificate-file"
+            v-model="form.file"
+            accept=".pem"
+            :state="getValidationState($v.form.file)"
+          >
+            <template #invalid>
+              <b-form-invalid-feedback role="alert">
+                {{ $t('global.form.required') }}
+              </b-form-invalid-feedback>
+            </template>
+          </form-file>
+        </template>
       </b-form-group>
     </b-form>
     <template #modal-ok>

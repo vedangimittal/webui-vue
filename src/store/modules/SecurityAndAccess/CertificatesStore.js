@@ -42,21 +42,53 @@ const CertificatesStore = {
   namespaced: true,
   state: {
     allCertificates: [],
+    acfCertificate: [],
     availableUploadTypes: [],
   },
   getters: {
     allCertificates: (state) => state.allCertificates,
+    acfCertificate: (state) => state.acfCertificate,
     availableUploadTypes: (state) => state.availableUploadTypes,
   },
   mutations: {
     setCertificates(state, certificates) {
       state.allCertificates = certificates;
     },
+    setAcfCertificate(state, certificate) {
+      state.acfCertificate = certificate;
+    },
     setAvailableUploadTypes(state, availableUploadTypes) {
       state.availableUploadTypes = availableUploadTypes;
     },
   },
   actions: {
+    async getAcfCertificate({ commit }) {
+      return await api
+        .get('/redfish/v1/AccountService/Accounts/service')
+        .then(
+          ({
+            data: {
+              Oem: {
+                IBM: { ACF },
+              },
+            },
+          }) => {
+            if (ACF.ExpirationDate) {
+              var acfCertificate = {
+                type: '',
+                location: '',
+                certificate: 'ServiceLogin Certificate',
+                issuedBy: '',
+                issuedTo: '',
+                validFrom: '',
+                validUntil: new Date(ACF.ExpirationDate),
+              };
+              commit('setAcfCertificate', [acfCertificate]);
+            }
+          }
+        )
+        .catch((error) => console.log(error));
+    },
     async getCertificates({ commit }) {
       return await api
         .get('/redfish/v1/CertificateService/CertificateLocations')
@@ -147,7 +179,11 @@ const CertificatesStore = {
     ) {
       const data = {};
       data.CertificateString = certificateString;
-      data.CertificateType = 'PEM';
+      if (certificateString === 'ServiceLogin Certificate') {
+        data.CertificateType = 'ACF';
+      } else {
+        data.CertificateType = 'PEM';
+      }
       data.CertificateUri = { '@odata.id': location };
       return await api
         .post(

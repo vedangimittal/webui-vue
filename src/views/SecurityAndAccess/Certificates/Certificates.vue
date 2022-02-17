@@ -160,7 +160,10 @@ export default {
   },
   computed: {
     certificates() {
-      return this.$store.getters['certificates/allCertificates'];
+      let acfCertificate = this.$store.getters['certificates/acfCertificate'];
+      let certificates = this.$store.getters['certificates/allCertificates'];
+      let allCertificates = [...acfCertificate, ...certificates];
+      return allCertificates;
     },
     tableItems() {
       return this.certificates.map((certificate) => {
@@ -206,13 +209,13 @@ export default {
       }, []);
     },
   },
-  async created() {
+  created() {
     this.startLoader();
-    await this.$store.dispatch('global/getBmcTime');
-    this.$store.dispatch('certificates/getCertificates').finally(() => {
-      this.endLoader();
-      this.isBusy = false;
-    });
+    Promise.all([
+      this.$store.dispatch('global/getBmcTime'),
+      this.$store.dispatch('certificates/getAcfCertificate'),
+      this.$store.dispatch('certificates/getCertificates'),
+    ]).finally(() => this.endLoader());
   },
   methods: {
     onTableRowAction(event, rowItem) {
