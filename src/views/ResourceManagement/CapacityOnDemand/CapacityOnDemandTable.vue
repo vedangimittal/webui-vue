@@ -45,10 +45,11 @@ export default {
   },
   computed: {
     items() {
-      const licenses = this.$store.getters['licenses/licenses'];
+      const vetCapabilities = this.$store.getters['licenses/vetCapabilities'];
+
       const items = [];
 
-      forOwn(licenses, (license) => {
+      forOwn(vetCapabilities, (license) => {
         items.push({
           settings: license.Name,
           status: license.Status?.State,

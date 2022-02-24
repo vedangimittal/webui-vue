@@ -24,6 +24,18 @@ const LicenseStore = {
   },
   getters: {
     licenses: (state) => state.licenses,
+    vetCapabilities: (state) =>
+      Object.values(state.licenses).filter((license) => {
+        return (
+          license.Name !== 'AIX Update Access Key' &&
+          license.Name !== 'Asset Protection Machine ID' &&
+          license.Name !== 'Asset Protection Public Key' &&
+          license.Name !== 'Elastic MemoryGB*Days Available' &&
+          license.Name !== 'Elastic Processor*Days Available' &&
+          license.Name !== 'Trial Memory Licenses (GB)' &&
+          license.Name !== 'Trial Processor Licenses'
+        );
+      }),
     processorInfo: (state) => parseData(state.licenses.PermProcs),
     memoryInfo: (state) => parseData(state.licenses.PermMem),
     firmwareAccessKeyInfo: (state) => parseData(state.licenses.UAK),
