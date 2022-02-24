@@ -9,10 +9,13 @@
         <span v-else>
           {{ firmwareAccessKeyInfo.expirationDate | formatDate }}
         </span>
-        <b-btn v-b-modal.modal-firmware-access-key variant="link" class="py-0">
-          <icon-edit :title="$t('pageFirmware.modal.enterNewAccessKey')" />
-        </b-btn>
       </dd>
+      <b-link
+        class="d-inline-block mb-4 m-md-0"
+        to="/resource-management/capacity-on-demand"
+      >
+        {{ $t('pageFirmware.form.updateFirmware.manageAccessKeys') }}
+      </b-link>
     </dl>
     <firmware-modal-access-key @ok="submitForm" />
   </div>
@@ -20,16 +23,10 @@
 
 <script>
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
-import FirmwareModalAccessKey from './FirmwareModalAccessKey.vue';
-import IconEdit from '@carbon/icons-vue/es/edit/20';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 import { mapGetters } from 'vuex';
 export default {
   name: 'FirmwareAccessKey',
-  components: {
-    FirmwareModalAccessKey,
-    IconEdit,
-  },
   mixins: [LoadingBarMixin, BVToastMixin],
   computed: {
     ...mapGetters('licenses', ['firmwareAccessKeyInfo']),

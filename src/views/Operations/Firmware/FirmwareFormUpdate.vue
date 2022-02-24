@@ -12,6 +12,11 @@
           </b-form-radio>
           <b-form-radio v-model="isWorkstationSelected" :value="false">
             {{ $t('pageFirmware.form.updateFirmware.tftpServer') }}
+            <span
+              ><info-tooltip
+                class="info-icon"
+                :title="$t('pageFirmware.form.updateFirmware.tftpServerInfo')"
+            /></span>
           </b-form-radio>
         </b-form-group>
 
@@ -90,13 +95,13 @@ import { requiredIf } from 'vuelidate/lib/validators';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import LoadingBarMixin, { loading } from '@/components/Mixins/LoadingBarMixin';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
-
+import InfoTooltip from '@/components/Global/InfoTooltip';
 import Alert from '@/components/Global/Alert';
 import FormFile from '@/components/Global/FormFile';
 import ModalUpdateFirmware from './FirmwareModalUpdateFirmware';
 
 export default {
-  components: { Alert, FormFile, ModalUpdateFirmware },
+  components: { Alert, InfoTooltip, FormFile, ModalUpdateFirmware },
   mixins: [BVToastMixin, LoadingBarMixin, VuelidateMixin],
   props: {
     isPageDisabled: {
