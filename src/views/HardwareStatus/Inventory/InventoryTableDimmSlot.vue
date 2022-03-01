@@ -50,6 +50,14 @@
         <status-icon :status="statusIcon(value)" />
         {{ value }}
       </template>
+      <!-- Status -->
+      <template #cell(status)="row">
+        {{
+          row.item.statusState === 'Enabled'
+            ? $t('global.status.present')
+            : $t('global.status.absent')
+        }}
+      </template>
       <!-- Toggle identify LED -->
       <template #cell(identifyLed)="row">
         <b-form-checkbox
@@ -85,90 +93,20 @@
               </dl>
               <dl>
                 <!-- Model -->
-                <dt>{{ $t('pageInventory.table.model') }}:</dt>
+                <dt>{{ $t('pageInventory.table.bmcManagerModel') }}:</dt>
                 <dd>{{ dataFormatter(item.model) }}</dd>
               </dl>
-              <dl>
-                <!-- Manufacturer -->
-                <dt>{{ $t('pageInventory.table.manufacturer') }}:</dt>
-                <dd>{{ dataFormatter(item.manufacturer) }}</dd>
-              </dl>
             </b-col>
             <b-col sm="6" xl="6">
-              <dl>
-                <!-- Memory Size in kb -->
-                <dt>{{ $t('pageInventory.table.memorySize') }}:</dt>
-                <dd>{{ dataFormatter(item.memorySize) }} KB</dd>
-              </dl>
-              <dl>
-                <!-- Status-->
-                <dt>{{ $t('pageInventory.table.statusState') }}:</dt>
-                <dd>{{ dataFormatter(item.statusState) }}</dd>
-              </dl>
-              <dl>
-                <!-- Enabled-->
-                <dt>{{ $t('pageInventory.table.enabled') }}:</dt>
-                <dd>{{ dataFormatter(item.enabled) }}</dd>
-              </dl>
-              <dl>
-                <!-- Firmware revision-->
-                <dt>{{ $t('pageInventory.table.firmwareRevision') }}:</dt>
-                <dd>{{ dataFormatter(item.firmwareRevision) }}</dd>
-              </dl>
-            </b-col>
-          </b-row>
-          <div class="section-divider mb-3 mt-3"></div>
-          <b-row>
-            <b-col sm="6" xl="6">
-              <dl>
-                <!-- Description -->
-                <dt>{{ $t('pageInventory.table.description') }}:</dt>
-                <dd>{{ dataFormatter(item.description) }}</dd>
-              </dl>
-              <dl>
-                <!-- Memory Type -->
-                <dt>{{ $t('pageInventory.table.memoryType') }}:</dt>
-                <dd>{{ dataFormatter(item.memoryType) }}</dd>
-              </dl>
-              <dl>
-                <!-- Base Module Type -->
-                <dt>{{ $t('pageInventory.table.baseModuleType') }}:</dt>
-                <dd>{{ dataFormatter(item.baseModuleType) }}</dd>
-              </dl>
               <dl>
                 <!-- Capacity MiB -->
                 <dt>{{ $t('pageInventory.table.capacityMiB') }}:</dt>
                 <dd>{{ dataFormatter(item.capacityMiB) }}</dd>
               </dl>
               <dl>
-                <!-- Rank count -->
-                <dt>{{ $t('pageInventory.table.rankCount') }}:</dt>
-                <dd>{{ dataFormatter(item.rankCount) }}</dd>
-              </dl>
-            </b-col>
-            <b-col sm="6" xl="6">
-              <dl>
-                <!-- Bus Width Bits -->
-                <dt>{{ $t('pageInventory.table.busWidthBits') }}:</dt>
-                <dd>{{ dataFormatter(item.busWidthBits) }}</dd>
-              </dl>
-              <dl>
-                <!-- Data Width Bits -->
-                <dt>{{ $t('pageInventory.table.dataWidthBits') }}:</dt>
-                <dd>{{ dataFormatter(item.dataWidthBits) }}</dd>
-              </dl>
-              <dl>
-                <!-- Operating Speed Mhz -->
-                <dt>{{ $t('pageInventory.table.operatingSpeedMhz') }}:</dt>
-                <dd>{{ dataFormatter(item.operatingSpeedMhz) }} MHz</dd>
-              </dl>
-              <dl>
-                <!-- Allowed Speeds MHz -->
-                <dt>{{ $t('pageInventory.table.allowedSpeedsMHz') }}:</dt>
-                <dd v-if="item.allowedSpeedsMHz.length > 0">
-                  {{ dataFormatter(item.allowedSpeedsMHz) }} MHz
-                </dd>
-                <dd v-else>--</dd>
+                <!-- Enabled-->
+                <dt>{{ $t('pageInventory.table.enabled') }}:</dt>
+                <dd>{{ dataFormatter(item.enabled) }}</dd>
               </dl>
             </b-col>
           </b-row>
@@ -216,22 +154,33 @@ export default {
           key: 'id',
           label: this.$t('pageInventory.table.id'),
           formatter: this.dataFormatter,
+          sortable: true,
         },
         {
           key: 'health',
           label: this.$t('pageInventory.table.health'),
           formatter: this.dataFormatter,
           tdClass: 'text-nowrap',
+          sortable: true,
+        },
+        {
+          key: 'status',
+          label: this.$t('pageUserManagement.table.status'),
+          formatter: this.dataFormatter,
+          sortable: true,
+          tdClass: 'text-nowrap',
         },
         {
           key: 'locationNumber',
           label: this.$t('pageInventory.table.locationNumber'),
           formatter: this.dataFormatter,
+          sortable: true,
         },
         {
           key: 'identifyLed',
           label: this.$t('pageInventory.table.identifyLed'),
           formatter: this.dataFormatter,
+          sortable: false,
         },
       ],
       searchFilter: searchFilter,
