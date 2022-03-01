@@ -105,6 +105,10 @@ export default {
         );
       },
     },
+    userRoleId: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -119,12 +123,25 @@ export default {
       return this.$store.getters['certificates/availableUploadTypes'];
     },
     certificateOptions() {
-      return this.certificateTypes.map(({ type, label }) => {
-        return {
-          text: label,
-          value: type,
-        };
-      });
+      return this.certificateTypes
+        .filter((certificate) => {
+          if (
+            certificate.type === 'ServiceLogin Certificate' &&
+            this.isNotAdmin
+          ) {
+            return certificate.type !== 'ServiceLogin Certificate';
+          }
+          return certificate === certificate;
+        })
+        .map(({ type, label }) => {
+          return {
+            text: label,
+            value: type,
+          };
+        });
+    },
+    isNotAdmin() {
+      return this.userRoleId !== 'Administrator';
     },
   },
   watch: {

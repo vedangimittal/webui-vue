@@ -406,7 +406,11 @@ export default {
         keyBitLength: null,
       },
       certificateOptions: CERTIFICATE_TYPES.reduce((arr, cert) => {
-        if (cert.type === 'TrustStore Certificate') return arr;
+        if (
+          cert.type === 'TrustStore Certificate' ||
+          cert.type === 'ServiceLogin Certificate'
+        )
+          return arr;
         arr.push({
           text: cert.label,
           value: cert.type,

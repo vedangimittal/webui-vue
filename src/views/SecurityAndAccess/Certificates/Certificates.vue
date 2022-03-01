@@ -91,7 +91,11 @@
       </b-col>
     </b-row>
     <!-- Modals -->
-    <modal-upload-certificate :certificate="modalCertificate" @ok="onModalOk" />
+    <modal-upload-certificate
+      :certificate="modalCertificate"
+      :user-role-id="userRoleId"
+      @ok="onModalOk"
+    />
     <modal-generate-csr />
   </b-container>
 </template>
@@ -106,6 +110,7 @@ import TableRowAction from '@/components/Global/TableRowAction';
 import StatusIcon from '@/components/Global/StatusIcon';
 import Alert from '@/components/Global/Alert';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
+import CurrentUserMixin from '@/components/Mixins/CurrentUserMixin';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 export default {
   name: 'Certificates',
@@ -120,13 +125,14 @@ export default {
     StatusIcon,
     TableRowAction,
   },
-  mixins: [BVToastMixin, LoadingBarMixin],
+  mixins: [BVToastMixin, CurrentUserMixin, LoadingBarMixin],
   beforeRouteLeave(to, from, next) {
     this.hideLoader();
     next();
   },
   data() {
     return {
+      userRoleId: null,
       isBusy: true,
       modalCertificate: null,
       fields: [
@@ -215,7 +221,12 @@ export default {
       this.$store.dispatch('global/getBmcTime'),
       this.$store.dispatch('certificates/getAcfCertificate'),
       this.$store.dispatch('certificates/getCertificates'),
-    ]).finally(() => this.endLoader());
+      this.$store.dispatch('userManagement/getUsers'),
+    ]).finally(() => {
+      this.endLoader();
+      this.isBusy = false;
+      this.userRoleId = this.currentUser.RoleId;
+    });
   },
   methods: {
     onTableRowAction(event, rowItem) {
