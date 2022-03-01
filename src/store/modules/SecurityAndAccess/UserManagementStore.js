@@ -18,6 +18,9 @@ const UserManagementStore = {
     accountRoles(state) {
       return state.accountRoles;
     },
+    filteredAccountRoles(state) {
+      return state.accountRoles.filter((role) => role !== 'OemIBMServiceAgent');
+    },
     accountSettings(state) {
       return {
         lockoutDuration: state.accountLockoutDuration,
