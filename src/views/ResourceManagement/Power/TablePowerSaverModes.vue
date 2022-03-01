@@ -13,7 +13,7 @@ export default {
           description: this.$t('pagePower.tableRoles.descStatic'),
         },
         {
-          setting: 'Power saver',
+          setting: 'Power saving',
           description: this.$t('pagePower.tableRoles.descPowerSaver'),
         },
         {
