@@ -62,7 +62,7 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('global/getServerStatus');
+    this.$store.dispatch('global/getSystemInfo');
   },
   mounted() {
     this.openTerminal();
