@@ -55,10 +55,10 @@
             </b-col>
             <b-col class="mt-2" sm="6" xl="6">
               <!-- Model-->
-              <dt>Model</dt>
+              <dt>{{ $t('pageInventory.table.bmcManagerModel') }}:</dt>
               <dd>{{ dataFormatter(item.model) }}</dd>
               <!-- Spare Part Number -->
-              <dt>Spare Part Number</dt>
+              <dt>{{ $t('pageInventory.table.sparePartNumber') }}:</dt>
               <dd>{{ dataFormatter(item.sparePartNumber) }}</dd>
             </b-col>
           </b-row>
