@@ -48,6 +48,14 @@
         <status-icon :status="statusIcon(value)" />
         {{ value }}
       </template>
+      <!-- Status -->
+      <template #cell(status)="row">
+        {{
+          row.item.statusState === 'Enabled'
+            ? $t('global.status.present')
+            : $t('global.status.absent')
+        }}
+      </template>
 
       <!-- Toggle identify LED -->
       <template #cell(identifyLed)="row">
@@ -83,60 +91,19 @@
                 <!-- Spare Part Number -->
                 <dt>{{ $t('pageInventory.table.sparePartNumber') }}:</dt>
                 <dd>{{ dataFormatter(item.sparePartNumber) }}</dd>
-                <!-- Model -->
-                <dt>{{ $t('pageInventory.table.model') }}:</dt>
-                <dd>{{ dataFormatter(item.model) }}</dd>
-                <!-- Asset Tag -->
-                <dt>{{ $t('pageInventory.table.assetTag') }}:</dt>
-                <dd>{{ dataFormatter(item.assetTag) }}</dd>
               </dl>
             </b-col>
             <b-col class="mt-2" sm="6" xl="6">
               <dl>
-                <!-- Status state -->
-                <dt>{{ $t('pageInventory.table.statusState') }}:</dt>
-                <dd>{{ dataFormatter(item.statusState) }}</dd>
-                <!-- Health Rollup -->
-                <dt>{{ $t('pageInventory.table.healthRollup') }}:</dt>
-                <dd>{{ dataFormatter(item.healthRollup) }}</dd>
-              </dl>
-            </b-col>
-          </b-row>
-          <div class="section-divider mb-3 mt-3"></div>
-          <b-row>
-            <b-col class="mt-1" sm="6" xl="6">
-              <dl>
-                <!-- Manufacturer -->
-                <dt>{{ $t('pageInventory.table.manufacturer') }}:</dt>
-                <dd>{{ dataFormatter(item.manufacturer) }}</dd>
+                <!-- Model -->
+                <dt>{{ $t('pageInventory.table.bmcManagerModel') }}:</dt>
+                <dd>{{ dataFormatter(item.model) }}</dd>
                 <!-- Processor Type -->
                 <dt>{{ $t('pageInventory.table.processorType') }}:</dt>
                 <dd>{{ dataFormatter(item.processorType) }}</dd>
-                <!-- Processor Architecture -->
-                <dt>{{ $t('pageInventory.table.processorArchitecture') }}:</dt>
-                <dd>{{ dataFormatter(item.processorArchitecture) }}</dd>
-                <!-- Instruction Set -->
-                <dt>{{ $t('pageInventory.table.instructionSet') }}:</dt>
-                <dd>{{ dataFormatter(item.instructionSet) }}</dd>
-                <!-- Version -->
-                <dt>{{ $t('pageInventory.table.version') }}:</dt>
-                <dd>{{ dataFormatter(item.version) }}</dd>
-              </dl>
-            </b-col>
-            <b-col class="mt-1" sm="6" xl="6">
-              <dl>
-                <!-- Min Speed MHz -->
-                <dt>{{ $t('pageInventory.table.minSpeedMHz') }}:</dt>
-                <dd>{{ dataFormatter(item.minSpeedMHz) }}</dd>
-                <!-- Max Speed MHz -->
-                <dt>{{ $t('pageInventory.table.maxSpeedMHz') }}:</dt>
-                <dd>{{ dataFormatter(item.maxSpeedMHz) }}</dd>
                 <!-- Total Cores -->
                 <dt>{{ $t('pageInventory.table.totalCores') }}:</dt>
                 <dd>{{ dataFormatter(item.totalCores) }}</dd>
-                <!-- Total Threads -->
-                <dt>{{ $t('pageInventory.table.totalThreads') }}:</dt>
-                <dd>{{ dataFormatter(item.totalThreads) }}</dd>
               </dl>
             </b-col>
           </b-row>
@@ -190,6 +157,13 @@ export default {
         {
           key: 'health',
           label: this.$t('pageInventory.table.health'),
+          formatter: this.dataFormatter,
+          sortable: true,
+          tdClass: 'text-nowrap',
+        },
+        {
+          key: 'status',
+          label: this.$t('pageUserManagement.table.status'),
           formatter: this.dataFormatter,
           sortable: true,
           tdClass: 'text-nowrap',
