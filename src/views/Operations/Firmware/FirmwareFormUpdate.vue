@@ -29,6 +29,7 @@
             <form-file
               id="image-file"
               :disabled="isPageDisabled"
+              accept=".tar"
               :state="getValidationState($v.file)"
               aria-describedby="image-file-help-block"
               @input="onFileUpload($event)"
