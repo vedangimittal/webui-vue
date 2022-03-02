@@ -33,6 +33,10 @@ const LicenseStore = {
           license.Name !== 'Elastic MemoryGB*Days Available' &&
           license.Name !== 'Elastic Processor*Days Available' &&
           license.Name !== 'Trial Memory Licenses (GB)' &&
+          license.Name !== 'Permanent Memory Licenses (GB)' &&
+          license.Name !== 'Permanent Processor Licenses' &&
+          license.Name !== 'Firmware Update Access Key' &&
+          license.Name !== 'Virtualization Engine Technology' &&
           license.Name !== 'Trial Processor Licenses'
         );
       }),
