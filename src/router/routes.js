@@ -13,6 +13,7 @@ import Ldap from '@/views/SecurityAndAccess/Ldap';
 import UserManagement from '@/views/SecurityAndAccess/UserManagement';
 import Login from '@/views/Login';
 import LoginLayout from '@/layouts/LoginLayout';
+import HardwareDeconfiguration from '@/views/Settings/HardwareDeconfiguration';
 import Network from '@/views/Settings/Network';
 import Overview from '@/views/Overview';
 import PageNotFound from '@/views/PageNotFound';
@@ -232,6 +233,14 @@ const routes = [
         component: Firmware,
         meta: {
           title: i18n.t('appPageTitle.firmware'),
+        },
+      },
+      {
+        path: '/settings/hardware-deconfiguration',
+        name: 'hardware-deconfiguration',
+        component: HardwareDeconfiguration,
+        meta: {
+          title: i18n.t('appPageTitle.hardwareDeconfiguration'),
         },
       },
       {

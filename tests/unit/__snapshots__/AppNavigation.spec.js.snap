@@ -455,6 +455,15 @@ exports[`AppNavigation.vue should render correctly 1`] = `
                 </a>
                 <a
                   class="nav-link"
+                  data-test-id="nav-item-hardware-deconfiguration"
+                  href="#/settings/hardware-deconfiguration"
+                >
+                  
+                  appNavigation.hardwareDeconfiguration
+                
+                </a>
+                <a
+                  class="nav-link"
                   data-test-id="nav-item-network"
                   href="#/settings/network"
                 >
@@ -1148,6 +1157,15 @@ exports[`AppNavigation.vue should render with nav-container open 1`] = `
                 >
                   
                   appNavigation.dateTime
+                
+                </a>
+                <a
+                  class="nav-link"
+                  data-test-id="nav-item-hardware-deconfiguration"
+                  href="#/settings/hardware-deconfiguration"
+                >
+                  
+                  appNavigation.hardwareDeconfiguration
                 
                 </a>
                 <a

@@ -181,6 +181,11 @@ const AppNavigationMixin = {
               restrictTo: [],
             },
             {
+              id: 'hardware-deconfiguration',
+              label: this.$t('appNavigation.hardwareDeconfiguration'),
+              route: '/settings/hardware-deconfiguration',
+            },
+            {
               id: 'network',
               label: this.$t('appNavigation.network'),
               route: '/settings/network',
