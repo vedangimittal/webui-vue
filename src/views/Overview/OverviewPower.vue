@@ -26,10 +26,9 @@
           </dd>
           <dd v-else>{{ $t('global.status.disabled') }}</dd>
           <dt>{{ $t('pageOverview.powerMode') }}</dt>
-          <dd v-if="powerControlModeValue">
-            {{ powerControlModeValue }}
+          <dd>
+            {{ dataFormatter(powerModeValue) }}
           </dd>
-          <dd v-else>{{ $t('global.status.disabled') }}</dd>
         </dl>
       </b-col>
     </b-row>
@@ -51,12 +50,15 @@ export default {
     ...mapGetters({
       powerCapValue: 'powerControl/powerCapValue',
       powerConsumptionValue: 'powerControl/powerConsumptionValue',
-      powerControlModeValue: 'powerControl/powerControlModeValue',
+      powerModeValue: 'powerControl/powerSaverMode',
       idlePowerData: 'powerControl/idlePower',
     }),
   },
   created() {
-    this.$store.dispatch('powerControl/getPowerControl').finally(() => {
+    Promise.all(
+      this.$store.dispatch('powerControl/getPowerSaverModeData'),
+      this.$store.dispatch('powerControl/getPowerControl')
+    ).finally(() => {
       this.$root.$emit('overview-power-complete');
     });
   },
