@@ -4,6 +4,8 @@
       sort-icon-left
       no-sort-reset
       hover
+      sort-by="name"
+      :sort-desc="false"
       responsive="md"
       :items="items"
       :fields="fields"
@@ -46,7 +48,7 @@
         <b-container fluid>
           <b-row>
             <b-col class="mt-2" sm="6" xl="6">
-              <!-- Nmae -->
+              <!-- Name -->
               <dt>{{ $t('pageInventory.table.name') }}:</dt>
               <dd>{{ dataFormatter(item.name) }}</dd>
               <!-- Serial number -->
@@ -91,7 +93,7 @@ export default {
         },
         {
           key: 'name',
-          label: this.$t('pageInventory.table.id'),
+          label: this.$t('pageInventory.table.name'),
           formatter: this.dataFormatter,
           sortable: true,
         },

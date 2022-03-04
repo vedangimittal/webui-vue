@@ -14,32 +14,16 @@ const BmcStore = {
       const bmc = {};
       bmc.dateTime = new Date(data.DateTime);
       bmc.description = data.Description;
-      bmc.firmwareVersion = data.FirmwareVersion;
-      bmc.graphicalConsoleConnectTypes =
-        data.GraphicalConsole.ConnectTypesSupported;
-      bmc.graphicalConsoleEnabled = data.GraphicalConsole.ServiceEnabled;
-      bmc.graphicalConsoleMaxSessions =
-        data.GraphicalConsole.MaxConcurrentSessions;
       bmc.health = data.Status.Health;
-      bmc.healthRollup = data.Status.HealthRollup;
       bmc.id = data.Id;
-      bmc.lastResetTime = new Date(data.LastResetTime);
       bmc.identifyLed = data.LocationIndicatorActive;
       bmc.locationNumber = data.Location?.PartLocation?.ServiceLabel;
-      bmc.manufacturer = data.manufacturer;
-      bmc.managerType = data.ManagerType;
       bmc.model = data.Model;
       bmc.name = data.Name;
       bmc.partNumber = data.PartNumber;
-      bmc.powerState = data.PowerState;
-      bmc.serialConsoleConnectTypes = data.SerialConsole.ConnectTypesSupported;
-      bmc.serialConsoleEnabled = data.SerialConsole.ServiceEnabled;
-      bmc.serialConsoleMaxSessions = data.SerialConsole.MaxConcurrentSessions;
       bmc.serialNumber = data.SerialNumber;
-      bmc.serviceEntryPointUuid = data.ServiceEntryPointUUID;
       bmc.sparePartNumber = data.SparePartNumber;
       bmc.statusState = data.Status.State;
-      bmc.uuid = data.UUID;
       bmc.uri = data['@odata.id'];
       state.bmc = bmc;
     },

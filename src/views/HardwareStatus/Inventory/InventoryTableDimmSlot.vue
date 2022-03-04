@@ -18,12 +18,12 @@
       sort-icon-left
       no-sort-reset
       hover
-      sort-by="health"
+      sort-by="id"
       responsive="md"
       show-empty
       :items="dimms"
       :fields="fields"
-      :sort-desc="true"
+      :sort-desc="false"
       :sort-compare="sortCompare"
       :filter="searchFilter"
       :empty-text="$t('global.table.emptyMessage')"

@@ -21,9 +21,10 @@
       hover
       responsive="md"
       show-empty
+      sort-by="id"
       :items="processors"
       :fields="fields"
-      :sort-desc="true"
+      :sort-desc="false"
       :filter="searchFilter"
       :empty-text="$t('global.table.emptyMessage')"
       :empty-filtered-text="$t('global.table.emptySearchMessage')"
@@ -150,7 +151,7 @@ export default {
         },
         {
           key: 'id',
-          label: this.$t('pageInventory.table.id'),
+          label: this.$t('pageInventory.table.name'),
           formatter: this.dataFormatter,
           sortable: true,
         },
