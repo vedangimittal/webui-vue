@@ -43,7 +43,7 @@ export default {
   computed: {
     ...mapGetters({
       systems: 'system/systems',
-      processorInfo: 'licenses/processorInfo',
+      processorInfo: 'licenses/licenses',
       configuredCores: 'fieldCoreOverride/configuredCores',
       isFieldCoreOverrideEnabled: 'fieldCoreOverride/isEnabled',
       isFieldCoreOverridePending: 'fieldCoreOverride/isPending',
@@ -52,7 +52,7 @@ export default {
       return this.systems?.[0]?.processorSummaryCoreCount;
     },
     licensedCores() {
-      return this.processorInfo?.licensed;
+      return this.processorInfo?.PermProcs?.MaxAuthorizedDevices;
     },
   },
   methods: { isUndefined },

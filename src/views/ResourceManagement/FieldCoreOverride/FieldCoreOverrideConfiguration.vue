@@ -24,6 +24,8 @@
                 id="input-configured-cores"
                 v-model.number="inputConfiguredCores"
                 type="number"
+                min="1"
+                :max="totalInstalledCores"
                 :disabled="!inputEnableFieldCoreOverride"
                 :placeholder="$t('pageFieldCoreOverride.enterValue')"
                 :state="getValidationState($v.inputConfiguredCores)"
@@ -74,7 +76,11 @@ export default {
     ...mapGetters({
       configuredCores: 'fieldCoreOverride/configuredCores',
       isFieldCoreOverrideEnabled: 'fieldCoreOverride/isEnabled',
+      systems: 'system/systems',
     }),
+    totalInstalledCores() {
+      return this.systems?.[0]?.processorSummaryCoreCount;
+    },
   },
   watch: {
     configuredCores: function (value) {
