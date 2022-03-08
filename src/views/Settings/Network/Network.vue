@@ -35,7 +35,6 @@
     <modal-ipv4 :default-gateway="defaultGateway" @ok="saveIpv4Address" />
     <modal-dns @ok="saveDnsAddress" />
     <modal-hostname :hostname="currentHostname" @ok="saveSettings" />
-    <modal-mac-address :mac-address="currentMacAddress" @ok="saveSettings" />
   </b-container>
 </template>
 
@@ -43,7 +42,6 @@
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import DataFormatterMixin from '@/components/Mixins/DataFormatterMixin';
 import LoadingBarMixin, { loading } from '@/components/Mixins/LoadingBarMixin';
-import ModalMacAddress from './ModalMacAddress.vue';
 import ModalHostname from './ModalHostname.vue';
 import ModalIpv4 from './ModalIpv4.vue';
 import ModalDns from './ModalDns.vue';
@@ -59,7 +57,6 @@ export default {
   name: 'Network',
   components: {
     ModalHostname,
-    ModalMacAddress,
     ModalIpv4,
     ModalDns,
     NetworkGlobalSettings,
@@ -77,7 +74,6 @@ export default {
   data() {
     return {
       currentHostname: '',
-      currentMacAddress: '',
       defaultGateway: '',
       loading,
       tabIndex: 0,

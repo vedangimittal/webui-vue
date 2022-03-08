@@ -36,7 +36,6 @@ const NetworkStore = {
           HostName,
           IPv4Addresses,
           IPv4StaticAddresses,
-          LinkStatus,
           MACAddress,
         } = data;
         return {
@@ -47,7 +46,6 @@ const NetworkStore = {
           dhcpEnabled: DHCPv4.DHCPEnabled,
           hostname: HostName,
           macAddress: MACAddress,
-          linkStatus: LinkStatus,
           staticAddress: IPv4StaticAddresses[0]?.Address, // Display first static address on overview page
           useDnsEnabled: DHCPv4.UseDNSServers,
           useDomainNameEnabled: DHCPv4.UseDomainName,

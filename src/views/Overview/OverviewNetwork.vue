@@ -11,14 +11,6 @@
           <dd>{{ dataFormatter(network.hostname) }}</dd>
         </dl>
       </b-col>
-      <b-col sm="6">
-        <dl>
-          <dt>{{ $t('pageOverview.linkStatus') }}</dt>
-          <dd>
-            {{ dataFormatter(network.linkStatus) }}
-          </dd>
-        </dl>
-      </b-col>
     </b-row>
     <b-row>
       <b-col>
