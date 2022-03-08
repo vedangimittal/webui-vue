@@ -30,6 +30,7 @@ const AuthenticationStore = {
       Cookies.remove('XSRF-TOKEN');
       Cookies.remove('IsAuthenticated');
       localStorage.removeItem('storedUsername');
+      sessionStorage.removeItem('storedCurrentUser');
       state.xsrfCookie = undefined;
       state.isAuthenticatedCookie = undefined;
     },

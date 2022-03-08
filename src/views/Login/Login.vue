@@ -131,7 +131,12 @@ export default {
           if (passwordChangeRequired) {
             this.$router.push('/change-password');
           } else {
-            this.$router.push('/');
+            Promise.all([
+              this.$store.dispatch('global/getUsers'),
+              this.$store.dispatch('global/getCurrentUser', username),
+            ]).then(() => {
+              this.$router.push('/');
+            });
           }
         })
         .catch((error) => console.log(error))

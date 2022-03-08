@@ -5,11 +5,16 @@
         :label="$t('pageDumps.form.selectDumpType')"
         label-for="selectDumpType"
       >
+        <template #label>
+          {{ $t('pageDumps.form.selectDumpType') }}
+          <info-tooltip :title="$t('pageDumps.form.selectDumpTypeTooltip')" />
+        </template>
         <b-form-select
           id="selectDumpType"
           v-model="selectedDumpType"
           :options="dumpTypeOptions"
           :state="getValidationState($v.selectedDumpType)"
+          @change="updateDumpInfo"
         >
           <template #first>
             <b-form-select-option :value="null" disabled>
@@ -21,9 +26,40 @@
           {{ $t('global.form.required') }}
         </b-form-invalid-feedback>
       </b-form-group>
-      <alert variant="info" class="mb-3" :show="selectedDumpType === 'system'">
-        {{ $t('pageDumps.form.systemDumpInfo') }}
-      </alert>
+      <template v-if="selectedDumpType === 'resource'">
+        <b-form-group label-for="resourceSelector">
+          <template #label>
+            {{ $t('pageDumps.form.resourceSelector') }}
+            <info-tooltip
+              :title="$t('pageDumps.form.resourceSelectorTooltip')"
+            />
+          </template>
+
+          <b-form-input id="resourceSelector" v-model="resourceSelectorValue">
+          </b-form-input>
+        </b-form-group>
+        <template v-if="isServiceUser">
+          <b-form-group label-for="password">
+            <template #label>
+              {{ $t('pageDumps.form.password') }}
+              <info-tooltip :title="$t('pageDumps.form.passwordTooltip')" />
+            </template>
+            <input-password-toggle>
+              <b-form-input
+                id="password"
+                v-model="resourcePassword"
+                type="password"
+                :state="getValidationState($v.resourcePassword)"
+              >
+              </b-form-input>
+              <b-form-invalid-feedback role="alert">
+                {{ $t('global.form.required') }}
+              </b-form-invalid-feedback>
+            </input-password-toggle>
+          </b-form-group>
+        </template>
+      </template>
+
       <b-button variant="primary" type="submit" form="form-new-dump">
         {{ $t('pageDumps.form.initiateDump') }}
       </b-button>
@@ -33,30 +69,59 @@
 </template>
 
 <script>
-import { required } from 'vuelidate/lib/validators';
+import { required, requiredIf } from 'vuelidate/lib/validators';
 import ModalConfirmation from './DumpsModalConfirmation';
-import Alert from '@/components/Global/Alert';
+import InfoTooltip from '@/components/Global/InfoTooltip';
+import InputPasswordToggle from '@/components/Global/InputPasswordToggle';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
 
 export default {
-  components: { Alert, ModalConfirmation },
+  components: { InfoTooltip, InputPasswordToggle, ModalConfirmation },
   mixins: [BVToastMixin, VuelidateMixin],
   data() {
     return {
       selectedDumpType: null,
+      resourceSelectorValue: null,
+      resourcePassword: null,
       dumpTypeOptions: [
         { value: 'bmc', text: this.$t('pageDumps.form.bmcDump') },
+        { value: 'resource', text: this.$t('pageDumps.form.resourceDump') },
         { value: 'system', text: this.$t('pageDumps.form.systemDump') },
       ],
     };
   },
+  computed: {
+    currentUser() {
+      return this.$store.getters['global/currentUser'];
+    },
+    isServiceUser() {
+      return this.$store.getters['global/isServiceUser'];
+    },
+  },
+  created() {
+    this.checkForUserData();
+  },
   validations() {
     return {
       selectedDumpType: { required },
+      resourcePassword: {
+        required: requiredIf(
+          () => this.isServiceUser && this.selectedDumpType === 'resource'
+        ),
+      },
     };
   },
   methods: {
+    checkForUserData() {
+      if (!this.currentUser) {
+        this.$store.dispatch('userManagement/getUsers');
+        this.$store.dispatch('global/getCurrentUser');
+      }
+    },
+    updateDumpInfo() {
+      this.$emit('updateDumpInfo', this.selectedDumpType);
+    },
     handleSubmit() {
       this.$v.$touch();
       if (this.$v.$invalid) return;
@@ -65,12 +130,28 @@ export default {
       if (this.selectedDumpType === 'system') {
         this.showConfirmationModal();
       }
+      // Resource dump initiation
+      else if (this.selectedDumpType === 'resource') {
+        this.$store
+          .dispatch('dumps/createResourceDump', {
+            resourceSelector: this.resourceSelectorValue,
+            // If not logged as service, 'pwd' must be used
+            resourcePassword: this.resourcePassword || 'pwd',
+          })
+          .then(() =>
+            this.infoToast(this.$t('pageDumps.toast.successStartDump'), {
+              title: this.$t('pageDumps.toast.successStartResourceDumpTitle'),
+              timestamp: true,
+            })
+          )
+          .catch(({ message }) => this.errorToast(message));
+      }
       // BMC dump initiation
       else if (this.selectedDumpType === 'bmc') {
         this.$store
           .dispatch('dumps/createBmcDump')
           .then(() =>
-            this.infoToast(this.$t('pageDumps.toast.successStartBmcDump'), {
+            this.infoToast(this.$t('pageDumps.toast.successStartDump'), {
               title: this.$t('pageDumps.toast.successStartBmcDumpTitle'),
               timestamp: true,
             })
@@ -85,7 +166,7 @@ export default {
       this.$store
         .dispatch('dumps/createSystemDump')
         .then(() =>
-          this.infoToast(this.$t('pageDumps.toast.successStartSystemDump'), {
+          this.infoToast(this.$t('pageDumps.toast.successStartDump'), {
             title: this.$t('pageDumps.toast.successStartSystemDumpTitle'),
             timestamp: true,
           })

@@ -29,6 +29,7 @@ const serverStateMapper = (hostState) => {
 const GlobalStore = {
   namespaced: true,
   state: {
+    bootProgress: null,
     assetTag: null,
     bmcTime: null,
     acfInstalled: false,
@@ -42,9 +43,17 @@ const GlobalStore = {
       ? JSON.parse(localStorage.getItem('storedUtcDisplay'))
       : true,
     username: localStorage.getItem('storedUsername'),
+    currentUser: JSON.parse(sessionStorage.getItem('storedCurrentUser')),
     isAuthorized: true,
   },
   getters: {
+    bootProgress: (state) => state.bootProgress,
+    isInPhypStandby: (state) =>
+      // SystemHardwareInitializationComplete and after is "PHYP in standby"
+      state.bootProgress === 'SystemHardwareInitializationComplete' ||
+      state.bootProgress === 'SetupEntered' ||
+      state.bootProgress === 'OSBootStarted' ||
+      state.bootProgress === 'OSRunning',
     assetTag: (state) => state.assetTag,
     modelType: (state) => state.modelType,
     serialNumber: (state) => state.serialNumber,
@@ -56,9 +65,14 @@ const GlobalStore = {
     languagePreference: (state) => state.languagePreference,
     isUtcDisplay: (state) => state.isUtcDisplay,
     username: (state) => state.username,
+    currentUser: (state) => state.currentUser,
+    isServiceUser: (state) =>
+      state.currentUser?.RoleId === 'OemIBMServiceAgent' || !state.currentUser,
     isAuthorized: (state) => state.isAuthorized,
   },
   mutations: {
+    setBootProgress: (state, bootProgress) =>
+      (state.bootProgress = bootProgress),
     setAssetTag: (state, assetTag) => (state.assetTag = assetTag),
     setModelType: (state, modelType) => (state.modelType = modelType),
     setSerialNumber: (state, serialNumber) =>
@@ -75,6 +89,7 @@ const GlobalStore = {
     setLanguagePreference: (state, language) =>
       (state.languagePreference = language),
     setUsername: (state, username) => (state.username = username),
+    setCurrentUser: (state, currentUser) => (state.currentUser = currentUser),
     setUtcTime: (state, isUtcDisplay) => (state.isUtcDisplay = isUtcDisplay),
     setUnauthorized: (state) => {
       state.isAuthorized = false;
@@ -100,6 +115,22 @@ const GlobalStore = {
         .then((response) => {
           commit('setAcfInstalled', response.data.Oem.IBM.ACF.ACFInstalled);
           commit('setExpirationDate', response.data.Oem.IBM.ACF.ExpirationDate);
+        })
+        .catch((error) => console.log(error));
+    },
+    getCurrentUser(
+      { commit, getters },
+      username = localStorage.getItem('storedUsername')
+    ) {
+      if (sessionStorage.getItem('storedCurrentUser')) return;
+      return api
+        .get(`/redfish/v1/AccountService/Accounts/${username}`)
+        .then(({ data }) => {
+          commit('setCurrentUser', data);
+          sessionStorage.setItem(
+            'storedCurrentUser',
+            JSON.stringify(getters.currentUser)
+          );
         })
         .catch((error) => console.log(error));
     },
@@ -129,6 +160,15 @@ const GlobalStore = {
             }
           }
         )
+        .catch((error) => console.log(error));
+    },
+    async getBootProgress({ commit }) {
+      api
+        .get('/redfish/v1/Systems/system')
+        .then(({ data }) => {
+          const bootProgress = data.BootProgress.LastState;
+          commit('setBootProgress', bootProgress);
+        })
         .catch((error) => console.log(error));
     },
   },
