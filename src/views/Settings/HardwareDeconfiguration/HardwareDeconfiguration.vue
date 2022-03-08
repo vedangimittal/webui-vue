@@ -1,15 +1,15 @@
 <template>
   <b-container fluid="xl">
-    <page-title :description="$t('pageDeconfigurationHardware.description')" />
+    <page-title :description="$t('pageHardwareDeconfiguration.description')" />
     <page-section>
       <b-row>
         <b-col>
           <b-card no-body>
             <b-tabs content-class="mt-3" fill>
-              <b-tab :title="$t('pageDeconfigurationHardware.memoryDimms')"
+              <b-tab :title="$t('pageHardwareDeconfiguration.memoryDimms')"
                 ><memory-dimms
               /></b-tab>
-              <b-tab :title="$t('pageDeconfigurationHardware.processorCores')"
+              <b-tab :title="$t('pageHardwareDeconfiguration.processorCores')"
                 ><processor-cores
               /></b-tab>
             </b-tabs>

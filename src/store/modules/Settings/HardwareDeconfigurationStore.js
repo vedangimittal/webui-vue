@@ -1,4 +1,5 @@
 import api from '@/store/api';
+import i18n from '@/i18n';
 
 const HardwareDeconfigurationStore = {
   namespaced: true,
@@ -59,6 +60,8 @@ const HardwareDeconfigurationStore = {
               id: data.Id,
               location: locationCode,
               functionalState: data.Status?.Health,
+              settings: data.Enabled,
+              uri: data['@odata.id'],
             };
           });
           return coreData;
@@ -87,11 +90,51 @@ const HardwareDeconfigurationStore = {
               size: data.CapacityMiB,
               locationCode: data.Location?.PartLocation?.ServiceLabel,
               deconfigurationType: data.Status?.Conditions?.MessageArgs[0],
+              settings: data.Enabled,
+              uri: data['@odata.id'],
             };
           });
           commit('setDimms', dimmsData);
         })
       );
+    },
+    async updateSettingsState({ dispatch }, settingsState) {
+      const uri = settingsState.uri;
+      const updatedSettingsValue = {
+        Enabled: settingsState.settings,
+      };
+      return await api.patch(uri, updatedSettingsValue).catch((error) => {
+        dispatch('getDimms');
+        console.log('error', error);
+        if (settingsState.settings) {
+          throw new Error(
+            i18n.t('pageHardwareDeconfiguration.toast.errorEnablingSetting')
+          );
+        } else {
+          throw new Error(
+            i18n.t('pageHardwareDeconfiguration.toast.errorDisablingSetting')
+          );
+        }
+      });
+    },
+    async updateCoresSettingsState({ dispatch }, settingsState) {
+      const uri = settingsState.uri;
+      const updatedSettingsValue = {
+        Enabled: settingsState.settings,
+      };
+      return await api.patch(uri, updatedSettingsValue).catch((error) => {
+        dispatch('getProcessors');
+        console.log('error', error);
+        if (settingsState.settings) {
+          throw new Error(
+            i18n.t('pageHardwareDeconfiguration.toast.errorEnablingSetting')
+          );
+        } else {
+          throw new Error(
+            i18n.t('pageHardwareDeconfiguration.toast.errorDisablingSetting')
+          );
+        }
+      });
     },
   },
 };

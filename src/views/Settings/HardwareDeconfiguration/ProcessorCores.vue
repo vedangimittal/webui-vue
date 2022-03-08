@@ -43,6 +43,21 @@
           <template #cell(functionalState)="{ value }">
             <status-icon :status="statusIcon(value)" /> {{ value }}
           </template>
+          <template #cell(settings)="row">
+            <b-form-checkbox
+              v-model="row.item.settings"
+              name="switch"
+              switch
+              @change="toggleSettingsSwitch(row)"
+            >
+              <span v-if="row.item.settings">
+                {{ $t('pageHardwareDeconfiguration.configured') }}
+              </span>
+              <span v-else>{{
+                $t('pageHardwareDeconfiguration.deconfigured')
+              }}</span>
+            </b-form-checkbox>
+          </template>
         </b-table>
       </b-col>
     </b-row>
@@ -125,32 +140,37 @@ export default {
         {
           key: 'id',
           sortable: true,
-          label: this.$t('pageDeconfigurationHardware.table.id'),
+          label: this.$t('pageHardwareDeconfiguration.table.id'),
         },
         {
           key: 'location',
           formatter: this.dataFormatter,
-          label: this.$t('pageDeconfigurationHardware.table.locationCode'),
+          label: this.$t('pageHardwareDeconfiguration.table.locationCode'),
         },
         {
           key: 'functionalState',
           sortable: false,
-          label: this.$t('pageDeconfigurationHardware.table.functionalState'),
+          label: this.$t('pageHardwareDeconfiguration.table.functionalState'),
           tdClass: 'text-nowrap',
         },
         {
           key: 'deconfigurationType',
           formatter: this.dataFormatter,
           label: this.$t(
-            'pageDeconfigurationHardware.table.deconfigurationType'
+            'pageHardwareDeconfiguration.table.deconfigurationType'
           ),
+        },
+        {
+          key: 'settings',
+          formatter: this.dataFormatter,
+          label: this.$t('pageHardwareDeconfiguration.table.settings'),
         },
       ],
       tableFilters: [
         {
           key: 'deconfigurationType',
           label: this.$t(
-            'pageDeconfigurationHardware.table.deconfigurationType'
+            'pageHardwareDeconfiguration.table.deconfigurationType'
           ),
           values: [
             'By Association',
@@ -204,6 +224,14 @@ export default {
     },
     onFiltered(filteredItems) {
       this.searchTotalFilteredRows = filteredItems.length;
+    },
+    toggleSettingsSwitch(row) {
+      this.$store
+        .dispatch('hardwareDeconfiguration/updateCoresSettingsState', {
+          uri: row.item.uri,
+          settings: row.item.settings,
+        })
+        .catch(({ message }) => this.errorToast(message));
     },
   },
 };
