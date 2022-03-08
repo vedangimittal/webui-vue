@@ -49,15 +49,22 @@ exports[`AppHeader.vue should render correctly 1`] = `
        
       <b-navbar-nav>
         <b-navbar-brand
-          class="mr-0"
+          class="mr-0 logo-header"
           data-test-id="appHeader-container-overview"
           to="/"
         >
           <img
             alt="Built on OpenBMC"
             class="header-logo"
-            src="@/assets/images/logo-header.svg"
+            src="@/assets/images/logo-ibm-header.svg"
+            width="50px"
           />
+           
+          <span
+            class="pl-1 nav-tags header-text"
+          >
+            ASMI
+          </span>
         </b-navbar-brand>
          
         <!---->

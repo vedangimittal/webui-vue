@@ -31,15 +31,17 @@
         </b-button>
         <b-navbar-nav>
           <b-navbar-brand
-            class="mr-0"
+            class="mr-0 logo-header"
             to="/"
             data-test-id="appHeader-container-overview"
           >
             <img
+              width="50px"
               class="header-logo"
-              src="@/assets/images/logo-header.svg"
+              src="@/assets/images/logo-ibm-header.svg"
               :alt="altLogo"
             />
+            <span class="pl-1 nav-tags header-text">{{ headerText }}</span>
           </b-navbar-brand>
           <div v-if="isNavTagPresent" :key="routerKey" class="pl-2 nav-tags">
             <span>|</span>
@@ -137,6 +139,7 @@ export default {
     return {
       isNavigationOpen: false,
       altLogo: process.env.VUE_APP_COMPANY_NAME || 'Built on OpenBMC',
+      headerText: 'ASMI',
     };
   },
   computed: {
@@ -380,5 +383,14 @@ export default {
     box-shadow: inset 0 0 0 3px $navbar-color, inset 0 0 0 5px color('white');
     outline: 0;
   }
+}
+
+.logo-header {
+  display: flex;
+  align-items: center;
+}
+
+.header-text {
+  font-size: 22px;
 }
 </style>
