@@ -34,7 +34,10 @@ const SnmpAlertsStore = {
         .then((userIds) => api.all(userIds.map((user) => api.get(user))))
         .then((users) => {
           const snmpDetailsData = users.map((user) => user.data);
-          commit('setSnmpDetails', snmpDetailsData);
+          const snmpDetailsDataFiltered = snmpDetailsData.filter(
+            (item) => item.SubscriptionType === 'SNMPTrap'
+          );
+          commit('setSnmpDetails', snmpDetailsDataFiltered);
         })
         .catch((error) => {
           console.log(error);
