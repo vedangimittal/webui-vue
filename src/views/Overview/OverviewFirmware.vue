@@ -14,7 +14,7 @@
       </b-col>
       <b-col sm="7">
         <dl>
-          <dt>{{ $t('pageOverview.updateAccessKeyExpiration') }}</dt>
+          <dt>{{ $t('pageOverview.accessKeyExpiration') }}</dt>
           <dd>
             {{
               dataFormatter(firmwareAccessKeyInfo.expirationDate) | formatDate
