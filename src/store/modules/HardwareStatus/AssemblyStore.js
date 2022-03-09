@@ -20,10 +20,12 @@ const AssemblyStore = {
           Model,
           Name,
           Location,
+          Status,
           LocationIndicatorActive,
         } = assembly;
         return {
           id: MemberId,
+          health: Status?.Health,
           partNumber: PartNumber,
           serialNumber: SerialNumber,
           sparePartNumber: SparePartNumber,
@@ -31,6 +33,7 @@ const AssemblyStore = {
           name: Name,
           locationNumber: Location?.PartLocation?.ServiceLabel,
           identifyLed: LocationIndicatorActive,
+          state: Status?.State,
           uri: assembly['@odata.id'],
         };
       });

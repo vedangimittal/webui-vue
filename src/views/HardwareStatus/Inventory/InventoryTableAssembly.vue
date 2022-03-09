@@ -26,7 +26,19 @@
           <span class="sr-only">{{ expandRowLabel }}</span>
         </b-button>
       </template>
-
+      <!-- Health -->
+      <template #cell(health)="row">
+        <status-icon :status="statusIcon(row.item.health)" />
+        {{ row.item.health }}
+      </template>
+      <!-- Status -->
+      <template #cell(status)="row">
+        {{
+          row.item.state === 'Enabled'
+            ? $t('global.status.present')
+            : $t('global.status.absent')
+        }}
+      </template>
       <!-- Toggle identify LED -->
       <template #cell(identifyLed)="row">
         <b-form-checkbox
@@ -96,6 +108,20 @@ export default {
           label: this.$t('pageInventory.table.name'),
           formatter: this.dataFormatter,
           sortable: true,
+        },
+        {
+          key: 'health',
+          label: this.$t('pageInventory.table.health'),
+          formatter: this.dataFormatter,
+          sortable: true,
+          tdClass: 'text-nowrap',
+        },
+        {
+          key: 'status',
+          label: this.$t('pageUserManagement.table.status'),
+          formatter: this.dataFormatter,
+          sortable: true,
+          tdClass: 'text-nowrap',
         },
         {
           key: 'partNumber',

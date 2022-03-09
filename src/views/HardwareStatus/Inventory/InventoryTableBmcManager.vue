@@ -28,7 +28,14 @@
         <status-icon :status="statusIcon(value)" />
         {{ value }}
       </template>
-
+      <!-- Status -->
+      <template #cell(status)="row">
+        {{
+          row.item.statusState === 'Enabled'
+            ? $t('global.status.present')
+            : $t('global.status.absent')
+        }}
+      </template>
       <!-- Toggle identify LED -->
       <template #cell(identifyLed)="row">
         <b-form-checkbox
@@ -106,6 +113,12 @@ export default {
           key: 'health',
           label: this.$t('pageInventory.table.health'),
           formatter: this.dataFormatter,
+        },
+        {
+          key: 'status',
+          label: this.$t('pageUserManagement.table.status'),
+          formatter: this.dataFormatter,
+          tdClass: 'text-nowrap',
         },
         {
           key: 'locationNumber',
