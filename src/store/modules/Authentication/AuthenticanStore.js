@@ -53,10 +53,12 @@ const AuthenticationStore = {
         .then(() => router.go('/login'))
         .catch((error) => console.log(error));
     },
-    checkPasswordChangeRequired(_, username) {
-      api
+    async checkPasswordChangeRequired(_, username) {
+      return api
         .get(`/redfish/v1/AccountService/Accounts/${username}`)
-        .then(({ data: { PasswordChangeRequired } }) => PasswordChangeRequired)
+        .then(({ data: { PasswordChangeRequired } }) => {
+          return PasswordChangeRequired;
+        })
         .catch((error) => console.log(error));
     },
     resetStoreState({ state }) {
