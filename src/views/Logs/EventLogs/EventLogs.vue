@@ -125,6 +125,23 @@
               <b-row>
                 <b-col>
                   <dl>
+                    <!-- Event Id -->
+                    <dt>{{ $t('pageEventLogs.table.eventId') }}:</dt>
+                    <dd>{{ dataFormatter(item.eventId) }}</dd>
+                  </dl>
+                  <dl>
+                    <!-- Resolution -->
+                    <dt>{{ $t('pageEventLogs.table.resolution') }}:</dt>
+                    <dd v-for="value in resolutionValue(item)" :key="value">
+                      {{ dataFormatter(value) }}
+                    </dd>
+                  </dl>
+                </b-col>
+              </b-row>
+              <div class="section-divider mb-3 mt-2"></div>
+              <b-row>
+                <b-col>
+                  <dl>
                     <!-- Name -->
                     <dt>{{ $t('pageEventLogs.table.name') }}:</dt>
                     <dd>{{ dataFormatter(item.name) }}</dd>
@@ -452,6 +469,15 @@ export default {
           this.successToast(success);
         })
         .catch(({ message }) => this.errorToast(message));
+    },
+    resolutionValue(item) {
+      let value = item?.resolution?.split('\n');
+      if (value) {
+        value.pop();
+      } else {
+        value = [''];
+      }
+      return value;
     },
     deleteAllLogs() {
       this.$bvModal

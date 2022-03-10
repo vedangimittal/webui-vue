@@ -45,23 +45,27 @@ const EventLogStore = {
           const eventLogs = Members.map((log) => {
             const {
               Id,
+              EventId,
               Severity,
               Created,
               EntryType,
               Message,
               Name,
               Modified,
+              Resolution,
               Resolved,
               AdditionalDataURI,
             } = log;
             return {
               id: Id,
+              eventId: EventId,
               severity: Severity,
               date: new Date(Created),
               type: EntryType,
               description: Message,
               name: Name,
               modifiedDate: new Date(Modified),
+              resolution: Resolution,
               uri: log['@odata.id'],
               filterByStatus: Resolved ? 'Resolved' : 'Unresolved',
               status: Resolved, //true or false
