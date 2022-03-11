@@ -181,11 +181,6 @@ const AppNavigationMixin = {
               restrictTo: [],
             },
             {
-              id: 'hardware-deconfiguration',
-              label: this.$t('appNavigation.hardwareDeconfiguration'),
-              route: '/settings/hardware-deconfiguration',
-            },
-            {
               id: 'network',
               label: this.$t('appNavigation.network'),
               route: '/settings/network',
@@ -251,16 +246,6 @@ const AppNavigationMixin = {
               label: this.$t('appNavigation.keyClear'),
               route: '/operations/key-clear',
               restrictTo: ['Administrator', 'OemIBMServiceAgent'],
-            },
-            {
-              id: 'capacity-on-demand',
-              label: this.$t('appNavigation.capacityOnDemand'),
-              route: '/resource-management/capacity-on-demand',
-            },
-            {
-              id: 'field-core-override',
-              label: this.$t('appNavigation.fieldCoreOverride'),
-              route: '/resource-management/field-core-override',
             },
           ],
         },

@@ -350,11 +350,11 @@ exports[`AppNavigation.vue should render correctly 1`] = `
                 </a>
                 <a
                   class="nav-link"
-                  data-test-id="nav-item-serial-over-lan"
-                  href="#/operations/serial-over-lan"
+                  data-test-id="nav-item-host-console"
+                  href="#/operations/host-console"
                 >
                   
-                  appNavigation.serialOverLan
+                  appNavigation.hostConsole
                 
                 </a>
                 <a
@@ -1056,11 +1056,11 @@ exports[`AppNavigation.vue should render with nav-container open 1`] = `
                 </a>
                 <a
                   class="nav-link"
-                  data-test-id="nav-item-serial-over-lan"
-                  href="#/operations/serial-over-lan"
+                  data-test-id="nav-item-host-console"
+                  href="#/operations/host-console"
                 >
                   
-                  appNavigation.serialOverLan
+                  appNavigation.hostConsole
                 
                 </a>
                 <a

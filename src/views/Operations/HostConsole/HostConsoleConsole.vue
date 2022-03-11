@@ -4,7 +4,7 @@
       <b-col class="d-flex flex-column justify-content-end">
         <dl class="mb-2" sm="6" md="6">
           <dt class="d-inline font-weight-bold mr-1">
-            {{ $t('pageSerialOverLan.status') }}:
+            {{ $t('pageHostConsole.status') }}:
           </dt>
           <dd class="d-inline">
             <status-icon :status="serverStatusIcon" /> {{ connectionStatus }}
@@ -15,7 +15,7 @@
       <b-col v-if="!isFullWindow" class="d-flex justify-content-end">
         <b-button variant="link" type="button" @click="openConsoleWindow()">
           <icon-launch />
-          {{ $t('pageSerialOverLan.openNewTab') }}
+          {{ $t('pageHostConsole.openNewTab') }}
         </b-button>
       </b-col>
     </b-row>
@@ -32,7 +32,7 @@ import IconLaunch from '@carbon/icons-vue/es/launch/20';
 import StatusIcon from '@/components/Global/StatusIcon';
 
 export default {
-  name: 'SerialOverLanConsole',
+  name: 'HostConsoleConsole',
   components: {
     IconLaunch,
     StatusIcon,
@@ -57,8 +57,8 @@ export default {
     },
     connectionStatus() {
       return this.serverStatus === 'on'
-        ? this.$t('pageSerialOverLan.connected')
-        : this.$t('pageSerialOverLan.disconnected');
+        ? this.$t('pageHostConsole.connected')
+        : this.$t('pageHostConsole.disconnected');
     },
   },
   created() {
@@ -125,7 +125,7 @@ export default {
     },
     openConsoleWindow() {
       window.open(
-        '#/console/serial-over-lan-console',
+        '#/console/host-console-console',
         '_blank',
         'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=600,height=550'
       );

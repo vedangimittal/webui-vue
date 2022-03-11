@@ -25,8 +25,8 @@ import RebootBmc from '@/views/Operations/RebootBmc';
 import Policies from '@/views/SecurityAndAccess/Policies';
 import KeyClear from '@/views/Operations/KeyClear';
 import Sensors from '@/views/HardwareStatus/Sensors';
-import SerialOverLan from '@/views/Operations/SerialOverLan';
-import SerialOverLanConsole from '@/views/Operations/SerialOverLan/SerialOverLanConsole';
+import HostConsole from '@/views/Operations/hostConsole';
+import hostConsoleConsole from '@/views/Operations/hostConsole/hostConsoleConsole';
 import ServerPowerOperations from '@/views/Operations/ServerPowerOperations';
 import Certificates from '@/views/SecurityAndAccess/Certificates';
 import VirtualMedia from '@/views/Operations/VirtualMedia';
@@ -67,11 +67,11 @@ const routes = [
     },
     children: [
       {
-        path: 'serial-over-lan-console',
-        name: 'serial-over-lan-console',
-        component: SerialOverLanConsole,
+        path: 'host-console-console',
+        name: 'host-console',
+        component: hostConsoleConsole,
         meta: {
-          title: i18n.t('appPageTitle.serialOverLan'),
+          title: i18n.t('appPageTitle.hostConsole'),
         },
       },
       {
@@ -284,11 +284,11 @@ const routes = [
         },
       },
       {
-        path: '/operations/serial-over-lan',
-        name: 'serial-over-lan',
-        component: SerialOverLan,
+        path: '@:appPageTitle.hostConsole',
+        name: 'host-console',
+        component: HostConsole,
         meta: {
-          title: i18n.t('appPageTitle.serialOverLan'),
+          title: i18n.t('appPageTitle.hostConsole'),
         },
       },
       {

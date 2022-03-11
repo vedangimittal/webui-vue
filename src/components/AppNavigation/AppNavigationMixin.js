@@ -97,9 +97,9 @@ const AppNavigationMixin = {
               route: '/operations/service-login',
             },
             {
-              id: 'serial-over-lan',
-              label: this.$t('appNavigation.serialOverLan'),
-              route: '/operations/serial-over-lan',
+              id: 'host-console',
+              label: this.$t('appNavigation.hostConsole'),
+              route: '/operations/host-console',
             },
             {
               id: 'server-power-operations',

@@ -12,12 +12,12 @@
       </b-col>
       <b-col sm="6" lg="3" class="mb-2 mt-2">
         <b-button
-          to="/operations/serial-over-lan"
+          to="/operations/host-console"
           variant="secondary"
           data-test-id="overviewQuickLinks-button-solConsole"
           class="d-flex justify-content-between align-items-center"
         >
-          {{ $t('pageOverview.solConsole') }}
+          {{ $t('pageOverview.hostConsole') }}
           <icon-arrow-right />
         </b-button>
       </b-col>
