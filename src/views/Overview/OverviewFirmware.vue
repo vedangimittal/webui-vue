@@ -54,10 +54,10 @@ export default {
     },
   },
   created() {
-    Promise.all(
+    Promise.all([
       this.$store.dispatch('licenses/getLicenses'),
-      this.$store.dispatch('firmware/getFirmwareInformation')
-    ).finally(() => {
+      this.$store.dispatch('firmware/getFirmwareInformation'),
+    ]).finally(() => {
       this.$root.$emit('overview-firmware-complete');
     });
   },

@@ -55,10 +55,10 @@ export default {
     }),
   },
   created() {
-    Promise.all(
+    Promise.all([
       this.$store.dispatch('powerControl/getPowerSaverModeData'),
-      this.$store.dispatch('powerControl/getPowerControl')
-    ).finally(() => {
+      this.$store.dispatch('powerControl/getPowerControl'),
+    ]).finally(() => {
       this.$root.$emit('overview-power-complete');
     });
   },
