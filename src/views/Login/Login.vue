@@ -60,6 +60,14 @@
       :disabled="disableSubmitButton"
       >{{ $t('pageLogin.logIn') }}</b-button
     >
+    <div class="mt-3"></div>
+    <b-button
+      class="block mt-3"
+      variant="secondary"
+      @click="initModalUploadCertificate"
+      >{{ $t('pageLogin.uploadServiceLoginCertificate') }}</b-button
+    >
+    <modal-upload-certificate @ok="onModalOk" />
   </b-form>
 </template>
 
@@ -69,11 +77,14 @@ import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
 import i18n from '@/i18n';
 import Alert from '@/components/Global/Alert';
 import InputPasswordToggle from '@/components/Global/InputPasswordToggle';
+import ModalUploadCertificate from './ModalUploadCertificate';
+import BVToastMixin from '@/components/Mixins/BVToastMixin';
+import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 
 export default {
   name: 'Login',
-  components: { Alert, InputPasswordToggle },
-  mixins: [VuelidateMixin],
+  components: { Alert, InputPasswordToggle, ModalUploadCertificate },
+  mixins: [VuelidateMixin, BVToastMixin, LoadingBarMixin],
   data() {
     return {
       userInfo: {
@@ -141,6 +152,22 @@ export default {
         })
         .catch((error) => console.log(error))
         .finally(() => (this.disableSubmitButton = false));
+    },
+    initModalUploadCertificate() {
+      this.$bvModal.show('upload-certificate');
+    },
+    onModalOk({ file }) {
+      this.addNewCertificate(file);
+    },
+    addNewCertificate(file) {
+      const type = 'ServiceLogin Certificate';
+      this.$store
+        .dispatch('certificates/addNewACFCertificateOnLoginPage', {
+          file,
+          type,
+        })
+        .then((success) => this.successToast(success))
+        .catch(({ message }) => this.errorToast(message));
     },
   },
 };

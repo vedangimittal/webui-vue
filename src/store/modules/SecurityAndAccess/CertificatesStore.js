@@ -76,7 +76,7 @@ const CertificatesStore = {
             if (ACF.ExpirationDate) {
               var acfCertificate = {
                 type: '',
-                location: '',
+                location: '/redfish/v1/AccountService/Accounts/service',
                 certificate: 'ServiceLogin Certificate',
                 issuedBy: '',
                 issuedTo: '',
@@ -147,6 +147,31 @@ const CertificatesStore = {
           headers: { 'Content-Type': 'application/octet-stream' },
         })
         .then(() => dispatch('getCertificates'))
+        .then(() =>
+          i18n.t('pageCertificates.toast.successAddCertificate', {
+            certificate: getCertificateProp(type, 'label'),
+          })
+        )
+        .catch((error) => {
+          console.log(error);
+          throw new Error(i18n.t('pageCertificates.toast.errorAddCertificate'));
+        });
+    },
+    async addNewACFCertificateOnLoginPage(_, { file, type }) {
+      const base64File = await convertFileToBase64(file);
+      const fileObj = {
+        Oem: {
+          IBM: {
+            ACF: {
+              ACFFile: base64File.split('base64,')[1].slice(0, -1),
+            },
+          },
+        },
+      };
+      return await api
+        .patch(getCertificateProp(type, 'location'), fileObj, {
+          headers: { 'Content-Type': 'application/octet-stream' },
+        })
         .then(() =>
           i18n.t('pageCertificates.toast.successAddCertificate', {
             certificate: getCertificateProp(type, 'label'),
