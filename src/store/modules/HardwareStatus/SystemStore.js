@@ -70,13 +70,9 @@ const SystemStore = {
           commit('setSystemInfo', this.state.system.systems[0]);
           console.log('error', error);
           if (lampTestState) {
-            throw new Error(
-              i18n.t('pageHardwareStatus.toast.errorEnableLampTest')
-            );
+            throw new Error(i18n.t('pageInventory.toast.errorEnableLampTest'));
           } else {
-            throw new Error(
-              i18n.t('pageHardwareStatus.toast.errorDisableLampTest')
-            );
+            throw new Error(i18n.t('pageInventory.toast.errorDisableLampTest'));
           }
         });
     },

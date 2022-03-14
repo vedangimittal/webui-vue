@@ -2,21 +2,21 @@
   <b-modal
     id="power-modal-saver"
     ref="modal"
-    :title="$t(`pagePower.modalEnablePowerSaverMode.title${title}`)"
+    :title="$t(`pagePower.modalEnablePowerPerformanceMode.title${title}`)"
     @hidden="resetForm"
   >
     <p>
       <strong>
-        {{ $t('pagePower.modalEnablePowerSaverMode.subTitle') }}
+        {{ $t('pagePower.modalEnablePowerPerformanceMode.subTitle') }}
       </strong>
     </p>
-    <p>{{ $t('pagePower.modalEnablePowerSaverMode.content') }}</p>
+    <p>{{ $t('pagePower.modalEnablePowerPerformanceMode.content') }}</p>
     <template #modal-footer="{ cancel }">
       <b-button variant="secondary" @click="cancel()">
-        {{ $t('pagePower.modalEnablePowerSaverMode.cancelButton') }}
+        {{ $t('pagePower.modalEnablePowerPerformanceMode.cancelButton') }}
       </b-button>
       <b-button variant="primary" @click="handleSubmit">
-        {{ $t(`pagePower.modalEnablePowerSaverMode.title${title}`) }}
+        {{ $t(`pagePower.modalEnablePowerPerformanceMode.title${title}`) }}
       </b-button>
     </template>
   </b-modal>

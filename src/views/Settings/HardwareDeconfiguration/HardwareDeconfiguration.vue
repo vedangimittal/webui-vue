@@ -1,17 +1,21 @@
 <template>
   <b-container fluid="xl">
-    <page-title :description="$t('pageDeconfigurationHardware.description')" />
+    <page-title
+      :description="$t('pageDeconfigurationHardware.description')"
+      :link="$t('pageDeconfigurationHardware.link')"
+      to="/deconfiguration-records"
+    />
     <page-section>
       <b-row>
         <b-col>
           <b-card no-body>
             <b-tabs content-class="mt-3" fill>
-              <b-tab :title="$t('pageDeconfigurationHardware.memoryDimms')"
-                ><memory-dimms
-              /></b-tab>
-              <b-tab :title="$t('pageDeconfigurationHardware.processorCores')"
-                ><processor-cores
-              /></b-tab>
+              <b-tab :title="$t('pageDeconfigurationHardware.memoryDimms')">
+                <memory-dimms />
+              </b-tab>
+              <b-tab :title="$t('pageDeconfigurationHardware.processorCores')">
+                <processor-cores />
+              </b-tab>
             </b-tabs>
           </b-card>
         </b-col>

@@ -14,7 +14,7 @@ export default {
         },
         {
           setting: 'Power saving',
-          description: this.$t('pagePower.tableRoles.descPowerSaver'),
+          description: this.$t('pagePower.tableRoles.descPowerSaving'),
         },
         {
           setting: 'Maximum performance',

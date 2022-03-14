@@ -33,7 +33,7 @@
                 {{ $t('pageKeyClear.form.clearAllLabel') }}
               </b-form-radio>
               <b-form-text id="clear-all" class="ml-4 mb-3">
-                {{ $t('pageKeyClear.form.clearAllHeperText') }}
+                {{ $t('pageKeyClear.form.clearAllHelperText') }}
               </b-form-text>
               <b-form-radio class="mb-1" value="POWERVM_SYSKEY">
                 {{ $t('pageKeyClear.form.clearHypervisorSystemKeyLabel') }}

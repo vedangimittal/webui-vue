@@ -240,7 +240,7 @@ const routes = [
         name: 'hardware-deconfiguration',
         component: HardwareDeconfiguration,
         meta: {
-          title: i18n.t('appPageTitle.hardwareDeconfiguration'),
+          title: i18n.t('appPageTitle.deconfigurationHardware'),
         },
       },
       {
