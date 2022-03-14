@@ -28,7 +28,12 @@
           @filtered="onFiltered"
         >
           <template #cell(functionalState)="{ value }">
-            <status-icon :status="statusIcon(value)" /> {{ value }}
+            <div v-if="value == 'OK'">
+              {{ $t('pageDeconfigurationHardware.configured') }}
+            </div>
+            <div v-else>
+              {{ $t('pageDeconfigurationHardware.deconfigured') }}
+            </div>
           </template>
           <template #cell(settings)="row">
             <b-form-checkbox
@@ -38,10 +43,10 @@
               @change="toggleSettingsSwitch(row)"
             >
               <span v-if="row.item.settings">
-                {{ $t('pageHardwareDeconfiguration.configured') }}
+                {{ $t('pageDeconfigurationHardware.configured') }}
               </span>
               <span v-else>{{
-                $t('pageHardwareDeconfiguration.deconfigured')
+                $t('pageDeconfigurationHardware.deconfigured')
               }}</span>
             </b-form-checkbox>
           </template>
@@ -78,7 +83,6 @@
 </template>
 
 <script>
-import StatusIcon from '@/components/Global/StatusIcon';
 import TableFilter from '@/components/Global/TableFilter';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import BVPaginationMixin, {
@@ -101,7 +105,6 @@ import SearchFilterMixin, {
 export default {
   name: 'MemoryDimms',
   components: {
-    StatusIcon,
     TableFilter,
   },
   mixins: [
@@ -126,42 +129,42 @@ export default {
         {
           key: 'id',
           sortable: true,
-          label: this.$t('pageHardwareDeconfiguration.table.id'),
+          label: this.$t('pageDeconfigurationHardware.table.id'),
         },
         {
-          key: 'location',
+          key: 'size',
           formatter: this.dataFormatter,
-          label: this.$t('pageHardwareDeconfiguration.table.size'),
+          label: this.$t('pageDeconfigurationHardware.table.size'),
         },
         {
           key: 'locationCode',
           formatter: this.dataFormatter,
-          label: this.$t('pageHardwareDeconfiguration.table.locationCode'),
+          label: this.$t('pageDeconfigurationHardware.table.locationCode'),
         },
         {
           key: 'functionalState',
           sortable: false,
-          label: this.$t('pageHardwareDeconfiguration.table.functionalState'),
+          label: this.$t('pageDeconfigurationHardware.table.functionalState'),
           tdClass: 'text-nowrap',
         },
         {
           key: 'deconfigurationType',
           formatter: this.dataFormatter,
           label: this.$t(
-            'pageHardwareDeconfiguration.table.deconfigurationType'
+            'pageDeconfigurationHardware.table.deconfigurationType'
           ),
         },
         {
           key: 'settings',
           formatter: this.dataFormatter,
-          label: this.$t('pageHardwareDeconfiguration.table.settings'),
+          label: this.$t('pageDeconfigurationHardware.table.settings'),
         },
       ],
       tableFilters: [
         {
           key: 'deconfigurationType',
           label: this.$t(
-            'pageHardwareDeconfiguration.table.deconfigurationType'
+            'pageDeconfigurationHardware.table.deconfigurationType'
           ),
           values: [
             'By Association',

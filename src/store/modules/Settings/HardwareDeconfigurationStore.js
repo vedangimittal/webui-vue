@@ -40,6 +40,10 @@ const HardwareDeconfigurationStore = {
         .get(`${id}`)
         .then((response) => response.data.Location.PartLocation.ServiceLabel)
         .catch((error) => console.log(error));
+      const procId = await api
+        .get(`${id}`)
+        .then((response) => response.data.Id)
+        .catch((error) => console.log(error));
       const cores = await api
         .get(`${id}/SubProcessors`)
         .then((response) => response.data.Members)
@@ -54,6 +58,14 @@ const HardwareDeconfigurationStore = {
       return await api.all(promises).then(
         api.spread((...responses) => {
           const coreData = responses.map(({ data }) => {
+            var msgArgs = '';
+            const conditionsArray = data.Status?.Conditions;
+            if (Array.isArray(conditionsArray) && conditionsArray.length) {
+              const messageArgsArray = conditionsArray[0].MessageArgs;
+              if (Array.isArray(messageArgsArray) && messageArgsArray.length) {
+                msgArgs = messageArgsArray[0];
+              }
+            }
             return {
               name: data.Name,
               status: data.Status.Health,
@@ -62,6 +74,8 @@ const HardwareDeconfigurationStore = {
               functionalState: data.Status?.Health,
               settings: data.Enabled,
               uri: data['@odata.id'],
+              deconfigurationType: msgArgs,
+              processorId: procId,
             };
           });
           return coreData;
@@ -84,14 +98,23 @@ const HardwareDeconfigurationStore = {
       return await api.all(promises).then(
         api.spread((...responses) => {
           const dimmsData = responses.map(({ data }) => {
+            var msgArgs = '';
+            const conditionsArray = data.Status?.Conditions;
+            if (Array.isArray(conditionsArray) && conditionsArray.length) {
+              const messageArgsArray = conditionsArray[0].MessageArgs;
+              if (Array.isArray(messageArgsArray) && messageArgsArray.length) {
+                msgArgs = messageArgsArray[0];
+              }
+            }
             return {
               id: data.Id,
               functionalState: data.Status?.Health,
               size: data.CapacityMiB,
               locationCode: data.Location?.PartLocation?.ServiceLabel,
-              deconfigurationType: data.Status?.Conditions?.MessageArgs[0],
+              deconfigurationType: msgArgs,
               settings: data.Enabled,
               uri: data['@odata.id'],
+              available: data.Status?.State,
             };
           });
           commit('setDimms', dimmsData);
@@ -108,11 +131,11 @@ const HardwareDeconfigurationStore = {
         console.log('error', error);
         if (settingsState.settings) {
           throw new Error(
-            i18n.t('pageHardwareDeconfiguration.toast.errorEnablingSetting')
+            i18n.t('pageDeconfigurationHardware.toast.errorEnablingSetting')
           );
         } else {
           throw new Error(
-            i18n.t('pageHardwareDeconfiguration.toast.errorDisablingSetting')
+            i18n.t('pageDeconfigurationHardware.toast.errorDisablingSetting')
           );
         }
       });
@@ -127,11 +150,11 @@ const HardwareDeconfigurationStore = {
         console.log('error', error);
         if (settingsState.settings) {
           throw new Error(
-            i18n.t('pageHardwareDeconfiguration.toast.errorEnablingSetting')
+            i18n.t('pageDeconfigurationHardware.toast.errorEnablingSetting')
           );
         } else {
           throw new Error(
-            i18n.t('pageHardwareDeconfiguration.toast.errorDisablingSetting')
+            i18n.t('pageDeconfigurationHardware.toast.errorDisablingSetting')
           );
         }
       });

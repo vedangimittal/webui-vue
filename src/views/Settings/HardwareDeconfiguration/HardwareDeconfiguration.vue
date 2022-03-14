@@ -1,15 +1,15 @@
 <template>
   <b-container fluid="xl">
-    <page-title :description="$t('pageHardwareDeconfiguration.description')" />
+    <page-title :description="$t('pageDeconfigurationHardware.description')" />
     <page-section>
       <b-row>
         <b-col>
           <b-card no-body>
             <b-tabs content-class="mt-3" fill>
-              <b-tab :title="$t('pageHardwareDeconfiguration.memoryDimms')"
+              <b-tab :title="$t('pageDeconfigurationHardware.memoryDimms')"
                 ><memory-dimms
               /></b-tab>
-              <b-tab :title="$t('pageHardwareDeconfiguration.processorCores')"
+              <b-tab :title="$t('pageDeconfigurationHardware.processorCores')"
                 ><processor-cores
               /></b-tab>
             </b-tabs>
@@ -58,37 +58,6 @@ export default {
   },
   created() {
     this.startLoader();
-    this.renderPowerRestoreSettings();
-  },
-  methods: {
-    renderPowerRestoreSettings() {
-      Promise.all([
-        this.$store.dispatch('powerPolicy/getPowerRestorePolicies'),
-        this.$store.dispatch('powerPolicy/getPowerRestoreCurrentPolicy'),
-      ]).finally(() => {
-        this.options.length = 0;
-        this.powerRestorePolicies.map((item) => {
-          this.options.push({
-            text: this.$t(`pagePowerRestorePolicy.policiesDesc.${item.state}`),
-            value: `${item.state}`,
-          });
-        });
-        this.endLoader();
-      });
-    },
-    submitForm() {
-      this.startLoader();
-      this.$store
-        .dispatch(
-          'powerPolicy/setPowerRestorePolicy',
-          this.policyValue || this.currentPowerRestorePolicy
-        )
-        .then((message) => this.successToast(message))
-        .catch(({ message }) => this.errorToast(message))
-        .finally(() => {
-          this.renderPowerRestoreSettings();
-        });
-    },
   },
 };
 </script>
