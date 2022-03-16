@@ -58,7 +58,12 @@
               @input="$v.tftpFileAddress.$touch()"
             />
             <b-form-invalid-feedback role="alert">
-              {{ $t('global.form.fieldRequired') }}
+              <template v-if="!$v.tftpFileAddress.required">
+                {{ $t('global.form.fieldRequired') }}
+              </template>
+              <template v-if="!$v.tftpFileAddress.validateFileAddress">
+                {{ $t('global.form.invalidFormat') }}
+              </template>
             </b-form-invalid-feedback>
           </b-form-group>
         </template>
@@ -79,8 +84,7 @@
 </template>
 
 <script>
-import { requiredIf } from 'vuelidate/lib/validators';
-
+import { requiredIf, helpers } from 'vuelidate/lib/validators';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import LoadingBarMixin, { loading } from '@/components/Mixins/LoadingBarMixin';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
@@ -89,7 +93,12 @@ import FormFile from '@/components/Global/FormFile';
 import ModalUpdateFirmware from './FirmwareModalUpdateFirmware';
 
 export default {
-  components: { InfoTooltip, FormFile, ModalUpdateFirmware },
+  name: 'FormUpdate',
+  components: {
+    InfoTooltip,
+    FormFile,
+    ModalUpdateFirmware,
+  },
   mixins: [BVToastMixin, LoadingBarMixin, VuelidateMixin],
   props: {
     isPageDisabled: {
@@ -125,6 +134,10 @@ export default {
     },
   },
   validations() {
+    const validateFileAdd = helpers.regex(
+      'validateFileAddress',
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/[a-z_\-\s0-9]+)+(.tar)$/
+    );
     return {
       file: {
         required: requiredIf(function () {
@@ -132,6 +145,7 @@ export default {
         }),
       },
       tftpFileAddress: {
+        validateFileAdd,
         required: requiredIf(function () {
           return !this.isWorkstationSelected;
         }),
