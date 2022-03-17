@@ -51,7 +51,7 @@ export default {
   mixins: [DataFormatterMixin],
   computed: {
     network() {
-      return this.$store.getters['network/globalNetworkSettings'][0];
+      return this.$store.getters['network/networkSettings'][0];
     },
   },
   created() {

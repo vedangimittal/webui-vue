@@ -4,19 +4,15 @@
     <!-- Global settings for all interfaces -->
     <network-global-settings />
     <!-- Interface tabs -->
-    <page-section v-show="ethernetData">
+    <page-section>
       <b-row>
         <b-col>
           <b-card no-body>
-            <b-tabs
-              active-nav-item-class="font-weight-bold"
-              card
-              content-class="mt-3"
-            >
+            <b-tabs content-class="mt-3 p-4">
               <b-tab
-                v-for="(data, index) in ethernetData"
-                :key="data.Id"
-                :title="data.Id"
+                v-for="(data, index) in network"
+                :key="data.id"
+                :title="data.id"
                 @click="getTabIndex(index)"
               >
                 <!-- Interface settings -->
@@ -26,6 +22,11 @@
                 <!-- Static DNS table -->
                 <table-dns :tab-index="tabIndex" />
               </b-tab>
+              <template #empty>
+                <div class="text-center text-muted">
+                  {{ $t('global.table.emptyMessage') }}
+                </div>
+              </template>
             </b-tabs>
           </b-card>
         </b-col>
@@ -51,7 +52,6 @@ import PageSection from '@/components/Global/PageSection';
 import PageTitle from '@/components/Global/PageTitle';
 import TableIpv4 from './TableIpv4.vue';
 import TableDns from './TableDns.vue';
-import { mapState } from 'vuex';
 
 export default {
   name: 'Network',
@@ -80,57 +80,41 @@ export default {
     };
   },
   computed: {
-    ...mapState('network', ['ethernetData']),
+    network() {
+      return this.$store.getters['network/networkSettings'];
+    },
   },
   watch: {
-    ethernetData() {
+    network() {
       this.getModalInfo();
     },
   },
   created() {
     this.startLoader();
-    const globalSettings = new Promise((resolve) => {
-      this.$root.$on('network-global-settings-complete', () => resolve());
-    });
-    const interfaceSettings = new Promise((resolve) => {
-      this.$root.$on('network-interface-settings-complete', () => resolve());
-    });
-    const networkTableDns = new Promise((resolve) => {
-      this.$root.$on('network-table-dns-complete', () => resolve());
-    });
-    const networkTableIpv4 = new Promise((resolve) => {
-      this.$root.$on('network-table-ipv4-complete', () => resolve());
-    });
-    // Combine all child component Promises to indicate
-    // when page data load complete
-    Promise.all([
-      this.$store.dispatch('network/getEthernetData'),
-      globalSettings,
-      interfaceSettings,
-      networkTableDns,
-      networkTableIpv4,
-    ]).finally(() => this.endLoader());
+    this.$store
+      .dispatch('network/getEthernetData')
+      .finally(() => this.endLoader());
   },
   methods: {
     getModalInfo() {
-      this.defaultGateway = this.$store.getters[
-        'network/globalNetworkSettings'
-      ][this.tabIndex].defaultGateway;
+      this.defaultGateway = this.$store.getters['network/networkSettings'][
+        this.tabIndex
+      ].defaultGateway;
 
-      this.currentHostname = this.$store.getters[
-        'network/globalNetworkSettings'
-      ][this.tabIndex].hostname;
+      this.currentHostname = this.$store.getters['network/networkSettings'][
+        this.tabIndex
+      ].hostname;
 
-      this.currentMacAddress = this.$store.getters[
-        'network/globalNetworkSettings'
-      ][this.tabIndex].macAddress;
+      this.currentMacAddress = this.$store.getters['network/networkSettings'][
+        this.tabIndex
+      ].macAddress;
     },
     getTabIndex(selectedIndex) {
       this.tabIndex = selectedIndex;
       this.$store.dispatch('network/setSelectedTabIndex', this.tabIndex);
       this.$store.dispatch(
         'network/setSelectedTabId',
-        this.ethernetData[selectedIndex].Id
+        this.network[this.tabIndex].id
       );
       this.getModalInfo();
     },

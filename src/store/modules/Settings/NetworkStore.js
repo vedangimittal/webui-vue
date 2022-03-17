@@ -5,17 +5,13 @@ const NetworkStore = {
   namespaced: true,
   state: {
     dchpEnabledState: false,
-    ethernetData: [],
-    firstInterfaceId: '', //used for setting global DHCP settings
-    globalNetworkSettings: [],
+    networkSettings: [],
     selectedInterfaceId: '', // which tab is selected
     selectedInterfaceIndex: 0, // which tab is selected
   },
   getters: {
     dchpEnabledState: (state) => state.dchpEnabledState,
-    ethernetData: (state) => state.ethernetData,
-    firstInterfaceId: (state) => state.firstInterfaceId,
-    globalNetworkSettings: (state) => state.globalNetworkSettings,
+    networkSettings: (state) => state.networkSettings,
     selectedInterfaceId: (state) => state.selectedInterfaceId,
     selectedInterfaceIndex: (state) => state.selectedInterfaceIndex,
   },
@@ -25,18 +21,21 @@ const NetworkStore = {
     setDomainNameState: (state, domainState) =>
       (state.domainState = domainState),
     setDnsState: (state, dnsState) => (state.dnsState = dnsState),
-    setEthernetData: (state, ethernetData) =>
-      (state.ethernetData = ethernetData),
-    setFirstInterfaceId: (state, firstInterfaceId) =>
-      (state.firstInterfaceId = firstInterfaceId),
-    setGlobalNetworkSettings: (state, data) => {
-      state.globalNetworkSettings = data.map(({ data }) => {
+    setNtpState: (state, ntpState) => (state.ntpState = ntpState),
+    setSelectedInterfaceId: (state, selectedInterfaceId) =>
+      (state.selectedInterfaceId = selectedInterfaceId),
+    setSelectedInterfaceIndex: (state, selectedInterfaceIndex) =>
+      (state.selectedInterfaceIndex = selectedInterfaceIndex),
+    setNetworkSettings: (state, data) => {
+      state.networkSettings = data.map(({ data }) => {
         const {
           DHCPv4,
           HostName,
+          Id,
           IPv4Addresses,
           IPv4StaticAddresses,
           MACAddress,
+          StaticNameServers,
         } = data;
         return {
           defaultGateway: IPv4StaticAddresses[0]?.Gateway, //First static gateway is the default gateway
@@ -45,19 +44,17 @@ const NetworkStore = {
           ),
           dhcpEnabled: DHCPv4.DHCPEnabled,
           hostname: HostName,
+          id: Id,
+          ipv4: IPv4Addresses,
           macAddress: MACAddress,
           staticAddress: IPv4StaticAddresses[0]?.Address, // Display first static address on overview page
+          staticNameServers: StaticNameServers,
           useDnsEnabled: DHCPv4.UseDNSServers,
           useDomainNameEnabled: DHCPv4.UseDomainName,
           useNtpEnabled: DHCPv4.UseNTPServers,
         };
       });
     },
-    setNtpState: (state, ntpState) => (state.ntpState = ntpState),
-    setSelectedInterfaceId: (state, selectedInterfaceId) =>
-      (state.selectedInterfaceId = selectedInterfaceId),
-    setSelectedInterfaceIndex: (state, selectedInterfaceIndex) =>
-      (state.selectedInterfaceIndex = selectedInterfaceIndex),
   },
   actions: {
     async getEthernetData({ commit }) {
@@ -79,31 +76,27 @@ const NetworkStore = {
           const ethernetData = ethernetInterfaces.map(
             (ethernetInterface) => ethernetInterface.data
           );
-          const firstInterfaceId = ethernetData[0].Id;
 
-          commit('setEthernetData', ethernetData);
-          commit('setFirstInterfaceId', firstInterfaceId);
-          commit('setSelectedInterfaceId', firstInterfaceId);
-          commit('setGlobalNetworkSettings', ethernetInterfaces);
+          commit('setNetworkSettings', ethernetInterfaces);
+          commit('setSelectedInterfaceId', ethernetData[0].Id);
         })
         .catch((error) => {
           console.log('Network Data:', error);
         });
     },
-    async saveDomainNameState({ commit, state }, domainState) {
+    async saveDomainNameState({ commit, state, dispatch }, domainState) {
       commit('setDomainNameState', domainState);
       const data = {
         DHCPv4: {
           UseDomainName: domainState,
         },
       };
-      // Saving to the first interface automatically updates DHCPv4 and DHCPv6
-      // on all interfaces
       return api
         .patch(
-          `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.firstInterfaceId}`,
+          `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.selectedInterfaceId}`,
           data
         )
+        .then(dispatch('getEthernetData'))
         .then(() => {
           return i18n.t('pageNetwork.toast.successSaveNetworkSettings', {
             setting: i18n.t('pageNetwork.domainName'),
@@ -119,20 +112,19 @@ const NetworkStore = {
           );
         });
     },
-    async saveDnsState({ commit, state }, dnsState) {
+    async saveDnsState({ commit, state, dispatch }, dnsState) {
       commit('setDnsState', dnsState);
       const data = {
         DHCPv4: {
           UseDNSServers: dnsState,
         },
       };
-      // Saving to the first interface automatically updates DHCPv4 and DHCPv6
-      // on all interfaces
       return api
         .patch(
-          `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.firstInterfaceId}`,
+          `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.selectedInterfaceId}`,
           data
         )
+        .then(dispatch('getEthernetData'))
         .then(() => {
           return i18n.t('pageNetwork.toast.successSaveNetworkSettings', {
             setting: i18n.t('pageNetwork.dns'),
@@ -148,20 +140,19 @@ const NetworkStore = {
           );
         });
     },
-    async saveNtpState({ commit, state }, ntpState) {
+    async saveNtpState({ commit, state, dispatch }, ntpState) {
       commit('setNtpState', ntpState);
       const data = {
         DHCPv4: {
           UseNTPServers: ntpState,
         },
       };
-      // Saving to the first interface automatically updates DHCPv4 and DHCPv6
-      // on all interfaces
       return api
         .patch(
-          `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.firstInterfaceId}`,
+          `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.selectedInterfaceId}`,
           data
         )
+        .then(dispatch('getEthernetData'))
         .then(() => {
           return i18n.t('pageNetwork.toast.successSaveNetworkSettings', {
             setting: i18n.t('pageNetwork.ntp'),
@@ -177,24 +168,21 @@ const NetworkStore = {
           );
         });
     },
-    async saveDhcpEnabledState({ commit, state }, dhcpState) {
+    async saveDhcpEnabledState({ commit, state, dispatch }, dhcpState) {
       commit('setDhcpEnabled', dhcpState);
       const data = {
         DHCPv4: {
           DHCPEnabled: dhcpState,
         },
       };
-      // Saving to the first interface automatically updates DHCPv4 and DHCPv6
-      // on all interfaces
-      // Enabling DHCP sends a request to the server to return a DHCP IP
-      // address.
       // If DHCP is enabled and the DHCP network is not configured, then the
       // system will go down and network settings will need to be restored
       return api
         .patch(
-          `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.firstInterfaceId}`,
+          `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.selectedInterfaceId}`,
           data
         )
+        .then(dispatch('getEthernetData'))
         .then(() => {
           return i18n.t('pageNetwork.toast.successSaveNetworkSettings', {
             setting: i18n.t('pageNetwork.dhcp'),
@@ -217,9 +205,9 @@ const NetworkStore = {
       commit('setSelectedInterfaceId', tabId);
     },
     async saveIpv4Address({ dispatch, state }, ipv4Form) {
-      const originalAddresses = state.ethernetData[
+      const originalAddresses = state.networkSettings[
         state.selectedInterfaceIndex
-      ].IPv4StaticAddresses.map((ipv4) => {
+      ].ipv4.map((ipv4) => {
         const { Address, SubnetMask, Gateway } = ipv4;
         return {
           Address,
@@ -293,7 +281,7 @@ const NetworkStore = {
     async saveDnsAddress({ dispatch, state }, dnsForm) {
       const newAddress = dnsForm;
       const originalAddresses =
-        state.ethernetData[state.selectedInterfaceIndex].StaticNameServers;
+        state.networkSettings[state.selectedInterfaceIndex].staticNameServers;
       const newDnsArray = originalAddresses.concat(newAddress);
       return api
         .patch(

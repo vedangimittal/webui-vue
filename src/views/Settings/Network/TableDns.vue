@@ -45,7 +45,6 @@ import IconEdit from '@carbon/icons-vue/es/edit/20';
 import IconTrashcan from '@carbon/icons-vue/es/trash-can/20';
 import PageSection from '@/components/Global/PageSection';
 import TableRowAction from '@/components/Global/TableRowAction';
-import { mapState } from 'vuex';
 
 export default {
   name: 'DNSTable',
@@ -88,28 +87,26 @@ export default {
     };
   },
   computed: {
-    ...mapState('network', ['ethernetData']),
+    network() {
+      return this.$store.getters['network/networkSettings'];
+    },
   },
   watch: {
     // Watch for change in tab index
     tabIndex() {
       this.getStaticDnsItems();
     },
-    ethernetData() {
+    network() {
       this.getStaticDnsItems();
     },
   },
   created() {
     this.getStaticDnsItems();
-    this.$store.dispatch('network/getEthernetData').finally(() => {
-      // Emit initial data fetch complete to parent component
-      this.$root.$emit('network-table-dns-complete');
-    });
   },
   methods: {
     getStaticDnsItems() {
       const index = this.tabIndex;
-      const dns = this.ethernetData[index].StaticNameServers || [];
+      const dns = this.network[index].staticNameServers || [];
       this.form.dnsStaticTableItems = dns.map((server) => {
         return {
           address: server,

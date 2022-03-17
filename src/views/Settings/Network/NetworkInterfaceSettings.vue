@@ -21,7 +21,6 @@
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import PageSection from '@/components/Global/PageSection';
 import DataFormatterMixin from '@/components/Mixins/DataFormatterMixin';
-import { mapState } from 'vuex';
 
 export default {
   name: 'Ipv4Table',
@@ -42,7 +41,9 @@ export default {
     };
   },
   computed: {
-    ...mapState('network', ['ethernetData']),
+    network() {
+      return this.$store.getters['network/networkSettings'];
+    },
   },
   watch: {
     // Watch for change in tab index
@@ -52,15 +53,11 @@ export default {
   },
   created() {
     this.getSettings();
-    this.$store.dispatch('network/getEthernetData').finally(() => {
-      // Emit initial data fetch complete to parent component
-      this.$root.$emit('network-interface-settings-complete');
-    });
   },
   methods: {
     getSettings() {
       this.selectedInterface = this.tabIndex;
-      this.macAddress = this.ethernetData[this.selectedInterface].MACAddress;
+      this.macAddress = this.network[this.selectedInterface].macAddress;
     },
   },
 };
