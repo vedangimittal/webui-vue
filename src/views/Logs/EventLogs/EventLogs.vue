@@ -65,7 +65,7 @@
         <b-table
           id="table-event-logs"
           ref="table"
-          responsive="md"
+          responsive="xl"
           selectable
           no-select-on-click
           sort-icon-left
