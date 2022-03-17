@@ -24,10 +24,12 @@ const EventLogStore = {
   namespaced: true,
   state: {
     allEvents: [],
+    ceLogs: [],
     loadedEvents: false,
   },
   getters: {
-    allEvents: (state) => state.allEvents,
+    allEvents: (state) => state.allEvents.concat(state.ceLogs),
+    ceLogs: (state) => state.ceLogs,
     highPriorityEvents: (state) => getHighPriorityEvents(state.allEvents),
     healthStatus: (state) =>
       getHealthStatus(state.allEvents, state.loadedEvents),
@@ -35,6 +37,9 @@ const EventLogStore = {
   mutations: {
     setAllEvents: (state, allEvents) => (
       (state.allEvents = allEvents), (state.loadedEvents = true)
+    ),
+    setCeLogs: (state, ceLogs) => (
+      (state.ceLogs = ceLogs), (state.loadedEvents = true)
     ),
   },
   actions: {
@@ -78,12 +83,51 @@ const EventLogStore = {
           console.log('Event Log Data:', error);
         });
     },
-    async deleteAllEventLogs({ dispatch }, data) {
+    async getCELogData({ commit }) {
+      return await api
+        .get('/redfish/v1/Systems/system/LogServices/CELog/Entries')
+        .then(({ data: { Members = [] } = {} }) => {
+          const eventLogs = Members.map((log) => {
+            const {
+              Id,
+              EventId,
+              Severity,
+              Created,
+              EntryType,
+              Message,
+              Name,
+              Modified,
+              Resolution,
+              Resolved,
+              AdditionalDataURI,
+            } = log;
+            return {
+              id: Id,
+              eventId: EventId,
+              severity: Severity,
+              date: new Date(Created),
+              type: EntryType,
+              description: Message,
+              name: Name,
+              modifiedDate: new Date(Modified),
+              resolution: Resolution,
+              uri: log['@odata.id'],
+              filterByStatus: Resolved ? 'Resolved' : 'Unresolved',
+              status: Resolved, //true or false
+              additionalDataUri: AdditionalDataURI,
+            };
+          });
+          commit('setCeLogs', eventLogs);
+        })
+        .catch((error) => {
+          console.log('Event Log Data:', error);
+        });
+    },
+    async deleteAllEventLogs(_, data) {
       return await api
         .post(
           '/redfish/v1/Systems/system/LogServices/EventLog/Actions/LogService.ClearLog'
         )
-        .then(() => dispatch('getEventLogData'))
         .then(() => i18n.tc('pageEventLogs.toast.successDelete', data.length))
         .catch((error) => {
           console.log(error);
@@ -92,7 +136,7 @@ const EventLogStore = {
           );
         });
     },
-    async deleteEventLogs({ dispatch }, uris = []) {
+    async deleteEventLogs(_, uris = []) {
       const promises = uris.map((uri) =>
         api.delete(uri).catch((error) => {
           console.log(error);
@@ -102,7 +146,6 @@ const EventLogStore = {
       return await api
         .all(promises)
         .then((response) => {
-          dispatch('getEventLogData');
           return response;
         })
         .then(
@@ -130,7 +173,7 @@ const EventLogStore = {
           })
         );
     },
-    async resolveEventLogs({ dispatch }, logs) {
+    async resolveEventLogs(_, logs) {
       const promises = logs.map((log) =>
         api.patch(log.uri, { Resolved: true }).catch((error) => {
           console.log(error);
@@ -140,7 +183,6 @@ const EventLogStore = {
       return await api
         .all(promises)
         .then((response) => {
-          dispatch('getEventLogData');
           return response;
         })
         .then(
@@ -165,7 +207,7 @@ const EventLogStore = {
           })
         );
     },
-    async unresolveEventLogs({ dispatch }, logs) {
+    async unresolveEventLogs(_, logs) {
       const promises = logs.map((log) =>
         api.patch(log.uri, { Resolved: false }).catch((error) => {
           console.log(error);
@@ -175,7 +217,6 @@ const EventLogStore = {
       return await api
         .all(promises)
         .then((response) => {
-          dispatch('getEventLogData');
           return response;
         })
         .then(
@@ -201,13 +242,10 @@ const EventLogStore = {
         );
     },
     // Single log entry
-    async updateEventLogStatus({ dispatch }, log) {
+    async updateEventLogStatus(_, log) {
       const updatedEventLogStatus = log.status;
       return await api
         .patch(log.uri, { Resolved: updatedEventLogStatus })
-        .then(() => {
-          dispatch('getEventLogData');
-        })
         .then(() => {
           if (log.status) {
             return i18n.tc('pageEventLogs.toast.successResolveLogs', 1);

@@ -412,6 +412,12 @@ export default {
     href() {
       return `data:text/json;charset=utf-8,${this.exportAllLogs()}`;
     },
+    currentUser() {
+      return this.$store.getters['global/currentUser'];
+    },
+    isServiceUser() {
+      return this.$store.getters['global/isServiceUser'];
+    },
     filteredRows() {
       return this.searchFilter
         ? this.searchTotalFilteredRows
@@ -454,11 +460,27 @@ export default {
   created() {
     this.startLoader();
     this.$store.dispatch('eventLog/getEventLogData').finally(() => {
+      this.checkForUserData();
+      if (this.isServiceUser) {
+        this.$store.dispatch('eventLog/getCELogData');
+      }
       this.endLoader();
       this.isBusy = false;
     });
   },
   methods: {
+    checkForUserData() {
+      if (!this.currentUser) {
+        this.$store.dispatch('userManagement/getUsers');
+        this.$store.dispatch('global/getCurrentUser');
+      }
+    },
+    reloadEventLogData() {
+      if (this.isServiceUser) {
+        this.$store.dispatch('eventLog/getCELogData');
+      }
+      this.$store.dispatch('eventLog/getEventLogData');
+    },
     changelogStatus(row) {
       this.$store
         .dispatch('eventLog/updateEventLogStatus', {
@@ -466,6 +488,7 @@ export default {
           status: row.status,
         })
         .then((success) => {
+          this.reloadEventLogData();
           this.successToast(success);
         })
         .catch(({ message }) => this.errorToast(message));
@@ -501,6 +524,7 @@ export default {
         .dispatch('eventLog/deleteEventLogs', uris)
         .then((messages) => {
           messages.forEach(({ type, message }) => {
+            this.reloadEventLogData();
             if (type === 'success') {
               this.successToast(message);
             } else if (type === 'error') {
@@ -564,7 +588,10 @@ export default {
                     'eventLog/deleteAllEventLogs',
                     this.selectedRows.length
                   )
-                  .then((message) => this.successToast(message))
+                  .then((message) => {
+                    this.reloadEventLogData();
+                    this.successToast(message);
+                  })
                   .catch(({ message }) => this.errorToast(message));
               } else {
                 this.deleteLogs(uris);
@@ -601,6 +628,7 @@ export default {
         .then((messages) => {
           messages.forEach(({ type, message }) => {
             if (type === 'success') {
+              this.reloadEventLogData();
               this.successToast(message);
             } else if (type === 'error') {
               this.errorToast(message);
@@ -614,6 +642,7 @@ export default {
         .then((messages) => {
           messages.forEach(({ type, message }) => {
             if (type === 'success') {
+              this.reloadEventLogData();
               this.successToast(message);
             } else if (type === 'error') {
               this.errorToast(message);
