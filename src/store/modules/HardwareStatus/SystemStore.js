@@ -18,6 +18,9 @@ const SystemStore = {
       system.totalSystemMemoryGiB = data.MemorySummary?.TotalSystemMemoryGiB;
       system.id = data.Id;
       system.lampTest = data.Oem?.IBM?.LampTest;
+      system.sysAttentionLed =
+        data.Oem?.IBM?.PartitionSystemAttentionIndicator ||
+        data.Oem?.IBM?.PlatformSystemAttentionIndicator;
       system.locationIndicatorActive = data.LocationIndicatorActive;
       system.model = data.Model;
       system.processorSummaryCoreCount = data.ProcessorSummary?.CoreCount;
@@ -53,6 +56,26 @@ const SystemStore = {
           } else {
             throw new Error(
               i18n.t('pageInventory.toast.errorDisableIdentifyLed')
+            );
+          }
+        });
+    },
+    async changeSystemAttentionLedState({ commit }, ledState) {
+      return await api
+        .patch('/redfish/v1/Systems/system', {
+          Oem: {
+            IBM: {
+              PartitionSystemAttentionIndicator: ledState,
+              PlatformSystemAttentionIndicator: ledState,
+            },
+          },
+        })
+        .catch((error) => {
+          commit('setSystemInfo', this.state.system.systems[0]);
+          console.log('error', error);
+          if (!ledState) {
+            throw new Error(
+              i18n.t('pageInventory.toast.errorDisableSystemAttentionLed')
             );
           }
         });
