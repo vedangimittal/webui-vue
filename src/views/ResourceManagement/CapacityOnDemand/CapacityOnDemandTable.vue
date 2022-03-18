@@ -1,6 +1,6 @@
 <template>
   <b-row>
-    <b-col xl="10">
+    <b-col>
       <page-section :section-title="$t('pageCapacityOnDemand.vetCapabilities')">
         <b-table
           show-empty
