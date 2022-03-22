@@ -21,6 +21,7 @@
       <b-row>
         <b-col sm="8" md="6" xl="3">
           <page-section
+            v-if="!isServiceUser"
             :section-title="$t('pageProfileSettings.changePassword')"
           >
             <b-form-group
@@ -42,6 +43,7 @@
                   v-model="form.newPassword"
                   type="password"
                   aria-describedby="password-help-block"
+                  :disabled="isServiceUser"
                   :state="getValidationState($v.form.newPassword)"
                   data-test-id="profileSettings-input-newPassword"
                   class="form-control-with-button"
@@ -74,6 +76,7 @@
                   id="password-confirmation"
                   v-model="form.confirmPassword"
                   type="password"
+                  :disabled="isServiceUser"
                   :state="getValidationState($v.form.confirmPassword)"
                   data-test-id="profileSettings-input-confirmPassword"
                   class="form-control-with-button"
@@ -159,6 +162,12 @@ export default {
     username() {
       return this.$store.getters['global/username'];
     },
+    currentUser() {
+      return this.$store.getters['global/currentUser'];
+    },
+    isServiceUser() {
+      return this.$store.getters['global/isServiceUser'];
+    },
     passwordRequirements() {
       return this.$store.getters['userManagement/accountPasswordRequirements'];
     },
@@ -168,9 +177,12 @@ export default {
   },
   created() {
     this.startLoader();
-    this.$store
-      .dispatch('userManagement/getAccountSettings')
-      .finally(() => this.endLoader());
+    Promise.all([
+      this.$store.dispatch('userManagement/getAccountSettings'),
+      this.checkForUserData(),
+    ]).finally(() => {
+      this.endLoader();
+    });
   },
   validations() {
     return {
@@ -186,6 +198,12 @@ export default {
     };
   },
   methods: {
+    checkForUserData() {
+      if (!this.currentUser) {
+        this.$store.dispatch('userManagement/getUsers');
+        this.$store.dispatch('global/getCurrentUser');
+      }
+    },
     saveNewPasswordInputData() {
       this.$v.form.confirmPassword.$touch();
       this.$v.form.newPassword.$touch();
