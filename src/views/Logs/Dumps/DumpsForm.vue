@@ -98,9 +98,13 @@ export default {
     isServiceUser() {
       return this.$store.getters['global/isServiceUser'];
     },
+    isInPhypStandby() {
+      return this.$store.getters['global/isInPhypStandby'];
+    },
   },
   created() {
     this.checkForUserData();
+    this.checkIfInPhypStandby();
   },
   validations() {
     return {
@@ -119,6 +123,16 @@ export default {
         this.$store.dispatch('global/getCurrentUser');
       }
     },
+    checkIfInPhypStandby(checkCounter = 0) {
+      checkCounter++;
+      if (checkCounter > 15) return;
+      if (!this.isInPhypStandby) {
+        this.$store.dispatch('global/getBootProgress');
+        setTimeout(() => {
+          this.checkIfInPhypStandby(checkCounter);
+        }, 60000);
+      }
+    },
     updateDumpInfo() {
       this.$emit('updateDumpInfo', this.selectedDumpType);
     },
@@ -126,8 +140,13 @@ export default {
       this.$v.$touch();
       if (this.$v.$invalid) return;
 
-      // System dump initiation
+      if (this.selectedDumpType !== 'bmc' && !this.isInPhypStandby) {
+        this.errorToast(this.$t('pageDumps.toast.errorPhypInStandby'));
+        return;
+      }
+
       if (this.selectedDumpType === 'system') {
+        // System dump initiation
         this.showConfirmationModal();
       }
       // Resource dump initiation
