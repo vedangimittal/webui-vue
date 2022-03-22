@@ -86,7 +86,7 @@
               </dl>
               <dl class="ml-4">
                 <!-- Count -->
-                <dt>{{ $t('pageInventory.table.count') }}:</dt>
+                <dt>{{ $t('pageInventory.table.processorCount') }}:</dt>
                 <dd>{{ dataFormatter(item.processorSummaryCount) }}</dd>
                 <!-- Core Count -->
                 <dt>{{ $t('pageInventory.table.coreCount') }}:</dt>
