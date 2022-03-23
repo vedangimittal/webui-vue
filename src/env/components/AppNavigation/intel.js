@@ -83,7 +83,7 @@ const AppNavigationMixin = {
             },
             {
               id: 'host-console',
-              label: this.$t('appNavigation.serialOverLan'),
+              label: this.$t('appNavigation.hostConsole'),
               route: '/operations/host-console',
             },
             {

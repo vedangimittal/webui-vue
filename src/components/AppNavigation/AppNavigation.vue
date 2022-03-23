@@ -73,21 +73,6 @@ export default {
     currentUser() {
       return this.$store?.getters['global/currentUser'];
     },
-    roleId() {
-      return this.currentUser?.RoleId;
-    },
-    filteredNavigationItems() {
-      const filteredItems = this.navigationItems.map((item) => {
-        if (item.id === 'operations' && this.roleId !== 'OemIBMServiceAgent') {
-          const filteredChildren = item.children.filter((child) => {
-            return child.id !== 'service-login';
-          });
-          item.children = filteredChildren;
-        }
-        return item;
-      });
-      return filteredItems;
-    },
   },
   watch: {
     $route: function () {
