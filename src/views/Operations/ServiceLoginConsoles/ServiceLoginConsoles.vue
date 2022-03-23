@@ -30,7 +30,7 @@
       >
         <b-button variant="link" type="button" @click="openConsoleWindow()">
           <icon-launch />
-          {{ $t('pageSerialOverLan.openNewTab') }}
+          {{ $t('pageHostConsole.openNewTab') }}
         </b-button>
       </b-col>
     </b-row>

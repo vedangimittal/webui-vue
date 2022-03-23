@@ -3,7 +3,7 @@
     <div class="nav-container" :class="{ open: isNavigationOpen }">
       <nav ref="nav" :aria-label="$t('appNavigation.primaryNavigation')">
         <b-nav vertical class="mb-4">
-          <template v-for="(navItem, index) in navigationItems">
+          <template v-for="(navItem, index) in filteredNavigationItems">
             <!-- Navigation items with no children -->
             <b-nav-item
               v-if="!navItem.children"
@@ -69,6 +69,26 @@ export default {
       isNavigationOpen: false,
     };
   },
+  computed: {
+    currentUser() {
+      return this.$store?.getters['global/currentUser'];
+    },
+    roleId() {
+      return this.currentUser?.RoleId;
+    },
+    filteredNavigationItems() {
+      const filteredItems = this.navigationItems.map((item) => {
+        if (item.id === 'operations' && this.roleId !== 'OemIBMServiceAgent') {
+          const filteredChildren = item.children.filter((child) => {
+            return child.id !== 'service-login';
+          });
+          item.children = filteredChildren;
+        }
+        return item;
+      });
+      return filteredItems;
+    },
+  },
   watch: {
     $route: function () {
       this.isNavigationOpen = false;
@@ -81,6 +101,12 @@ export default {
     this.$root.$on('toggle-navigation', () => this.toggleIsOpen());
   },
   methods: {
+    checkForUserData() {
+      if (!this.currentUser) {
+        this.$store?.dispatch('userManagement/getUsers');
+        this.$store?.dispatch('global/getCurrentUser');
+      }
+    },
     toggleIsOpen() {
       this.isNavigationOpen = !this.isNavigationOpen;
     },

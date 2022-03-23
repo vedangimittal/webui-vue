@@ -284,7 +284,7 @@ const routes = [
         },
       },
       {
-        path: '@:appPageTitle.hostConsole',
+        path: '/operations/host-console',
         name: 'host-console',
         component: HostConsole,
         meta: {
