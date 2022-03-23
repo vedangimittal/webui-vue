@@ -98,7 +98,8 @@ export default {
     },
   },
   mounted() {
-    this.$root.$on('toggle-navigation', () => this.toggleIsOpen());
+    this.checkForUserData(),
+      this.$root.$on('toggle-navigation', () => this.toggleIsOpen());
   },
   methods: {
     checkForUserData() {
