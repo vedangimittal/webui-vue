@@ -25,8 +25,8 @@ import RebootBmc from '@/views/Operations/RebootBmc';
 import Policies from '@/views/SecurityAndAccess/Policies';
 import KeyClear from '@/views/Operations/KeyClear';
 import Sensors from '@/views/HardwareStatus/Sensors';
-import HostConsole from '@/views/Operations/hostConsole';
-import hostConsoleConsole from '@/views/Operations/hostConsole/hostConsoleConsole';
+import HostConsole from '@/views/Operations/HostConsole';
+import HostConsoleConsole from '@/views/Operations/HostConsole/HostConsoleConsole';
 import ServerPowerOperations from '@/views/Operations/ServerPowerOperations';
 import Certificates from '@/views/SecurityAndAccess/Certificates';
 import VirtualMedia from '@/views/Operations/VirtualMedia';
@@ -69,7 +69,7 @@ const routes = [
       {
         path: 'host-console-console',
         name: 'host-console',
-        component: hostConsoleConsole,
+        component: HostConsoleConsole,
         meta: {
           title: i18n.t('appPageTitle.hostConsole'),
         },
