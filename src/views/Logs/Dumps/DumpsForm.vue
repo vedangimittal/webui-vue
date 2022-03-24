@@ -154,8 +154,8 @@ export default {
         this.$store
           .dispatch('dumps/createResourceDump', {
             resourceSelector: this.resourceSelectorValue,
-            // If not logged as service, 'pwd' must be used
-            resourcePassword: this.resourcePassword || 'pwd',
+            // If not logged as service, '' must be used
+            resourcePassword: this.resourcePassword || '',
           })
           .then(() =>
             this.infoToast(this.$t('pageDumps.toast.successStartDump'), {
