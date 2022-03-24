@@ -3,10 +3,31 @@
     <page-title :description="$t('pagePowerRestorePolicy.description')" />
 
     <b-row>
+      <b-col>
+        <alert variant="warning" class="mb-5">
+          <b-row align-v="center">
+            <b-col>
+              <p class="mb-0">
+                {{ $t('pagePowerRestorePolicy.alert.manualOperatingMode') }}
+              </p>
+            </b-col>
+            <b-col>
+              <div>
+                <b-link to="/operations/server-power-operations">
+                  {{ $t('pagePowerRestorePolicy.alert.changeServerOpMode') }}
+                </b-link>
+              </div>
+            </b-col>
+          </b-row>
+        </alert>
+      </b-col>
+    </b-row>
+    <b-row>
       <b-col sm="8" md="6" xl="12">
         <b-form-group :label="$t('pagePowerRestorePolicy.powerPoliciesLabel')">
           <b-form-radio-group
             v-model="currentPowerRestorePolicy"
+            :disabled="isOperatingModeManual"
             :options="options"
             name="power-restore-policy"
             stacked
@@ -15,7 +36,12 @@
       </b-col>
     </b-row>
 
-    <b-button variant="primary" type="submit" @click="submitForm">
+    <b-button
+      variant="primary"
+      :disabled="isOperatingModeManual"
+      type="submit"
+      @click="submitForm"
+    >
       {{ $t('global.action.saveSettings') }}
     </b-button>
   </b-container>
@@ -24,12 +50,13 @@
 <script>
 import PageTitle from '@/components/Global/PageTitle';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
+import Alert from '@/components/Global/Alert';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 
 export default {
   name: 'PowerRestorePolicy',
-  components: { PageTitle },
+  components: { PageTitle, Alert },
   mixins: [VuelidateMixin, BVToastMixin, LoadingBarMixin],
   beforeRouteLeave(to, from, next) {
     this.hideLoader();
@@ -53,6 +80,14 @@ export default {
         this.policyValue = policy;
       },
     },
+    isOperatingModeManual() {
+      return (
+        !this.$store.getters['serverBootSettings/biosAttributes']
+          ?.pvm_system_operating_mode ||
+        this.$store.getters['serverBootSettings/biosAttributes']
+          ?.pvm_system_operating_mode === 'Manual'
+      );
+    },
   },
   created() {
     this.startLoader();
@@ -61,6 +96,7 @@ export default {
   methods: {
     renderPowerRestoreSettings() {
       Promise.all([
+        this.$store.dispatch('serverBootSettings/getBiosAttributes'),
         this.$store.dispatch('powerPolicy/getPowerRestorePolicies'),
         this.$store.dispatch('powerPolicy/getPowerRestoreCurrentPolicy'),
       ]).finally(() => {
