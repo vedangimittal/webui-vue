@@ -117,7 +117,10 @@ const HardwareDeconfigurationStore = {
               available: data.Status?.State,
             };
           });
-          commit('setDimms', dimmsData);
+          const dimmsDataFiltered = dimmsData.filter(
+            (item) => item.available !== 'Absent'
+          );
+          commit('setDimms', dimmsDataFiltered);
         })
       );
     },

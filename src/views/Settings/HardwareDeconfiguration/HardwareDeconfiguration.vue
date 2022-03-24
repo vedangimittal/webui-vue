@@ -41,25 +41,6 @@ export default {
     this.hideLoader();
     next();
   },
-  data() {
-    return {
-      policyValue: null,
-      options: [],
-    };
-  },
-  computed: {
-    powerRestorePolicies() {
-      return this.$store.getters['powerPolicy/powerRestorePolicies'];
-    },
-    currentPowerRestorePolicy: {
-      get() {
-        return this.$store.getters['powerPolicy/powerRestoreCurrentPolicy'];
-      },
-      set(policy) {
-        this.policyValue = policy;
-      },
-    },
-  },
   created() {
     this.startLoader();
   },
