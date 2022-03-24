@@ -1,6 +1,6 @@
 <template>
   <b-modal
-    id="power-modal-saver"
+    id="modal-power-performance-modes"
     ref="modal"
     :title="$t(`pagePower.modalEnablePowerPerformanceMode.title${title}`)"
     @hidden="resetForm"

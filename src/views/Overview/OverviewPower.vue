@@ -7,12 +7,12 @@
       <b-col sm="6">
         <dl>
           <dt>{{ $t('pageOverview.powerConsumption') }}</dt>
-          <dd v-if="powerConsumptionValue == null">
+          <dd v-if="!powerConsumptionValue">
             {{ $t('global.status.notAvailable') }}
           </dd>
           <dd v-else>{{ powerConsumptionValue }} W</dd>
           <dt>{{ $t('pageOverview.powerCap') }}</dt>
-          <dd v-if="powerCapValue == null">
+          <dd v-if="!powerCapValue">
             {{ $t('global.status.disabled') }}
           </dd>
           <dd v-else>{{ powerCapValue }} W</dd>
@@ -21,13 +21,13 @@
       <b-col sm="6">
         <dl>
           <dt>{{ $t('pagePower.idlePower') }}</dt>
-          <dd v-if="idlePowerData.Enabled">
+          <dd v-if="idlePowerSaverData">
             {{ $t('global.status.enabled') }}
           </dd>
           <dd v-else>{{ $t('global.status.disabled') }}</dd>
           <dt>{{ $t('pageOverview.powerMode') }}</dt>
           <dd>
-            {{ dataFormatter(powerModeValue) }}
+            {{ dataFormatter(powerPerformanceMode) }}
           </dd>
         </dl>
       </b-col>
@@ -48,16 +48,20 @@ export default {
   mixins: [DataFormatterMixin],
   computed: {
     ...mapGetters({
-      powerCapValue: 'powerControl/powerCapValue',
-      powerConsumptionValue: 'powerControl/powerConsumptionValue',
-      powerModeValue: 'powerControl/powerSaverMode',
-      idlePowerData: 'powerControl/idlePower',
+      powerCapValue: 'powerControl/powerCap',
+      powerConsumptionValue: 'powerControl/powerConsumption',
+      powerPerformanceMode: 'powerControl/powerPerformanceMode',
+      idlePowerSaverData: 'powerControl/idlePowerSaverData',
     }),
+    isIdlePowerSaverDataEnabled() {
+      return this.idlePowerSaverData?.Enabled;
+    },
   },
   created() {
     Promise.all([
-      this.$store.dispatch('powerControl/getPowerSaverModeData'),
       this.$store.dispatch('powerControl/getPowerControl'),
+      this.$store.dispatch('powerControl/getPowerPerformanceMode'),
+      this.$store.dispatch('powerControl/getIdlePowerSaverData'),
     ]).finally(() => {
       this.$root.$emit('overview-power-complete');
     });
