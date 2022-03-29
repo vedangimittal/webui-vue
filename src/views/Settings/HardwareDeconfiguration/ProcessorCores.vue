@@ -152,17 +152,19 @@ export default {
         },
         {
           key: 'location',
+          sortable: true,
           formatter: this.dataFormatter,
           label: this.$t('pageDeconfigurationHardware.table.locationCode'),
         },
         {
           key: 'functionalState',
-          sortable: false,
+          sortable: true,
           label: this.$t('pageDeconfigurationHardware.table.functionalState'),
           tdClass: 'text-nowrap',
         },
         {
           key: 'deconfigurationType',
+          sortable: true,
           formatter: this.dataFormatter,
           label: this.$t(
             'pageDeconfigurationHardware.table.deconfigurationType'
@@ -170,6 +172,7 @@ export default {
         },
         {
           key: 'settings',
+          sortable: true,
           formatter: this.dataFormatter,
           label: this.$t('pageDeconfigurationHardware.table.settings'),
         },
