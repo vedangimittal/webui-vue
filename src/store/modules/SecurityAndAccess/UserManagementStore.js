@@ -117,9 +117,21 @@ const UserManagementStore = {
         )
         .catch((error) => {
           console.log(error);
-          const message = i18n.t('pageUserManagement.toast.errorCreateUser', {
-            username,
-          });
+
+          const messageId =
+            error.response.data['Password@Message.ExtendedInfo'][0].MessageId;
+
+          const message =
+            messageId === 'Base.1.8.1.PropertyValueFormatError'
+              ? i18n.t(
+                  'pageUserManagement.toast.errorCreateUserPasswordNotAccepted',
+                  {
+                    username,
+                  }
+                )
+              : i18n.t('pageUserManagement.toast.errorCreateUser', {
+                  username,
+                });
           throw new Error(message);
         });
     },
@@ -143,9 +155,21 @@ const UserManagementStore = {
         )
         .catch((error) => {
           console.log(error);
-          const message = i18n.t('pageUserManagement.toast.errorUpdateUser', {
-            username: originalUsername,
-          });
+
+          const messageId =
+            error.response.data['Password@Message.ExtendedInfo'][0].MessageId;
+
+          const message =
+            messageId === 'Base.1.8.1.PropertyValueFormatError'
+              ? i18n.t(
+                  'pageUserManagement.toast.errorUpdateUserPasswordNotAccepted',
+                  {
+                    username: originalUsername,
+                  }
+                )
+              : i18n.t('pageUserManagement.toast.errorUpdateUser', {
+                  username: originalUsername,
+                });
           throw new Error(message);
         });
     },
