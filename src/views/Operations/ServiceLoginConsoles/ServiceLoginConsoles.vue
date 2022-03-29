@@ -18,6 +18,7 @@
               :options="consoleTypeOptions"
               value-field="value"
               text-field="text"
+              @change="openTerminal"
             >
             </b-form-select>
           </b-form-group>
