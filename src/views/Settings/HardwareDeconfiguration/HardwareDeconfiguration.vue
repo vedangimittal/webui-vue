@@ -3,7 +3,7 @@
     <page-title
       :description="$t('pageDeconfigurationHardware.description')"
       :link="$t('pageDeconfigurationHardware.link')"
-      to="/deconfiguration-records"
+      to="/logs/deconfiguration-records"
     />
     <page-section>
       <b-row>
