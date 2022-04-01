@@ -53,7 +53,7 @@ const DumpsStore = {
         })
         .catch((error) => console.log(error));
     },
-    async createBmcDump() {
+    async createBmcDump(_, dumpType) {
       return await api
         .post(
           '/redfish/v1/Managers/bmc/LogServices/Dump/Actions/LogService.CollectDiagnosticData',
@@ -64,10 +64,23 @@ const DumpsStore = {
         )
         .catch((error) => {
           console.log(error);
-          throw new Error(i18n.t('pageDumps.toast.errorStartBmcDump'));
+          const messageId =
+            error.response.data.error['@Message.ExtendedInfo'][0].MessageId;
+
+          const message =
+            messageId === 'Base.1.8.1.ResourceInStandby'
+              ? i18n.t('pageDumps.toast.errorStartDumpAnotherInProgress', {
+                  dump: dumpType,
+                })
+              : i18n.t('pageDumps.toast.errorStartBmcDump');
+
+          throw new Error(message);
         });
     },
     async createResourceDump(_, { resourceSelector, resourcePassword }) {
+      const delay = (time) =>
+        new Promise((resolve) => setTimeout(resolve, time));
+
       return await api
         .post(
           '/redfish/v1/Systems/system/LogServices/Dump/Actions/LogService.CollectDiagnosticData',
@@ -76,12 +89,41 @@ const DumpsStore = {
             OEMDiagnosticDataType: `Resource_${resourceSelector}_${resourcePassword}`,
           }
         )
+        .then(({ data }) => {
+          // A half second lag is needed while the backend runs a process
+          return delay(500).then(() => {
+            return api.get(data['@odata.id']);
+          });
+        })
+        .then(({ data }) => {
+          const messageId = data.Messages.filter(
+            (message) =>
+              message.MessageId === 'Base.1.8.1.ActionParameterUnknown' ||
+              message.MessageId === 'Base.1.8.1.ResourceAtUriUnauthorized'
+          )[0]?.MessageId;
+
+          if (messageId) {
+            throw messageId;
+          }
+        })
         .catch((error) => {
-          console.log(error);
-          throw new Error(i18n.t('pageDumps.toast.errorStartResourceDump'));
+          const errorMsg = error;
+
+          switch (errorMsg) {
+            case 'Base.1.8.1.ActionParameterUnknown':
+              throw new Error(
+                i18n.t('pageDumps.toast.errorStartResourceDumpInvalidSelector')
+              );
+            case 'Base.1.8.1.ResourceAtUriUnauthorized':
+              throw new Error(
+                i18n.t('pageDumps.toast.errorStartResourceDumpInvalidPassword')
+              );
+            default:
+              throw new Error(i18n.t('pageDumps.toast.errorStartResourceDump'));
+          }
         });
     },
-    async createSystemDump() {
+    async createSystemDump(_, dumpType) {
       return await api
         .post(
           '/redfish/v1/Systems/system/LogServices/Dump/Actions/LogService.CollectDiagnosticData',
@@ -92,7 +134,17 @@ const DumpsStore = {
         )
         .catch((error) => {
           console.log(error);
-          throw new Error(i18n.t('pageDumps.toast.errorStartSystemDump'));
+          const messageId =
+            error.response.data.error['@Message.ExtendedInfo'][0].MessageId;
+
+          const message =
+            messageId === 'Base.1.8.1.ResourceInStandby'
+              ? i18n.t('pageDumps.toast.errorStartDumpAnotherInProgress', {
+                  dump: dumpType,
+                })
+              : i18n.t('pageDumps.toast.errorStartSystemDump');
+
+          throw new Error(message);
         });
     },
     async deleteDumps({ dispatch }, dumps) {

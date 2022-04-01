@@ -64,7 +64,9 @@
         {{ $t('pageDumps.form.initiateDump') }}
       </b-button>
     </b-form>
-    <modal-confirmation @ok="createSystemDump" />
+    <modal-confirmation
+      @ok="createSystemDump($t(`pageDumps.form.${selectedDumpType}Dump`))"
+    />
   </div>
 </template>
 
@@ -145,6 +147,8 @@ export default {
         return;
       }
 
+      const dumpType = this.$t(`pageDumps.form.${this.selectedDumpType}Dump`);
+
       if (this.selectedDumpType === 'system') {
         // System dump initiation
         this.showConfirmationModal();
@@ -153,7 +157,9 @@ export default {
       else if (this.selectedDumpType === 'resource') {
         this.$store
           .dispatch('dumps/createResourceDump', {
-            resourceSelector: this.resourceSelectorValue,
+            dumpType: dumpType,
+            // If resourceSelectorValue is blank ' ' must be used
+            resourceSelector: this.resourceSelectorValue || ' ',
             // If not logged as service, '' must be used
             resourcePassword: this.resourcePassword || '',
           })
@@ -168,7 +174,7 @@ export default {
       // BMC dump initiation
       else if (this.selectedDumpType === 'bmc') {
         this.$store
-          .dispatch('dumps/createBmcDump')
+          .dispatch('dumps/createBmcDump', dumpType)
           .then(() =>
             this.infoToast(this.$t('pageDumps.toast.successStartDump'), {
               title: this.$t('pageDumps.toast.successStartBmcDumpTitle'),
@@ -181,9 +187,9 @@ export default {
     showConfirmationModal() {
       this.$bvModal.show('modal-confirmation');
     },
-    createSystemDump() {
+    createSystemDump(dumpType) {
       this.$store
-        .dispatch('dumps/createSystemDump')
+        .dispatch('dumps/createSystemDump', dumpType)
         .then(() =>
           this.infoToast(this.$t('pageDumps.toast.successStartDump'), {
             title: this.$t('pageDumps.toast.successStartSystemDumpTitle'),
