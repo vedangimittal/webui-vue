@@ -278,7 +278,9 @@ export default {
       return !this.accountSettings.accountLockoutDuration;
     },
     privilegeTypes() {
-      return this.$store.getters['userManagement/accountRoles'];
+      return this.$store.getters['userManagement/accountRoles'].filter(
+        (privilege) => privilege !== 'OemIBMServiceAgent'
+      );
     },
   },
   watch: {
