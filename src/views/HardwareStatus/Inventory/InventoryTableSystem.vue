@@ -36,20 +36,6 @@
             : $t('global.status.absent')
         }}
       </template>
-      <template #cell(locationIndicatorActive)="{ item }">
-        <b-form-checkbox
-          id="identifyLedSwitchSystem"
-          v-model="item.locationIndicatorActive"
-          data-test-id="inventorySystem-toggle-identifyLed"
-          switch
-          @change="toggleIdentifyLedSwitch"
-        >
-          <span v-if="item.locationIndicatorActive">
-            {{ $t('global.status.on') }}
-          </span>
-          <span v-else>{{ $t('global.status.off') }}</span>
-        </b-form-checkbox>
-      </template>
 
       <template #row-details="{ item }">
         <b-container fluid>
@@ -140,11 +126,6 @@ export default {
           label: this.$t('pageUserManagement.table.status'),
           formatter: this.dataFormatter,
           tdClass: 'text-nowrap',
-        },
-        {
-          key: 'locationIndicatorActive',
-          label: this.$t('pageInventory.table.identifyLed'),
-          formatter: this.dataFormatter,
         },
       ],
       expandRowLabel: expandRowLabel,
