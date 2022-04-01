@@ -126,7 +126,14 @@
                 <b-col>
                   <dl>
                     <!-- Event Id -->
-                    <dt>{{ $t('pageEventLogs.table.eventId') }}:</dt>
+                    <dt>
+                      {{ $t('pageEventLogs.table.srcDetails') }}:
+                      <info-tooltip
+                        class="info-icon"
+                        :title="$t('pageEventLogs.table.srcDetailsToolTip')"
+                      >
+                      </info-tooltip>
+                    </dt>
                     <dd>{{ dataFormatter(item.eventId) }}</dd>
                   </dl>
                   <dl>
@@ -273,6 +280,7 @@ import TableFilter from '@/components/Global/TableFilter';
 import TableRowAction from '@/components/Global/TableRowAction';
 import TableToolbar from '@/components/Global/TableToolbar';
 import TableToolbarExport from '@/components/Global/TableToolbarExport';
+import InfoTooltip from '@/components/Global/InfoTooltip';
 
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 import TableFilterMixin from '@/components/Mixins/TableFilterMixin';
@@ -303,6 +311,7 @@ export default {
     IconTrashcan,
     IconChevron,
     IconDownload,
+    InfoTooltip,
     PageTitle,
     Search,
     StatusIcon,
