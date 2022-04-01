@@ -177,6 +177,7 @@ export default {
             'FCO-Deconfigured',
             'Invalid',
             'Manual',
+            'None',
             'Predictive',
             'Recovered',
             'Unknown',

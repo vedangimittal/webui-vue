@@ -58,7 +58,7 @@ const HardwareDeconfigurationStore = {
       return await api.all(promises).then(
         api.spread((...responses) => {
           const coreData = responses.map(({ data }) => {
-            var msgArgs = '';
+            var msgArgs = 'None';
             const conditionsArray = data.Status?.Conditions;
             if (Array.isArray(conditionsArray) && conditionsArray.length) {
               const messageArgsArray = conditionsArray[0].MessageArgs;
@@ -98,7 +98,7 @@ const HardwareDeconfigurationStore = {
       return await api.all(promises).then(
         api.spread((...responses) => {
           const dimmsData = responses.map(({ data }) => {
-            var msgArgs = '';
+            var msgArgs = 'None';
             const conditionsArray = data.Status?.Conditions;
             if (Array.isArray(conditionsArray) && conditionsArray.length) {
               const messageArgsArray = conditionsArray[0].MessageArgs;
