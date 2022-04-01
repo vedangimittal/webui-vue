@@ -8,10 +8,14 @@
         <b-row>
           <b-col sm="6">
             <!-- Add new SNMP alert destination type -->
-            <b-form-group
-              :label="$t('pageSnmpAlerts.modal.ipaddress')"
-              label-for="ip-address"
-            >
+            <b-form-group label-for="ip-address">
+              <template #label>
+                {{ $t('pageSnmpAlerts.modal.ipaddressFqdn') }}
+                <info-tooltip
+                  class="info-icon"
+                  :title="$t('pageSnmpAlerts.modal.ipaddressFqdnInfo')"
+                />
+              </template>
               <b-form-input
                 id="ip-Address"
                 v-model="form.ipAddress"
@@ -23,9 +27,6 @@
               <b-form-invalid-feedback role="alert">
                 <template v-if="!$v.form.ipAddress.required">
                   {{ $t('global.form.fieldRequired') }}
-                </template>
-                <template v-if="!$v.form.ipAddress.ipAddress">
-                  {{ $t('global.form.invalidFormat') }}
                 </template>
               </b-form-invalid-feedback>
             </b-form-group>
@@ -80,14 +81,13 @@
   </b-modal>
 </template>
 <script>
-import {
-  required,
-  ipAddress,
-  minValue,
-  maxValue,
-} from 'vuelidate/lib/validators';
+import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import InfoTooltip from '@/components/Global/InfoTooltip';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
 export default {
+  components: {
+    InfoTooltip,
+  },
   mixins: [VuelidateMixin],
   data() {
     return {
@@ -102,7 +102,6 @@ export default {
       form: {
         ipAddress: {
           required,
-          ipAddress,
         },
         port: {
           minValue: minValue(0),
@@ -140,3 +139,9 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.info-icon {
+  width: 20px !important;
+  height: 2px !important;
+}
+</style>
