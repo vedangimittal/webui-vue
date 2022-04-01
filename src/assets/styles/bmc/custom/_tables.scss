@@ -61,17 +61,6 @@
       padding-left: calc(50px + (#{$table-cell-padding} * 2));
       padding-right: calc(50px + (#{$table-cell-padding} * 2));
     }
-    dl {
-      margin: 0;
-    }
-    dt {
-      // float: left;
-      // clear: left;
-      margin-right: $spacer / 2;
-    }
-    dd {
-      // line-height: 1.2
-    }
   }
 
   .table-row-expand {

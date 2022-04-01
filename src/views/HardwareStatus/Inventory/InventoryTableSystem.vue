@@ -57,13 +57,13 @@
             <b-col class="mt-2" sm="6">
               <dl>
                 <!-- Serial number -->
-                <dt>{{ $t('pageInventory.table.serialNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.serialNumber') }}</dt>
                 <dd>{{ dataFormatter(item.serialNumber) }}</dd>
                 <!-- Model -->
-                <dt>{{ $t('pageInventory.table.model') }}:</dt>
+                <dt>{{ $t('pageInventory.table.model') }}</dt>
                 <dd>{{ dataFormatter(item.model) }}</dd>
                 <!-- Power state -->
-                <dt>{{ $t('pageInventory.table.power') }}:</dt>
+                <dt>{{ $t('pageInventory.table.power') }}</dt>
                 <dd>{{ dataFormatter(item.powerState) }}</dd>
                 <!-- Asset tag -->
                 <dt>
@@ -71,7 +71,7 @@
                   <info-tooltip
                     class="info-icon"
                     :title="$t('pageInventory.table.assetTagInfo')"
-                  />:
+                  />
                 </dt>
                 <dd class="mb-2">
                   {{ dataFormatter(item.assetTag) }}
@@ -81,15 +81,15 @@
             <b-col class="mt-2" sm="6">
               <dl class="ml-4">
                 <!-- Total system memory -->
-                <dt>{{ $t('pageInventory.table.totalSystemMemoryGiB') }}:</dt>
+                <dt>{{ $t('pageInventory.table.totalSystemMemoryGiB') }}</dt>
                 <dd>{{ dataFormatter(item.totalSystemMemoryGiB) }}GB</dd>
               </dl>
               <dl class="ml-4">
                 <!-- Count -->
-                <dt>{{ $t('pageInventory.table.processorCount') }}:</dt>
+                <dt>{{ $t('pageInventory.table.processorCount') }}</dt>
                 <dd>{{ dataFormatter(item.processorSummaryCount) }}</dd>
                 <!-- Core Count -->
-                <dt>{{ $t('pageInventory.table.coreCount') }}:</dt>
+                <dt>{{ $t('pageInventory.table.coreCount') }}</dt>
                 <dd>{{ dataFormatter(item.processorSummaryCoreCount) }}</dd>
               </dl>
             </b-col>

@@ -81,29 +81,29 @@
             <b-col class="mt-2" sm="6" xl="6">
               <dl>
                 <!-- Name -->
-                <dt>{{ $t('pageInventory.table.name') }}:</dt>
+                <dt>{{ $t('pageInventory.table.name') }}</dt>
                 <dd>{{ dataFormatter(item.name) }}</dd>
                 <!-- Part Number -->
-                <dt>{{ $t('pageInventory.table.partNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.partNumber') }}</dt>
                 <dd>{{ dataFormatter(item.partNumber) }}</dd>
                 <!-- Serial Number -->
-                <dt>{{ $t('pageInventory.table.serialNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.serialNumber') }}</dt>
                 <dd>{{ dataFormatter(item.serialNumber) }}</dd>
                 <!-- Spare Part Number -->
-                <dt>{{ $t('pageInventory.table.sparePartNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.sparePartNumber') }}</dt>
                 <dd>{{ dataFormatter(item.sparePartNumber) }}</dd>
               </dl>
             </b-col>
             <b-col class="mt-2" sm="6" xl="6">
               <dl>
                 <!-- Model -->
-                <dt>{{ $t('pageInventory.table.bmcManagerModel') }}:</dt>
+                <dt>{{ $t('pageInventory.table.bmcManagerModel') }}</dt>
                 <dd>{{ dataFormatter(item.model) }}</dd>
                 <!-- Processor Type -->
-                <dt>{{ $t('pageInventory.table.processorType') }}:</dt>
+                <dt>{{ $t('pageInventory.table.processorType') }}</dt>
                 <dd>{{ dataFormatter(item.processorType) }}</dd>
                 <!-- Total Cores -->
-                <dt>{{ $t('pageInventory.table.totalCores') }}:</dt>
+                <dt>{{ $t('pageInventory.table.totalCores') }}</dt>
                 <dd>{{ dataFormatter(item.totalCores) }}</dd>
               </dl>
             </b-col>

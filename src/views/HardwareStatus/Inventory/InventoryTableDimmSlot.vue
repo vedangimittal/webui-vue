@@ -78,34 +78,34 @@
             <b-col sm="6" xl="6">
               <dl>
                 <!-- Part Number -->
-                <dt>{{ $t('pageInventory.table.partNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.partNumber') }}</dt>
                 <dd>{{ dataFormatter(item.partNumber) }}</dd>
               </dl>
               <dl>
                 <!-- Serial Number -->
-                <dt>{{ $t('pageInventory.table.serialNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.serialNumber') }}</dt>
                 <dd>{{ dataFormatter(item.serialNumber) }}</dd>
               </dl>
               <dl>
                 <!-- Spare Part Number -->
-                <dt>{{ $t('pageInventory.table.sparePartNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.sparePartNumber') }}</dt>
                 <dd>{{ dataFormatter(item.sparePartNumber) }}</dd>
               </dl>
               <dl>
                 <!-- Model -->
-                <dt>{{ $t('pageInventory.table.bmcManagerModel') }}:</dt>
+                <dt>{{ $t('pageInventory.table.bmcManagerModel') }}</dt>
                 <dd>{{ dataFormatter(item.model) }}</dd>
               </dl>
             </b-col>
             <b-col sm="6" xl="6">
               <dl>
                 <!-- Capacity MiB -->
-                <dt>{{ $t('pageInventory.table.capacityMiB') }}:</dt>
+                <dt>{{ $t('pageInventory.table.capacityMiB') }}</dt>
                 <dd>{{ dataFormatter(item.capacityMiB) }}</dd>
               </dl>
               <dl>
                 <!-- Enabled-->
-                <dt>{{ $t('pageInventory.table.enabled') }}:</dt>
+                <dt>{{ $t('pageInventory.table.enabled') }}</dt>
                 <dd>{{ dataFormatter(item.enabled) }}</dd>
               </dl>
             </b-col>

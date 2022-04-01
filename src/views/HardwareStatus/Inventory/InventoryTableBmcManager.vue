@@ -59,19 +59,19 @@
             <b-col class="mt-2">
               <dl>
                 <!-- Description -->
-                <dt>{{ $t('pageInventory.table.description') }}:</dt>
+                <dt>{{ $t('pageInventory.table.description') }}</dt>
                 <dd>{{ dataFormatter(item.description) }}</dd>
                 <!-- Part number -->
-                <dt>{{ $t('pageInventory.table.partNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.partNumber') }}</dt>
                 <dd>{{ dataFormatter(item.partNumber) }}</dd>
                 <!-- Serial number -->
-                <dt>{{ $t('pageInventory.table.serialNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.serialNumber') }}</dt>
                 <dd>{{ dataFormatter(item.serialNumber) }}</dd>
                 <!-- Spare part number -->
-                <dt>{{ $t('pageInventory.table.sparePartNumber') }}:</dt>
+                <dt>{{ $t('pageInventory.table.sparePartNumber') }}</dt>
                 <dd>{{ dataFormatter(item.sparePartNumber) }}</dd>
                 <!-- Model -->
-                <dt>{{ $t('pageInventory.table.bmcManagerModel') }}:</dt>
+                <dt>{{ $t('pageInventory.table.bmcManagerModel') }}</dt>
                 <dd>{{ dataFormatter(item.model) }}</dd>
               </dl>
             </b-col>

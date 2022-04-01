@@ -58,7 +58,7 @@
             <b-col class="mt-2" sm="6" xl="6">
               <dl>
                 <!-- Name -->
-                <dt>{{ $t('pageInventory.table.name') }}:</dt>
+                <dt>{{ $t('pageInventory.table.name') }}</dt>
                 <dd>{{ dataFormatter(item.name) }}</dd>
               </dl>
             </b-col>
