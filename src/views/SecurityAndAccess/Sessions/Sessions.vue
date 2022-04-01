@@ -1,6 +1,18 @@
 <template>
   <b-container fluid="xl">
     <page-title />
+    <b-row>
+      <b-col md="8" xl="6">
+        <alert variant="warning" class="mb-4">
+          <div class="font-weight-bold">
+            {{ $t('pageSessions.alert.heading') }}
+          </div>
+          <div>
+            {{ $t('pageSessions.alert.message') }}
+          </div>
+        </alert>
+      </b-col>
+    </b-row>
     <b-row class="align-items-end">
       <b-col sm="6" md="5" xl="4">
         <search
@@ -119,6 +131,7 @@ import Search from '@/components/Global/Search';
 import TableCellCount from '@/components/Global/TableCellCount';
 import TableRowAction from '@/components/Global/TableRowAction';
 import TableToolbar from '@/components/Global/TableToolbar';
+import Alert from '@/components/Global/Alert';
 
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 import BVPaginationMixin, {
@@ -138,6 +151,7 @@ import SearchFilterMixin, {
 
 export default {
   components: {
+    Alert,
     PageTitle,
     Search,
     TableCellCount,
