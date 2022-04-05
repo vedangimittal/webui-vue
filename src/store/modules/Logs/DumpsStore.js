@@ -101,7 +101,8 @@ const DumpsStore = {
           const messageId = data.Messages.filter(
             (message) =>
               message.MessageId === 'Base.1.8.1.ActionParameterUnknown' ||
-              message.MessageId === 'Base.1.8.1.ResourceAtUriUnauthorized'
+              message.MessageId === 'Base.1.8.1.ResourceAtUriUnauthorized' ||
+              message.MessageId === 'Base.1.8.1.InsufficientPrivilege'
           )[0]?.MessageId;
 
           if (messageId) {
@@ -120,6 +121,8 @@ const DumpsStore = {
               throw new Error(
                 i18n.t('pageDumps.toast.errorStartResourceDumpInvalidPassword')
               );
+            case 'Base.1.8.1.InsufficientPrivilege':
+              throw new Error(i18n.t('global.toast.unAuthDescription'));
             default:
               throw new Error(i18n.t('pageDumps.toast.errorStartResourceDump'));
           }
