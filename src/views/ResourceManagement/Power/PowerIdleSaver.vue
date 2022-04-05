@@ -197,16 +197,7 @@ export default {
     idlePowerSaverData() {
       return this.$store.getters['powerControl/idlePowerSaverData'];
     },
-    idlePowerSaverForm() {
-      return {
-        Enabled: this.idlePowerSaver.isIdlePowerSaverEnabled,
-        EnterDwellTimeSeconds: this.idlePowerSaver.enterDwellTimeSeconds,
-        ExitDwellTimeSeconds: this.idlePowerSaver.exitDwellTimeSeconds,
-        EnterUtilizationPercent: this.idlePowerSaver.enterUtilizationPercent,
-        ExitUtilizationPercent: this.idlePowerSaver.exitUtilizationPercent,
-      };
-    },
-    isResetIdlePowerSaverNeeded() {
+    resetIdlePower() {
       return (
         this.idlePowerSaver.enterDwellTimeSeconds === 0 &&
         this.idlePowerSaver.exitDwellTimeSeconds === 0 &&
@@ -215,13 +206,11 @@ export default {
       );
     },
     computedDelayTimeMin() {
-      const value = this.isResetIdlePowerSaverNeeded ? 0 : this.delayTimeMin;
+      const value = this.resetIdlePower ? 0 : this.delayTimeMin;
       return value;
     },
     computedUtilizationThresholdMin() {
-      const value = this.isResetIdlePowerSaverNeeded
-        ? 0
-        : this.utilizationThresholdMin;
+      const value = this.resetIdlePower ? 0 : this.utilizationThresholdMin;
       return value;
     },
   },
@@ -271,9 +260,9 @@ export default {
       this.$v.idlePowerSaver.$touch();
       if (this.$v.idlePowerSaver.$invalid) return;
       this.startLoader();
-      if (this.isResetIdlePowerSaverNeeded) {
+      if (this.resetIdlePower) {
         return this.$store
-          .dispatch('powerControl/resetIdlePowerSaver', this.idlePowerSaverForm)
+          .dispatch('powerControl/resetIdlePowerSaver', this.idlePowerSaver)
           .then((message) => this.successToast(message))
           .catch(({ message }) => this.errorToast(message))
           .finally(() => {
@@ -286,7 +275,7 @@ export default {
           });
       }
       this.$store
-        .dispatch('powerControl/setIdlePowerSaverData', this.idlePowerSaverForm)
+        .dispatch('powerControl/setIdlePowerSaverData', this.idlePowerSaver)
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message))
         .finally(() => this.endLoader());

@@ -72,6 +72,7 @@ export default {
   data() {
     return {
       loading,
+      powerPerformanceMode: null,
       powerPerformanceModeOptions: [
         { text: this.$t('pagePower.selectMode.static'), value: 'Static' },
         {
@@ -86,16 +87,8 @@ export default {
     };
   },
   computed: {
-    powerPerformanceMode: {
-      get() {
-        return this.$store.getters['powerControl/powerPerformanceMode'];
-      },
-      set(value) {
-        return this.$store.commit(
-          'powerControl/setPowerPerformanceMode',
-          value
-        );
-      },
+    powerPerformanceModeData() {
+      return this.$store.getters['powerControl/powerPerformanceMode'];
     },
     powerPerformanceModeValues() {
       return this.$store.getters['powerControl/powerPerformanceModeValues'];
@@ -103,11 +96,15 @@ export default {
   },
   created() {
     this.startLoader();
-    this.$store
-      .dispatch('powerControl/getPowerPerformanceMode')
-      .finally(() => this.endLoader());
+    this.$store.dispatch('powerControl/getPowerPerformanceMode').finally(() => {
+      this.setPowerPerformanceValue(this.powerPerformanceModeData);
+      this.endLoader();
+    });
   },
   methods: {
+    setPowerPerformanceValue(data) {
+      this.powerPerformanceMode = data;
+    },
     handlePowerPerformanceSubmit() {
       if (this.powerPerformanceMode) {
         this.showConfirmationModal();
