@@ -86,7 +86,9 @@ const DumpsStore = {
           '/redfish/v1/Systems/system/LogServices/Dump/Actions/LogService.CollectDiagnosticData',
           {
             DiagnosticDataType: 'OEM',
-            OEMDiagnosticDataType: `Resource_${resourceSelector}_${resourcePassword}`,
+            OEMDiagnosticDataType: `Resource_${
+              resourceSelector || ''
+            }_${resourcePassword}`,
           }
         )
         .then(({ data }) => {

@@ -158,8 +158,7 @@ export default {
         this.$store
           .dispatch('dumps/createResourceDump', {
             dumpType: dumpType,
-            // If resourceSelectorValue is blank ' ' must be used
-            resourceSelector: this.resourceSelectorValue || ' ',
+            resourceSelector: this.resourceSelectorValue,
             // If not logged as service, '' must be used
             resourcePassword: this.resourcePassword || '',
           })
