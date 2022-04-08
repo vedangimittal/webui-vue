@@ -1,5 +1,6 @@
 import api from '@/store/api';
 import i18n from '@/i18n';
+import { find } from 'lodash';
 
 const NetworkStore = {
   namespaced: true,
@@ -45,9 +46,15 @@ const NetworkStore = {
           dhcpEnabled: DHCPv4.DHCPEnabled,
           hostname: HostName,
           id: Id,
-          ipv4: IPv4Addresses,
+          // only display ipv4 link local if there are no static IP addresses
+          ipv4: IPv4StaticAddresses
+            ? IPv4Addresses.filter(
+                (ipv4) => ipv4.AddressOrigin !== 'IPv4LinkLocal'
+              )
+            : IPv4Addresses,
           macAddress: MACAddress,
           staticAddress: IPv4StaticAddresses[0]?.Address, // Display first static address on overview page
+          staticIpv4Addresses: IPv4StaticAddresses,
           staticNameServers: StaticNameServers,
           useDnsEnabled: DHCPv4.UseDNSServers,
           useDomainNameEnabled: DHCPv4.UseDomainName,
@@ -175,8 +182,6 @@ const NetworkStore = {
           DHCPEnabled: dhcpState,
         },
       };
-      // If DHCP is enabled and the DHCP network is not configured, then the
-      // system will go down and network settings will need to be restored
       return api
         .patch(
           `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.selectedInterfaceId}`,
@@ -204,22 +209,27 @@ const NetworkStore = {
     async setSelectedTabId({ commit }, tabId) {
       commit('setSelectedInterfaceId', tabId);
     },
-    async saveIpv4Address({ dispatch, state }, ipv4Form) {
-      const originalAddresses = state.networkSettings[
-        state.selectedInterfaceIndex
-      ].ipv4.map((ipv4) => {
-        const { Address, SubnetMask, Gateway } = ipv4;
-        return {
-          Address,
-          SubnetMask,
-          Gateway,
-        };
+    async updateIpv4Address({ dispatch, state }, newIpv4Address) {
+      const originalAddresses =
+        state.networkSettings[state.selectedInterfaceIndex].staticIpv4Addresses;
+      const updatedIpv4 = originalAddresses.map((item) => {
+        const address = item.Address;
+        if (find(newIpv4Address, { Address: address })) {
+          return null; // if address matches then delete address to "edit"
+        } else {
+          return {}; // if address doesn't match then skip address, no change
+        }
       });
-      const newAddress = [ipv4Form];
+      const filteredAddress = newIpv4Address.filter(
+        (item) => item.Subnet !== ''
+      );
+      const updatedIpv4Array = {
+        IPv4StaticAddresses: [...updatedIpv4, ...filteredAddress],
+      };
       return api
         .patch(
           `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.selectedInterfaceId}`,
-          { IPv4StaticAddresses: originalAddresses.concat(newAddress) }
+          updatedIpv4Array
         )
         .then(dispatch('getEthernetData'))
         .then(() => {
@@ -236,11 +246,22 @@ const NetworkStore = {
           );
         });
     },
-    async editIpv4Address({ dispatch, state }, ipv4TableData) {
+    async deleteIpv4Address({ dispatch, state }, updatedIpv4Array) {
+      const originalAddressArray =
+        state.networkSettings[state.selectedInterfaceIndex].staticIpv4Addresses;
+      const newIpv4Array = originalAddressArray.map((item) => {
+        const address = item.Address;
+        if (find(updatedIpv4Array, { Address: address })) {
+          return {}; //return addresses that match the updated array
+        } else {
+          return null; // delete address that do not match updated array
+        }
+      });
+
       return api
         .patch(
           `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.selectedInterfaceId}`,
-          { IPv4StaticAddresses: ipv4TableData }
+          { IPv4StaticAddresses: newIpv4Array }
         )
         .then(dispatch('getEthernetData'))
         .then(() => {
@@ -257,11 +278,11 @@ const NetworkStore = {
           );
         });
     },
-    async saveSettings({ state, dispatch }, interfaceSettingsForm) {
+    async saveHostname({ state, dispatch }, hostname) {
       return api
         .patch(
           `/redfish/v1/Managers/bmc/EthernetInterfaces/${state.selectedInterfaceId}`,
-          interfaceSettingsForm
+          hostname
         )
         .then(dispatch('getEthernetData'))
         .then(() => {

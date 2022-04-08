@@ -2,7 +2,11 @@
   <b-modal
     id="modal-add-ipv4"
     ref="modal"
-    :title="$t('pageNetwork.table.addIpv4Address')"
+    :title="
+      editModal
+        ? $t('pageNetwork.table.editIpv4')
+        : $t('pageNetwork.table.addIpv4Address')
+    "
     @hidden="resetForm"
   >
     <b-form id="form-ipv4" @submit.prevent="handleSubmit">
@@ -99,6 +103,18 @@ export default {
       type: String,
       default: '',
     },
+    ipAddress: {
+      type: String,
+      default: '',
+    },
+    subnet: {
+      type: String,
+      default: '',
+    },
+    editModal: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -112,6 +128,12 @@ export default {
   watch: {
     defaultGateway() {
       this.form.gateway = this.defaultGateway;
+    },
+    ipAddress() {
+      this.form.ipAddress = this.ipAddress;
+    },
+    subnet() {
+      this.form.subnetMask = this.subnet;
     },
   },
   validations() {
@@ -149,9 +171,12 @@ export default {
       });
     },
     resetForm() {
-      this.form.ipAddress = null;
       this.form.gateway = this.defaultGateway;
-      this.form.subnetMask = null;
+      const item = {
+        Address: '',
+        SubnetMask: '',
+      };
+      this.$root.$emit('edit-address', item);
       this.$v.$reset();
       this.$emit('hidden');
     },

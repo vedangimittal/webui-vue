@@ -33,9 +33,15 @@
       </b-row>
     </page-section>
     <!-- Modals -->
-    <modal-ipv4 :default-gateway="defaultGateway" @ok="saveIpv4Address" />
+    <modal-ipv4
+      :default-gateway="defaultGateway"
+      :subnet="subnet"
+      :ip-address="ipAddress"
+      :edit-modal="ipAddress !== ''"
+      @ok="saveIpv4Address"
+    />
     <modal-dns @ok="saveDnsAddress" />
-    <modal-hostname :hostname="currentHostname" @ok="saveSettings" />
+    <modal-hostname :hostname="currentHostname" @ok="saveHostname" />
   </b-container>
 </template>
 
@@ -75,6 +81,8 @@ export default {
     return {
       currentHostname: '',
       defaultGateway: '',
+      ipAddress: '',
+      subnet: '',
       loading,
       tabIndex: 0,
     };
@@ -88,6 +96,12 @@ export default {
     network() {
       this.getModalInfo();
     },
+  },
+  mounted() {
+    this.$root.$on('edit-address', (item) => {
+      this.subnet = item.SubnetMask;
+      this.ipAddress = item.Address;
+    });
   },
   created() {
     this.startLoader();
@@ -119,12 +133,25 @@ export default {
       this.getModalInfo();
     },
     saveIpv4Address(modalFormData) {
+      const modalData = [modalFormData];
       this.startLoader();
-      this.$store
-        .dispatch('network/saveIpv4Address', modalFormData)
-        .then((message) => this.successToast(message))
-        .catch(({ message }) => this.errorToast(message))
-        .finally(() => this.endLoader());
+      if (this.ipAddress !== '') {
+        //Edit selected row
+        const selectedRow = { Address: this.ipAddress, Subnet: '' };
+        const editRow = modalData.concat(selectedRow);
+        this.$store
+          .dispatch('network/updateIpv4Address', editRow)
+          .then((message) => this.successToast(message))
+          .catch(({ message }) => this.errorToast(message))
+          .finally(() => this.endLoader());
+      } else {
+        // Add new address
+        this.$store
+          .dispatch('network/updateIpv4Address', modalData)
+          .then((message) => this.successToast(message))
+          .catch(({ message }) => this.errorToast(message))
+          .finally(() => this.endLoader());
+      }
     },
     saveDnsAddress(modalFormData) {
       this.startLoader();
@@ -134,10 +161,10 @@ export default {
         .catch(({ message }) => this.errorToast(message))
         .finally(() => this.endLoader());
     },
-    saveSettings(modalFormData) {
+    saveHostname(modalFormData) {
       this.startLoader();
       this.$store
-        .dispatch('network/saveSettings', modalFormData)
+        .dispatch('network/saveHostname', modalFormData)
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message))
         .finally(() => this.endLoader());

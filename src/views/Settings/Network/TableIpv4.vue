@@ -1,15 +1,6 @@
 <template>
   <div>
     <page-section :section-title="$t('pageNetwork.ipv4')">
-      <b-row>
-        <b-col lg="6">
-          <alert variant="info" class="mb-4">
-            <p>
-              {{ $t('pageNetwork.alert.dhcpEnabled') }}
-            </p>
-          </alert>
-        </b-col>
-      </b-row>
       <b-row class="mb-4">
         <b-col lg="2" md="6">
           <dl>
@@ -92,7 +83,7 @@
       </b-row>
       <b-row>
         <b-col class="text-right">
-          <b-button variant="primary" @click="initAddIpv4Address()">
+          <b-button variant="primary" @click="initIpv4Modal()">
             <icon-add />
             {{ $t('pageNetwork.table.addIpv4Address') }}
           </b-button>
@@ -128,7 +119,6 @@
 </template>
 
 <script>
-import Alert from '@/components/Global/Alert';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import IconAdd from '@carbon/icons-vue/es/add--alt/20';
 import IconEdit from '@carbon/icons-vue/es/edit/20';
@@ -140,7 +130,6 @@ import TableRowAction from '@/components/Global/TableRowAction';
 export default {
   name: 'Ipv4Table',
   components: {
-    Alert,
     IconAdd,
     IconEdit,
     IconTrashcan,
@@ -262,8 +251,13 @@ export default {
           AddressOrigin: ipv4.AddressOrigin,
           actions: [
             {
+              value: 'edit',
+              enabled: ipv4.AddressOrigin !== 'DHCP',
+              title: this.$t('pageNetwork.table.editIpv4'),
+            },
+            {
               value: 'delete',
-              enabled: ipv4.AddressOrigin !== 'IPv4LinkLocal',
+              enabled: ipv4.AddressOrigin !== 'DHCP',
               title: this.$t('pageNetwork.table.deleteIpv4'),
             },
           ],
@@ -271,6 +265,10 @@ export default {
       });
     },
     onIpv4TableAction(action, $event, item) {
+      if ($event === 'edit') {
+        this.$root.$emit('edit-address', item);
+        this.initIpv4Modal();
+      }
       if ($event === 'delete') {
         this.deleteIpv4TableRow(item);
       }
@@ -295,28 +293,52 @@ export default {
           {
             title: this.$t('pageNetwork.modal.deleteIpv4'),
             okTitle: this.$t('global.action.delete'),
+            okVariant: 'danger',
             cancelTitle: this.$t('global.action.cancel'),
           }
         )
         .then((deleteConfirmed) => {
           if (deleteConfirmed) {
             this.$store
-              .dispatch('network/editIpv4Address', newIpv4Array)
+              .dispatch('network/deleteIpv4Address', newIpv4Array)
               .then((message) => this.successToast(message))
               .catch(({ message }) => this.errorToast(message));
           }
         });
     },
-    initAddIpv4Address() {
+    initIpv4Modal() {
       this.$bvModal.show('modal-add-ipv4');
     },
     changeDhcpEnabledState(state) {
-      this.$store
-        .dispatch('network/saveDhcpEnabledState', state)
-        .then((success) => {
-          this.successToast(success);
-        })
-        .catch(({ message }) => this.errorToast(message));
+      this.$bvModal
+        .msgBoxConfirm(
+          state
+            ? this.$t('pageNetwork.modal.confirmEnableDhcp')
+            : this.$t('pageNetwork.modal.confirmDisableDhcp'),
+          {
+            title: this.$t('pageNetwork.modal.dhcpConfirmTitle', {
+              dhcpState: state
+                ? this.$t('global.action.enable')
+                : this.$t('global.action.disable'),
+            }),
+            okTitle: state
+              ? this.$t('global.action.enable')
+              : this.$t('global.action.disable'),
+            okVariant: 'danger',
+            cancelTitle: this.$t('global.action.cancel'),
+          }
+        )
+        .then((dhcpEnableConfirmed) => {
+          if (dhcpEnableConfirmed) {
+            this.$store
+              .dispatch('network/saveDhcpEnabledState', state)
+              .then((message) => this.successToast(message))
+              .catch(({ message }) => this.errorToast(message));
+          } else {
+            let onDhcpCancel = document.getElementById('dhcpSwitch');
+            onDhcpCancel.checked = !state;
+          }
+        });
     },
     changeDomainNameState(state) {
       this.$store
