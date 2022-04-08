@@ -7,22 +7,14 @@
         xl="4"
         class="d-flex flex-column justify-content-end"
       >
-        <b-form id="form-new-dump">
-          <b-form-group
-            :label="$t('pageServiceLoginConsoles.selectConsoleType')"
-            label-for="selectConsoleType"
-          >
-            <b-form-select
-              id="selectConsoleType"
-              v-model="selectConsoleType"
-              :options="consoleTypeOptions"
-              value-field="value"
-              text-field="text"
-              @change="openTerminal"
-            >
-            </b-form-select>
-          </b-form-group>
-        </b-form>
+        <dl class="mb-2" sm="6" md="6">
+          <dt class="d-inline font-weight-bold mr-1">
+            {{ $t('pageServiceLoginConsoles.status') }}:
+          </dt>
+          <dd class="d-inline">
+            <status-icon :status="serverStatusIcon" /> {{ connectionStatus }}
+          </dd>
+        </dl>
       </b-col>
 
       <b-col
@@ -31,7 +23,7 @@
       >
         <b-button variant="link" type="button" @click="openConsoleWindow()">
           <icon-launch />
-          {{ $t('pageHostConsole.openNewTab') }}
+          {{ $t('global.action.openNewTab') }}
         </b-button>
       </b-col>
     </b-row>
@@ -45,33 +37,44 @@ import { FitAddon } from 'xterm-addon-fit';
 import { Terminal } from 'xterm';
 import { throttle } from 'lodash';
 import IconLaunch from '@carbon/icons-vue/es/launch/20';
+import StatusIcon from '@/components/Global/StatusIcon';
 
 export default {
   name: 'ServiceLoginConsoles',
   components: {
     IconLaunch,
+    StatusIcon,
   },
   props: {
     isFullWindow: {
       type: Boolean,
       default: true,
     },
+    consoleType: {
+      type: String,
+      default: 'none',
+    },
   },
   data() {
     return {
-      selectConsoleType: 'bmc-console',
-      consoleTypeOptions: [
-        {
-          value: 'bmc-console',
-          text: this.$t('pageServiceLoginConsoles.bmcConsole'),
-        },
-        {
-          value: 'console1',
-          text: this.$t('pageServiceLoginConsoles.hypervisorConsole'),
-        },
-      ],
       resizeConsoleWindow: null,
     };
+  },
+  computed: {
+    serverStatus() {
+      return this.$store.getters['global/serverStatus'];
+    },
+    serverStatusIcon() {
+      return this.serverStatus === 'on' ? 'success' : 'danger';
+    },
+    connectionStatus() {
+      return this.serverStatus === 'on'
+        ? this.$t('global.status.connected')
+        : this.$t('global.status.disconnected');
+    },
+  },
+  created() {
+    this.$store.dispatch('global/getSystemInfo');
   },
   mounted() {
     this.openTerminal();
@@ -80,11 +83,14 @@ export default {
     window.removeEventListener('resize', this.resizeConsoleWindow);
   },
   methods: {
-    openTerminal() {
+    openTerminal(selectedConsole = this.consoleType) {
+      // this.consoleType is out of scope for the try part of the function
+      // and must be passed down as an argument
+
       const token = this.$store.getters['authentication/token'];
 
       const ws = new WebSocket(
-        `wss://${window.location.host}/${this.selectConsoleType}`,
+        `wss://${window.location.host}/${selectedConsole}`,
         [token]
       );
 
@@ -119,14 +125,13 @@ export default {
 
       try {
         ws.onopen = function () {
-          console.log(`websocket ${this.selectConsoleType}/ opened`);
+          console.log(`websocket ${selectedConsole}/ opened`);
         };
         ws.onclose = function (event) {
           console.log(
-            `websocket ${this.selectConsoleType}/ closed. code: ' +
-              ${event.code} +
-              ' reason: ' +
-              ${event.reason}`
+            `websocket ${selectedConsole}/ closed.
+            code: ${event.code}
+            reason: ${event.reason}`
           );
         };
       } catch (error) {

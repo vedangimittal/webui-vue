@@ -15,7 +15,7 @@
       <b-col v-if="!isFullWindow" class="d-flex justify-content-end">
         <b-button variant="link" type="button" @click="openConsoleWindow()">
           <icon-launch />
-          {{ $t('pageHostConsole.openNewTab') }}
+          {{ $t('global.action.openNewTab') }}
         </b-button>
       </b-col>
     </b-row>
@@ -57,8 +57,8 @@ export default {
     },
     connectionStatus() {
       return this.serverStatus === 'on'
-        ? this.$t('pageHostConsole.connected')
-        : this.$t('pageHostConsole.disconnected');
+        ? this.$t('global.status.connected')
+        : this.$t('global.status.disconnected');
     },
   },
   created() {
