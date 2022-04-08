@@ -1,7 +1,15 @@
 <template>
   <b-container fluid="xl">
     <page-title :description="$t('pageFactoryReset.description')" />
-
+    <b-row>
+      <b-col md="8" xl="6">
+        <alert variant="info" class="mb-4">
+          <span>
+            {{ $t('pageFactoryReset.alert') }}
+          </span>
+        </alert>
+      </b-col>
+    </b-row>
     <!-- Reset Form -->
     <b-form id="factory-reset" @submit.prevent="onResetSubmit">
       <b-row>
@@ -16,6 +24,7 @@
                 class="mb-1"
                 value="resetBios"
                 aria-describedby="reset-bios"
+                :disabled="serverStatus !== 'off'"
                 data-test-id="factoryReset-radio-resetBios"
               >
                 {{ $t('pageFactoryReset.form.resetBiosOptionLabel') }}
@@ -29,6 +38,7 @@
                 value="resetToDefaults"
                 aria-describedby="reset-to-defaults"
                 data-test-id="factoryReset-radio-resetToDefaults"
+                :disabled="serverStatus !== 'off'"
               >
                 {{ $t('pageFactoryReset.form.resetToDefaultsOptionLabel') }}
               </b-form-radio>
@@ -42,6 +52,7 @@
           <b-button
             type="submit"
             variant="primary"
+            :disabled="serverStatus !== 'off'"
             data-test-id="factoryReset-button-submit"
           >
             {{ $t('global.action.reset') }}
@@ -56,6 +67,7 @@
 </template>
 
 <script>
+import Alert from '@/components/Global/Alert';
 import PageTitle from '@/components/Global/PageTitle';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
@@ -63,12 +75,17 @@ import ModalReset from './FactoryResetModal';
 
 export default {
   name: 'FactoryReset',
-  components: { PageTitle, ModalReset },
+  components: { Alert, PageTitle, ModalReset },
   mixins: [LoadingBarMixin, BVToastMixin],
   data() {
     return {
       resetOption: 'resetBios',
     };
+  },
+  computed: {
+    serverStatus() {
+      return this.$store.getters['global/serverStatus'];
+    },
   },
   created() {
     this.hideLoader();
