@@ -222,7 +222,7 @@ export default {
             },
             {
               value: 'delete',
-              enabled: user.UserName === 'admin',
+              enabled: user.RoleId !== 'OemIBMServiceAgent',
               title: this.$tc('pageUserManagement.deleteUser'),
             },
           ],
