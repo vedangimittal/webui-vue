@@ -5,6 +5,15 @@
       :link="$t('pageDeconfigurationHardware.link')"
       to="/logs/deconfiguration-records"
     />
+    <b-row>
+      <b-col md="8" xl="6">
+        <alert variant="info" class="mb-4">
+          <div>
+            {{ $t('pageDeconfigurationHardware.alert.message') }}
+          </div>
+        </alert>
+      </b-col>
+    </b-row>
     <page-section>
       <b-row>
         <b-col>
@@ -28,6 +37,7 @@
 import PageTitle from '@/components/Global/PageTitle';
 import PageSection from '@/components/Global/PageSection';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
+import Alert from '@/components/Global/Alert';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import ProcessorCores from './ProcessorCores.vue';
@@ -35,7 +45,7 @@ import MemoryDimms from './MemoryDimms.vue';
 
 export default {
   name: 'HardwareDeconfiguration',
-  components: { PageTitle, MemoryDimms, ProcessorCores, PageSection },
+  components: { Alert, PageTitle, MemoryDimms, ProcessorCores, PageSection },
   mixins: [VuelidateMixin, BVToastMixin, LoadingBarMixin],
   beforeRouteLeave(to, from, next) {
     this.hideLoader();

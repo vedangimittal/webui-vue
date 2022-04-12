@@ -40,6 +40,7 @@
               v-model="row.item.settings"
               name="switch"
               switch
+              :disabled="!isServerOff"
               @change="toggleSettingsSwitch(row)"
             >
               <span v-if="row.item.settings">
@@ -206,6 +207,12 @@ export default {
     },
     filteredDimms() {
       return this.getFilteredTableData(this.allDimms, this.activeFilters);
+    },
+    serverStatus() {
+      return this.$store.getters['global/serverStatus'];
+    },
+    isServerOff() {
+      return this.serverStatus === 'off' ? true : false;
     },
   },
   created() {

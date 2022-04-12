@@ -53,6 +53,7 @@
               v-model="row.item.settings"
               name="switch"
               switch
+              :disabled="!isServerOff"
               @change="toggleSettingsSwitch(row)"
             >
               <span v-if="row.item.settings">
@@ -141,14 +142,14 @@ export default {
       isBusy: true,
       fields: [
         {
-          key: 'id',
-          sortable: true,
-          label: this.$t('pageDeconfigurationHardware.table.name'),
-        },
-        {
           key: 'processorId',
           sortable: true,
           label: this.$t('pageDeconfigurationHardware.table.id'),
+        },
+        {
+          key: 'id',
+          sortable: true,
+          label: this.$t('pageDeconfigurationHardware.table.name'),
         },
         {
           key: 'location',
@@ -219,6 +220,12 @@ export default {
     },
     filteredCores() {
       return this.getFilteredTableData(this.allCores, this.activeFilters);
+    },
+    serverStatus() {
+      return this.$store.getters['global/serverStatus'];
+    },
+    isServerOff() {
+      return this.serverStatus === 'off' ? true : false;
     },
   },
   created() {
