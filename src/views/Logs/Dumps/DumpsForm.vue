@@ -49,12 +49,8 @@
                 id="password"
                 v-model="resourcePassword"
                 type="password"
-                :state="getValidationState($v.resourcePassword)"
               >
               </b-form-input>
-              <b-form-invalid-feedback role="alert">
-                {{ $t('global.form.required') }}
-              </b-form-invalid-feedback>
             </input-password-toggle>
           </b-form-group>
         </template>
@@ -71,7 +67,7 @@
 </template>
 
 <script>
-import { required, requiredIf } from 'vuelidate/lib/validators';
+import { required } from 'vuelidate/lib/validators';
 import ModalConfirmation from './DumpsModalConfirmation';
 import InfoTooltip from '@/components/Global/InfoTooltip';
 import InputPasswordToggle from '@/components/Global/InputPasswordToggle';
@@ -111,11 +107,6 @@ export default {
   validations() {
     return {
       selectedDumpType: { required },
-      resourcePassword: {
-        required: requiredIf(
-          () => this.isServiceUser && this.selectedDumpType === 'resource'
-        ),
-      },
     };
   },
   methods: {
