@@ -19,6 +19,7 @@
         id="idle-power-saver"
         novalidate
         @submit.prevent="saveIdlePowerSaverData"
+        @reset.prevent="resetIdlePowerSaverData"
       >
         <b-form-group>
           <div class="font-weight-bold mb-2">{{ $t('pagePower.toEnter') }}</div>
@@ -151,9 +152,21 @@
               </b-form-group>
             </b-col>
           </b-row>
-          <b-button variant="primary" type="submit" form="idle-power-saver">
-            {{ $t('pagePower.idlePowerSubmit') }}
-          </b-button>
+          <b-row>
+            <b-col>
+              <b-button variant="primary" type="submit" form="idle-power-saver">
+                {{ $t('pagePower.idlePowerSubmitUpdate') }}
+              </b-button>
+              <b-button
+                variant="secondary"
+                type="reset"
+                form="idle-power-saver"
+                class="ml-3"
+              >
+                {{ $t('pagePower.idlePowerSubmitReset') }}
+              </b-button>
+            </b-col>
+          </b-row>
         </b-form-group>
       </b-form>
     </page-section>
@@ -197,22 +210,6 @@ export default {
     idlePowerSaverData() {
       return this.$store.getters['powerControl/idlePowerSaverData'];
     },
-    resetIdlePower() {
-      return (
-        this.idlePowerSaver.enterDwellTimeSeconds === 0 &&
-        this.idlePowerSaver.exitDwellTimeSeconds === 0 &&
-        this.idlePowerSaver.enterUtilizationPercent === 0 &&
-        this.idlePowerSaver.exitUtilizationPercent === 0
-      );
-    },
-    computedDelayTimeMin() {
-      const value = this.resetIdlePower ? 0 : this.delayTimeMin;
-      return value;
-    },
-    computedUtilizationThresholdMin() {
-      const value = this.resetIdlePower ? 0 : this.utilizationThresholdMin;
-      return value;
-    },
   },
   created() {
     this.startLoader();
@@ -225,21 +222,21 @@ export default {
     return {
       idlePowerSaver: {
         enterDwellTimeSeconds: {
-          between: between(this.computedDelayTimeMin, this.delayTimeMax),
+          between: between(this.delayTimeMin, this.delayTimeMax),
         },
         exitDwellTimeSeconds: {
-          between: between(this.computedDelayTimeMin, this.delayTimeMax),
+          between: between(this.delayTimeMin, this.delayTimeMax),
         },
         enterUtilizationPercent: {
           between: between(
-            this.computedUtilizationThresholdMin,
+            this.utilizationThresholdMin,
             this.utilizationThresholdMax
           ),
           maxValue: maxValue(this.idlePowerSaver.exitUtilizationPercent),
         },
         exitUtilizationPercent: {
           between: between(
-            this.computedUtilizationThresholdMin,
+            this.utilizationThresholdMin,
             this.utilizationThresholdMax
           ),
           minValue: minValue(this.idlePowerSaver.enterUtilizationPercent),
@@ -260,25 +257,28 @@ export default {
       this.$v.idlePowerSaver.$touch();
       if (this.$v.idlePowerSaver.$invalid) return;
       this.startLoader();
-      if (this.resetIdlePower) {
-        return this.$store
-          .dispatch('powerControl/resetIdlePowerSaver', this.idlePowerSaver)
-          .then((message) => this.successToast(message))
-          .catch(({ message }) => this.errorToast(message))
-          .finally(() => {
-            this.$store
-              .dispatch('powerControl/getIdlePowerSaverData')
-              .then(() => {
-                this.setIdlePowerSaveFormValues(this.idlePowerSaverData);
-              });
-            this.endLoader();
-          });
-      }
       this.$store
         .dispatch('powerControl/setIdlePowerSaverData', this.idlePowerSaver)
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message))
         .finally(() => this.endLoader());
+    },
+    resetIdlePowerSaverData() {
+      this.$v.idlePowerSaver.$touch();
+      if (this.$v.idlePowerSaver.$invalid) return;
+      this.startLoader();
+      return this.$store
+        .dispatch('powerControl/resetIdlePowerSaver', this.idlePowerSaver)
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message))
+        .finally(() => {
+          this.$store
+            .dispatch('powerControl/getIdlePowerSaverData')
+            .then(() => {
+              this.setIdlePowerSaveFormValues(this.idlePowerSaverData);
+            });
+          this.endLoader();
+        });
     },
   },
 };
