@@ -62,7 +62,7 @@
               </b-form-radio>
             </b-form-group>
             <b-form-group
-              v-if="form.username != 'service'"
+              v-if="notService"
               :label="$t('pageUserManagement.modal.username')"
               label-for="username"
             >
@@ -100,6 +100,7 @@
               </b-form-invalid-feedback>
             </b-form-group>
             <b-form-group
+              v-if="notService"
               :label="$t('pageUserManagement.modal.privilege')"
               label-for="privilege"
             >
@@ -126,7 +127,7 @@
           </b-col>
           <b-col>
             <b-form-group
-              v-if="form.username != 'service'"
+              v-if="notService"
               :label="$t('pageUserManagement.modal.userPassword')"
               label-for="password"
             >
@@ -269,7 +270,7 @@ export default {
       return this.user ? false : true;
     },
     notService() {
-      return this.form.username != 'service';
+      return this.user?.RoleId !== 'OemIBMServiceAgent';
     },
     accountSettings() {
       return this.$store.getters['userManagement/accountSettings'];
@@ -279,7 +280,8 @@ export default {
     },
     privilegeTypes() {
       return this.$store.getters['userManagement/accountRoles'].filter(
-        (privilege) => privilege !== 'OemIBMServiceAgent'
+        (privilege) =>
+          privilege !== 'OemIBMServiceAgent' && privilege !== 'Operator'
       );
     },
   },
