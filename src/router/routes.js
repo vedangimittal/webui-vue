@@ -32,6 +32,7 @@ import Certificates from '@/views/SecurityAndAccess/Certificates';
 import VirtualMedia from '@/views/Operations/VirtualMedia';
 import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
+import LateralCastOutControl from '@/views/ResourceManagement/LateralCastOutControl';
 import SnmpAlerts from '@/views/Settings/SnmpAlerts';
 import i18n from '@/i18n';
 
@@ -257,6 +258,14 @@ const routes = [
         component: PowerRestorePolicy,
         meta: {
           title: i18n.t('appPageTitle.powerRestorePolicy'),
+        },
+      },
+      {
+        path: '/resource-management/lateral-cast-out-control',
+        name: 'lateral-cast-out-control',
+        component: LateralCastOutControl,
+        meta: {
+          title: i18n.t('appPageTitle.lateralCastOutControl'),
         },
       },
       {
