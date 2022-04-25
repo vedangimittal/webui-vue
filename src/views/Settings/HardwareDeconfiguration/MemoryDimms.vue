@@ -230,12 +230,21 @@ export default {
       this.searchTotalFilteredRows = filteredItems.length;
     },
     toggleSettingsSwitch(row) {
+      this.startLoader();
+      this.isBusy = true;
       this.$store
         .dispatch('hardwareDeconfiguration/updateSettingsState', {
           uri: row.item.uri,
           settings: row.item.settings,
         })
-        .catch(({ message }) => this.errorToast(message));
+        .catch(({ message }) => {
+          row.item.settings = !row.item.settings;
+          this.errorToast(message);
+        })
+        .finally(() => {
+          this.endLoader();
+          this.isBusy = false;
+        });
     },
   },
 };

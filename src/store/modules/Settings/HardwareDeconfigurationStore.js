@@ -124,13 +124,12 @@ const HardwareDeconfigurationStore = {
         })
       );
     },
-    async updateSettingsState({ dispatch }, settingsState) {
+    async updateSettingsState(_, settingsState) {
       const uri = settingsState.uri;
       const updatedSettingsValue = {
         Enabled: settingsState.settings,
       };
       return await api.patch(uri, updatedSettingsValue).catch((error) => {
-        dispatch('getDimms');
         console.log('error', error);
         if (settingsState.settings) {
           throw new Error(
@@ -143,13 +142,12 @@ const HardwareDeconfigurationStore = {
         }
       });
     },
-    async updateCoresSettingsState({ dispatch }, settingsState) {
+    async updateCoresSettingsState(_, settingsState) {
       const uri = settingsState.uri;
       const updatedSettingsValue = {
         Enabled: settingsState.settings,
       };
       return await api.patch(uri, updatedSettingsValue).catch((error) => {
-        dispatch('getProcessors');
         console.log('error', error);
         if (settingsState.settings) {
           throw new Error(
