@@ -17,7 +17,6 @@
         {{ $t('pageFirmware.form.updateFirmware.manageAccessKeys') }}
       </b-link>
     </dl>
-    <firmware-modal-access-key @ok="submitForm" />
   </div>
 </template>
 
@@ -33,18 +32,6 @@ export default {
 
     hasLicenses() {
       return !Object.keys(this.$store.getters['licenses/licenses']).length;
-    },
-  },
-  methods: {
-    submitForm(key) {
-      this.startLoader();
-      this.$store
-        .dispatch('licenses/activateLicense', key)
-        .then((success) => {
-          this.successToast(success);
-        })
-        .catch(({ message }) => this.errorToast(message))
-        .finally(() => this.endLoader());
     },
   },
 };
