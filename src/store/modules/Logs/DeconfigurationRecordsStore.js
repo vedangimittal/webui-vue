@@ -19,14 +19,29 @@ const DeconfigurationRecordsStore = {
         .get('/redfish/v1/Systems/system/LogServices/HardwareIsolation/Entries')
         .then(({ data: { Members = [] } = {} }) => {
           const deconfigRecords = Members.map((log) => {
-            const { Id, Severity, Created, Message, Name } = log;
+            const {
+              Id,
+              Severity,
+              EventId,
+              Created,
+              Message,
+              Name,
+              Resolved,
+              AdditionalDataURI,
+              EntryType,
+            } = log;
             return {
               id: Id,
+              type: EntryType,
+              srcDetails: EventId,
               severity: Severity,
               date: new Date(Created),
               description: Message,
               name: Name,
+              filterByStatus: Resolved ? 'Resolved' : 'Unresolved',
+              status: Resolved, //true or false
               uri: log['@odata.id'],
+              additionalDataUri: AdditionalDataURI,
             };
           });
           commit('setDeconfigurationRecordInfo', deconfigRecords);

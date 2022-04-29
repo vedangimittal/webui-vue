@@ -9,6 +9,7 @@
     />
     <b-row>
       <b-col class="text-right">
+        <table-filter :filters="tableFilters" @filter-change="onFilterChange" />
         <b-button
           variant="link"
           :disabled="allEntries.length === 0"
@@ -54,13 +55,60 @@
           sort-desc
           show-empty
           sort-by="id"
+          sort-desc.sync="status"
           :fields="fields"
-          :items="recordItems"
+          :items="filteredLogs"
           :empty-text="$t('global.table.emptyMessage')"
           :current-page="currentPage"
           :per-page="perPage"
-          @row-selected="onRowSelected($event, recordItems.length)"
+          @row-selected="onRowSelected($event, filteredLogs.length)"
         >
+          <!-- Expand chevron icon -->
+          <template #cell(expandRow)="row">
+            <b-button
+              variant="link"
+              :aria-label="expandRowLabel"
+              :title="expandRowLabel"
+              class="btn-icon-only"
+              @click="toggleRowDetails(row)"
+            >
+              <icon-chevron />
+            </b-button>
+          </template>
+          <template #row-details="{ item }">
+            <b-container fluid>
+              <b-row>
+                <b-col>
+                  <dl>
+                    <!-- Event Id -->
+                    <dt>
+                      {{ $t('pageDeconfigurationRecords.table.srcDetails') }}
+                      <info-tooltip
+                        class="info-icon"
+                        :title="
+                          $t(
+                            'pageDeconfigurationRecords.table.srcDetailsToolTip'
+                          )
+                        "
+                      >
+                      </info-tooltip>
+                    </dt>
+                    <dd>{{ dataFormatter(item.srcDetails) }}</dd>
+                  </dl>
+                </b-col>
+                <b-col v-if="item.additionalDataUri" class="text-nowrap">
+                  <b-button
+                    class="btn btn-secondary float-right"
+                    :href="item.additionalDataUri"
+                    target="_blank"
+                  >
+                    <icon-download />
+                    {{ $t('pageDeconfigurationRecords.additionalDataUri') }}
+                  </b-button>
+                </b-col>
+              </b-row>
+            </b-container>
+          </template>
           <!-- Checkbox column -->
           <template #head(checkbox)>
             <b-form-checkbox
@@ -81,7 +129,6 @@
           </template>
           <!-- Severity column -->
           <template #cell(severity)="{ value }">
-            <!-- <status-icon v-if="value" :status="statusIcon(value)" /> -->
             {{ value }}
           </template>
           <!-- Date column -->
@@ -125,7 +172,7 @@
           first-number
           last-number
           :per-page="perPage"
-          :total-rows="getTotalRowCount(recordItems.length)"
+          :total-rows="getTotalRowCount(filteredLogs.length)"
           aria-controls="table-event-logs"
         />
       </b-col>
@@ -134,14 +181,21 @@
 </template>
 
 <script>
+import { omit } from 'lodash';
+import BVToastMixin from '@/components/Mixins/BVToastMixin';
+import DataFormatterMixin from '@/components/Mixins/DataFormatterMixin';
+import IconChevron from '@carbon/icons-vue/es/chevron--down/20';
 import IconDelete from '@carbon/icons-vue/es/trash-can/20';
+import IconDownload from '@carbon/icons-vue/es/download/20';
 import IconExport from '@carbon/icons-vue/es/document--export/20';
+import InfoTooltip from '@/components/Global/InfoTooltip';
+import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 import PageTitle from '@/components/Global/PageTitle';
+import TableFilter from '@/components/Global/TableFilter';
+import TableFilterMixin from '@/components/Mixins/TableFilterMixin';
 import TableToolbar from '@/components/Global/TableToolbar';
 import TableToolbarExport from '@/components/Global/TableToolbarExport';
-import BVToastMixin from '@/components/Mixins/BVToastMixin';
-import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
-import { omit } from 'lodash';
+
 import BVTableSelectableMixin, {
   selectedRows,
   tableHeaderCheckboxModel,
@@ -152,19 +206,30 @@ import BVPaginationMixin, {
   perPage,
   itemsPerPageOptions,
 } from '@/components/Mixins/BVPaginationMixin';
+import TableRowExpandMixin, {
+  expandRowLabel,
+} from '@/components/Mixins/TableRowExpandMixin';
+
 export default {
   components: {
+    IconChevron,
     IconDelete,
+    IconDownload,
     IconExport,
+    InfoTooltip,
     PageTitle,
+    TableFilter,
     TableToolbar,
     TableToolbarExport,
   },
   mixins: [
-    BVTableSelectableMixin,
-    LoadingBarMixin,
     BVPaginationMixin,
+    BVTableSelectableMixin,
     BVToastMixin,
+    DataFormatterMixin,
+    LoadingBarMixin,
+    TableFilterMixin,
+    TableRowExpandMixin,
   ],
   beforeRouteLeave(to, from, next) {
     this.hideLoader();
@@ -172,7 +237,13 @@ export default {
   },
   data() {
     return {
+      expandRowLabel,
       fields: [
+        {
+          key: 'expandRow',
+          label: '',
+          tdClass: 'table-row-expand',
+        },
         {
           key: 'checkbox',
           sortable: false,
@@ -193,16 +264,29 @@ export default {
           sortable: false,
         },
         {
-          key: 'name',
-          label: this.$t('pageDeconfigurationRecords.table.name'),
+          key: 'type',
+          label: 'Type',
           sortable: false,
         },
         {
           key: 'description',
-          label: this.$t('pageDeconfigurationRecords.table.description'),
+          label: this.$t('pageDeconfigurationRecords.table.resource'),
+          sortable: false,
+        },
+        {
+          key: 'status',
+          label: this.$t('pageDeconfigurationRecords.table.status'),
           sortable: false,
         },
       ],
+      tableFilters: [
+        {
+          key: 'filterByStatus',
+          label: this.$t('pageDeconfigurationRecords.table.status'),
+          values: ['Resolved', 'Unresolved'],
+        },
+      ],
+      activeFilters: [],
       batchActions: [
         {
           value: 'delete',
@@ -229,6 +313,9 @@ export default {
     },
     batchExportData() {
       return this.selectedRows.map((row) => omit(row, 'actions'));
+    },
+    filteredLogs() {
+      return this.getFilteredTableData(this.recordItems, this.activeFilters);
     },
   },
   created() {
@@ -298,6 +385,9 @@ export default {
           return allDeconfigRecordsString;
         });
       }
+    },
+    onFilterChange({ activeFilters }) {
+      this.activeFilters = activeFilters;
     },
     onTableRowAction(action, { uri }) {
       if (action === 'delete') {
