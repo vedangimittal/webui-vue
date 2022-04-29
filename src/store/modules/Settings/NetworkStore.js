@@ -46,12 +46,7 @@ const NetworkStore = {
           dhcpEnabled: DHCPv4.DHCPEnabled,
           hostname: HostName,
           id: Id,
-          // only display ipv4 link local if there are no static IP addresses
-          ipv4: IPv4StaticAddresses
-            ? IPv4Addresses.filter(
-                (ipv4) => ipv4.AddressOrigin !== 'IPv4LinkLocal'
-              )
-            : IPv4Addresses,
+          ipv4: IPv4Addresses,
           macAddress: MACAddress,
           staticAddress: IPv4StaticAddresses[0]?.Address, // Display first static address on overview page
           staticIpv4Addresses: IPv4StaticAddresses,
