@@ -118,21 +118,31 @@ const UserManagementStore = {
         .catch((error) => {
           console.log(error);
 
-          const messageId =
-            error.response.data['Password@Message.ExtendedInfo'][0].MessageId;
+          const errorMsg = error.response?.data?.error?.code;
 
-          const message =
-            messageId === 'Base.1.8.1.PropertyValueFormatError'
-              ? i18n.t(
+          switch (errorMsg) {
+            case 'Base.1.8.1.PropertyValueFormatError':
+              throw new Error(
+                i18n.t(
                   'pageUserManagement.toast.errorCreateUserPasswordNotAccepted',
                   {
                     username,
                   }
                 )
-              : i18n.t('pageUserManagement.toast.errorCreateUser', {
+              );
+            case 'Base.1.8.1.CreateLimitReachedForResource':
+              throw new Error(
+                i18n.t('pageUserManagement.toast.errorCreateUserMaxUsers', {
                   username,
-                });
-          throw new Error(message);
+                })
+              );
+            default:
+              throw new Error(
+                i18n.t('pageUserManagement.toast.errorCreateUser', {
+                  username,
+                })
+              );
+          }
         });
     },
     async updateUser(
