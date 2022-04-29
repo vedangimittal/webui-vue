@@ -5,11 +5,13 @@ import router from '@/router';
 const AuthenticationStore = {
   namespaced: true,
   state: {
+    loginPageDetails: {},
     authError: false,
     xsrfCookie: Cookies.get('XSRF-TOKEN'),
     isAuthenticatedCookie: Cookies.get('IsAuthenticated'),
   },
   getters: {
+    loginPageDetails: (state) => state.loginPageDetails,
     authError: (state) => state.authError,
     isLoggedIn: (state) => {
       return (
@@ -19,6 +21,8 @@ const AuthenticationStore = {
     token: (state) => state.xsrfCookie,
   },
   mutations: {
+    setLoginPageDetails: (state, loginPageDetails) =>
+      (state.loginPageDetails = loginPageDetails),
     authSuccess(state) {
       state.authError = false;
       state.xsrfCookie = Cookies.get('XSRF-TOKEN');
@@ -58,6 +62,20 @@ const AuthenticationStore = {
         .get(`/redfish/v1/AccountService/Accounts/${username}`)
         .then(({ data: { PasswordChangeRequired } }) => {
           return PasswordChangeRequired;
+        })
+        .catch((error) => console.log(error));
+    },
+    async dateAndTime({ commit }) {
+      return api
+        .get(`/redfish/v1/`)
+        .then((response) => response.data.Oem.IBM)
+        .then((data) => {
+          const loginPageDetails = {
+            dateTime: new Date(data.DateTime),
+            model: data.Model,
+            serial: data.SerialNumber,
+          };
+          commit('setLoginPageDetails', loginPageDetails);
         })
         .catch((error) => console.log(error));
     },
