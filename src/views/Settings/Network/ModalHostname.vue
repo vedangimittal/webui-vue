@@ -7,6 +7,15 @@
   >
     <b-form id="hostname-settings" @submit.prevent="handleSubmit">
       <b-row>
+        <b-col>
+          <alert variant="warning" class="mb-4">
+            <span>
+              {{ $t('pageNetwork.hostnameAlert') }}
+            </span>
+          </alert>
+        </b-col>
+      </b-row>
+      <b-row>
         <b-col sm="6">
           <b-form-group
             :label="$t('pageNetwork.hostname')"
@@ -41,19 +50,23 @@
         variant="primary"
         @click="onOk"
       >
-        {{ $t('global.action.add') }}
+        {{ $t('global.action.save') }}
       </b-button>
     </template>
   </b-modal>
 </template>
 
 <script>
+import Alert from '@/components/Global/Alert';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
 import { required, helpers } from 'vuelidate/lib/validators';
 
 const validateHostname = helpers.regex('validateHostname', /^\S{0,64}$/);
 
 export default {
+  components: {
+    Alert,
+  },
   mixins: [VuelidateMixin],
   props: {
     hostname: {
