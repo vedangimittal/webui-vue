@@ -99,6 +99,17 @@ const SystemStore = {
           }
         });
     },
+    async saveAssetTag(_, assetTag) {
+      return api
+        .patch('/redfish/v1/Systems/system', assetTag)
+        .then(() => {
+          return i18n.t('pageOverview.toast.successSaveAssetTag');
+        })
+        .catch((error) => {
+          console.log(error);
+          throw new Error(i18n.t('pageOverview.toast.errorSaveAssetTag'));
+        });
+    },
   },
 };
 

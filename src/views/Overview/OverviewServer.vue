@@ -10,6 +10,13 @@
           <dd>{{ dataFormatter(serverModel) }}</dd>
           <dt>{{ $t('pageOverview.serialNumber') }}</dt>
           <dd>{{ dataFormatter(serverSerialNumber) }}</dd>
+          <dt>
+            {{ $t('pageOverview.assetTag') }}
+            <b-button variant="link" class="p-1" @click="initAssetTagModal()">
+              <icon-edit :title="$t('pageOverview.modal.editAssetTag')" />
+            </b-button>
+          </dt>
+          <dd>{{ dataFormatter(assetTag) }}</dd>
         </dl>
       </b-col>
       <b-col sm="6" lg="6">
@@ -24,6 +31,7 @@
         </dl>
       </b-col>
     </b-row>
+    <modal-asset-tag :tag="assetTag" @ok="saveAssetTag" />
   </overview-card>
 </template>
 
@@ -32,17 +40,28 @@ import OverviewCard from './OverviewCard';
 import DataFormatterMixin from '@/components/Mixins/DataFormatterMixin';
 import { mapState } from 'vuex';
 import StatusIcon from '@/components/Global/StatusIcon';
+import IconEdit from '@carbon/icons-vue/es/edit/16';
+import ModalAssetTag from './ModalAssetTag.vue';
+import LoadingBarMixin, { loading } from '@/components/Mixins/LoadingBarMixin';
+import BVToastMixin from '@/components/Mixins/BVToastMixin';
 
 export default {
   name: 'Server',
   components: {
     OverviewCard,
     StatusIcon,
+    IconEdit,
+    ModalAssetTag,
   },
-  mixins: [DataFormatterMixin],
+  mixins: [BVToastMixin, DataFormatterMixin, LoadingBarMixin],
+  beforeRouteLeave(to, from, next) {
+    this.hideLoader();
+    next();
+  },
   data() {
     return {
       serviceLoginStatus: null,
+      loading,
     };
   },
   computed: {
@@ -69,6 +88,9 @@ export default {
       operatingMode() {
         return this.biosAttributes?.pvm_system_operating_mode;
       },
+      assetTag() {
+        return this.$store.getters['global/assetTag'];
+      },
     }),
     serviceLoginStatusIcon() {
       switch (this.serviceLoginStatus) {
@@ -89,6 +111,20 @@ export default {
     ]).finally(() => {
       this.$root.$emit('overview-server-complete');
     });
+  },
+  methods: {
+    initAssetTagModal() {
+      this.$bvModal.show('modal-asset-tag');
+    },
+    saveAssetTag(modalFormData) {
+      this.startLoader();
+      this.$store
+        .dispatch('system/saveAssetTag', modalFormData)
+        .then(this.$store.dispatch('global/getSystemInfo'))
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message))
+        .finally(() => this.endLoader());
+    },
   },
 };
 </script>
