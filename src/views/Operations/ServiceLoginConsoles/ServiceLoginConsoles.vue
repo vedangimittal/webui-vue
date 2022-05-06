@@ -1,6 +1,6 @@
 <template>
   <div :class="isFullWindow ? 'full-window-container' : 'terminal-container'">
-    <b-row v-if="!isFullWindow" class="d-flex">
+    <b-row class="d-flex">
       <b-col
         sm="6"
         lg="5"
@@ -52,7 +52,7 @@ export default {
     },
     consoleType: {
       type: String,
-      default: 'none',
+      default: sessionStorage.getItem('storedConsoleType'),
     },
   },
   data() {
@@ -139,6 +139,7 @@ export default {
       }
     },
     openConsoleWindow() {
+      sessionStorage.setItem('storedConsoleType', this.consoleType);
       window.open(
         '#/console/service-login-consoles',
         '_blank',
