@@ -35,14 +35,18 @@ const WebSocketPlugin = (store) => {
       console.error(event);
     };
     ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+      var JSONbig = require('json-bigint');
+      var data = JSONbig.parse(event.data);
       const eventInterface = data.interface;
       const path = data.path;
       if (eventInterface === 'xyz.openbmc_project.State.Boot.Raw') {
         if (path === '/xyz/openbmc_project/state/boot/raw0') {
           const { properties: { Value } = {} } = data;
           if (Value) {
-            store.commit('global/setPostCodeValue', Value);
+            if (Array.isArray(Value) && Value.length) {
+              var finalValue = Value[0].c.join('');
+            }
+            store.commit('global/setPostCodeValue', finalValue);
           }
         }
       }

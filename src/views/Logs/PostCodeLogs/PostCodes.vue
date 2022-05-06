@@ -1,8 +1,6 @@
 <template>
   <b-container fluid="xl">
-    <!-- <page-title />
-     -->
-    {{ postCodeValue[0] }}
+    {{ postCodes }}
   </b-container>
 </template>
 
@@ -12,6 +10,16 @@ export default {
   computed: {
     postCodeValue() {
       return this.$store.getters['global/postCodeValue'];
+    },
+    postCodes() {
+      if (this.postCodeValue) {
+        const { U64 } = require('n64');
+        let big = U64(this.postCodeValue, 10);
+        big.toString();
+        let bytearray = big.toLE(Buffer);
+        var finalConvertedCode = bytearray.toString();
+        return finalConvertedCode;
+      } else return '';
     },
   },
 };
