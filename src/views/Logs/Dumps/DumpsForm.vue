@@ -132,8 +132,7 @@ export default {
     handleSubmit() {
       this.$v.$touch();
       if (this.$v.$invalid) return;
-
-      if (this.selectedDumpType !== 'bmc' && !this.isInPhypStandby) {
+      if (this.selectedDumpType === 'resource' && !this.isInPhypStandby) {
         this.errorToast(this.$t('pageDumps.toast.errorPhypInStandby'));
         return;
       }
