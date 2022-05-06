@@ -3,7 +3,7 @@
     <div class="nav-container" :class="{ open: isNavigationOpen }">
       <nav ref="nav" :aria-label="$t('appNavigation.primaryNavigation')">
         <b-nav vertical class="mb-4">
-          <template v-for="(navItem, index) in filteredNavigationItems">
+          <template v-for="(navItem, index) in navigationItems">
             <!-- Navigation items with no children -->
             <b-nav-item
               v-if="!navItem.children"
