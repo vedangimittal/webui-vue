@@ -84,6 +84,8 @@ const CertificatesStore = {
                 validUntil: new Date(ACF.ExpirationDate),
               };
               commit('setAcfCertificate', [acfCertificate]);
+            } else {
+              commit('setAcfCertificate', []);
             }
           }
         )
@@ -146,12 +148,15 @@ const CertificatesStore = {
         .patch(getCertificateProp(type, 'location'), fileObj, {
           headers: { 'Content-Type': 'application/octet-stream' },
         })
-        .then(() => dispatch('getCertificates'))
-        .then(() =>
-          i18n.t('pageCertificates.toast.successAddCertificate', {
+        .then(() => {
+          dispatch('getAcfCertificate');
+          dispatch('getCertificates');
+        })
+        .then(() => {
+          return i18n.t('pageCertificates.toast.successAddCertificate', {
             certificate: getCertificateProp(type, 'label'),
-          })
-        )
+          });
+        })
         .catch((error) => {
           console.log(error);
           throw new Error(i18n.t('pageCertificates.toast.errorAddCertificate'));
@@ -198,24 +203,25 @@ const CertificatesStore = {
           throw new Error(i18n.t('pageCertificates.toast.errorAddCertificate'));
         });
     },
-    async replaceCertificate(
-      { dispatch },
-      { certificateString, location, type }
-    ) {
-      const data = {};
-      data.CertificateString = certificateString;
-      if (certificateString === 'ServiceLogin Certificate') {
-        data.CertificateType = 'ACF';
-      } else {
-        data.CertificateType = 'PEM';
-      }
-      data.CertificateUri = { '@odata.id': location };
+    async replaceACFCertificate({ dispatch }, { file, type, location }) {
+      const base64File = await convertFileToBase64(file);
+      const fileObj = {
+        Oem: {
+          IBM: {
+            ACF: {
+              ACFFile: base64File.split('base64,')[1].slice(0, -1),
+            },
+          },
+        },
+      };
       return await api
-        .post(
-          '/redfish/v1/CertificateService/Actions/CertificateService.ReplaceCertificate',
-          data
-        )
-        .then(() => dispatch('getCertificates'))
+        .patch(location, fileObj, {
+          headers: { 'Content-Type': 'application/octet-stream' },
+        })
+        .then(() => {
+          dispatch('getAcfCertificate');
+          dispatch('getCertificates');
+        })
         .then(() =>
           i18n.t('pageCertificates.toast.successReplaceCertificate', {
             certificate: getCertificateProp(type, 'label'),
@@ -225,6 +231,60 @@ const CertificatesStore = {
           console.log(error);
           throw new Error(
             i18n.t('pageCertificates.toast.errorReplaceCertificate')
+          );
+        });
+    },
+    async replaceCertificate(
+      { dispatch },
+      { certificateString, location, type }
+    ) {
+      const data = {};
+      data.CertificateString = certificateString;
+      data.CertificateType = 'PEM';
+      data.CertificateUri = { '@odata.id': location };
+      return await api
+        .post(
+          '/redfish/v1/CertificateService/Actions/CertificateService.ReplaceCertificate',
+          data
+        )
+        .then(() => {
+          dispatch('getAcfCertificate');
+          dispatch('getCertificates');
+        })
+        .then(() => {
+          return i18n.t('pageCertificates.toast.successReplaceCertificate', {
+            certificate: getCertificateProp(type, 'label'),
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          throw new Error(
+            i18n.t('pageCertificates.toast.errorReplaceCertificate')
+          );
+        });
+    },
+    async deleteACFCertificate({ dispatch }, { type, location }) {
+      const data = {
+        Oem: {
+          IBM: {
+            ACF: {
+              ACFFile: null,
+            },
+          },
+        },
+      };
+      return await api
+        .patch(location, data)
+        .then(() => dispatch('getCertificates'))
+        .then(() =>
+          i18n.t('pageCertificates.toast.successDeleteCertificate', {
+            certificate: getCertificateProp(type, 'label'),
+          })
+        )
+        .catch((error) => {
+          console.log(error);
+          throw new Error(
+            i18n.t('pageCertificates.toast.errorDeleteCertificate')
           );
         });
     },

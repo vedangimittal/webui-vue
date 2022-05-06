@@ -166,9 +166,9 @@ export default {
   },
   computed: {
     certificates() {
-      let acfCertificate = this.$store.getters['certificates/acfCertificate'];
-      let certificates = this.$store.getters['certificates/allCertificates'];
-      let allCertificates = [...acfCertificate, ...certificates];
+      const acfCertificate = this.$store.getters['certificates/acfCertificate'];
+      const certificates = this.$store.getters['certificates/allCertificates'];
+      const allCertificates = [...acfCertificate, ...certificates];
       return allCertificates;
     },
     tableItems() {
@@ -184,7 +184,9 @@ export default {
               value: 'delete',
               title: this.$t('pageCertificates.deleteCertificate'),
               enabled:
-                certificate.type === 'TrustStore Certificate' ? true : false,
+                certificate.type === 'TrustStore Certificate' ||
+                certificate.certificate === 'ServiceLogin Certificate' ||
+                certificate.certificate === 'CA Certificate',
             },
           ],
         };
@@ -249,7 +251,6 @@ export default {
       this.$bvModal
         .msgBoxConfirm(
           this.$t('pageCertificates.modal.deleteConfirmMessage', {
-            issuedBy: certificate.issuedBy,
             certificate: certificate.certificate,
           }),
           {
@@ -259,7 +260,11 @@ export default {
           }
         )
         .then((deleteConfirmed) => {
-          if (deleteConfirmed) this.deleteCertificate(certificate);
+          if (deleteConfirmed)
+            this.deleteCertificate({
+              type: certificate.certificate,
+              location: certificate.location,
+            });
         });
     },
     onModalOk({ addNew, file, type, location }) {
@@ -289,31 +294,56 @@ export default {
     },
     replaceCertificate(file, type, location) {
       this.startLoader();
-      const reader = new FileReader();
-      reader.readAsBinaryString(file);
-      reader.onloadend = (event) => {
-        const certificateString = event.target.result;
-        this.$store
-          .dispatch('certificates/replaceCertificate', {
-            certificateString,
+      if (type === 'ServiceLogin Certificate') {
+        return this.$store
+          .dispatch('certificates/replaceACFCertificate', {
+            file,
             type,
             location,
           })
           .then((success) => this.successToast(success))
           .catch(({ message }) => this.errorToast(message))
           .finally(() => this.endLoader());
-      };
+      } else {
+        const reader = new FileReader();
+        reader.readAsBinaryString(file);
+        reader.onloadend = (event) => {
+          const certificateString = event.target.result;
+          return this.$store
+            .dispatch('certificates/replaceCertificate', {
+              certificateString,
+              type,
+              location,
+            })
+            .then((success) => this.successToast(success))
+            .catch(({ message }) => this.errorToast(message))
+            .finally(() => this.endLoader());
+        };
+      }
     },
     deleteCertificate({ type, location }) {
       this.startLoader();
-      this.$store
-        .dispatch('certificates/deleteCertificate', {
-          type,
-          location,
+      Promise.all([this.deleteCertificateChecker(type, location)])
+        .then((success) => {
+          this.successToast(success);
+          this.$store.dispatch('certificates/getAcfCertificate');
+          this.$store.dispatch('certificates/getCertificates');
         })
-        .then((success) => this.successToast(success))
         .catch(({ message }) => this.errorToast(message))
         .finally(() => this.endLoader());
+    },
+    deleteCertificateChecker(type, location) {
+      if (type === 'ServiceLogin Certificate') {
+        return this.$store.dispatch('certificates/deleteACFCertificate', {
+          type,
+          location,
+        });
+      } else {
+        return this.$store.dispatch('certificates/deleteCertificate', {
+          type,
+          location,
+        });
+      }
     },
     getDaysUntilExpired(date) {
       if (this.bmcTime) {

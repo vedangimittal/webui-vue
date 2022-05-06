@@ -44,7 +44,7 @@
           <form-file
             id="certificate-file"
             v-model="form.file"
-            accept=".acf"
+            :accept="fileFormat"
             :state="getValidationState($v.form.file)"
           >
             <template #invalid>
@@ -58,7 +58,7 @@
           <form-file
             id="certificate-file"
             v-model="form.file"
-            accept=".pem"
+            :accept="fileFormat"
             :state="getValidationState($v.form.file)"
           >
             <template #invalid>
@@ -140,6 +140,13 @@ export default {
           };
         });
     },
+    fileFormat() {
+      if (this.certificate?.certificate === 'ServiceLogin Certificate') {
+        return '.acf';
+      } else {
+        return '.pem';
+      }
+    },
     isNotAdmin() {
       return this.userRoleId !== 'Administrator';
     },
@@ -174,7 +181,7 @@ export default {
         file: this.form.file,
         location: this.certificate ? this.certificate.location : null,
         type: this.certificate
-          ? this.certificate.type
+          ? this.certificate.certificate
           : this.form.certificateType,
       });
       this.closeModal();
