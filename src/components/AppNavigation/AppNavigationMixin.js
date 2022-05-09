@@ -59,6 +59,11 @@ const AppNavigationMixin = {
               label: this.$t('appNavigation.sensors'),
               route: '/hardware-status/sensors',
             },
+            {
+              id: 'concurrent-maintenance',
+              label: this.$t('appNavigation.concurrentMaintanence'),
+              route: '/hardware-status/concurrent-maintenance',
+            },
           ],
         },
         {

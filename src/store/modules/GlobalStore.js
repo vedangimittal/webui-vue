@@ -34,7 +34,7 @@ const GlobalStore = {
     bmcTime: null,
     acfInstalled: false,
     expirationDate: null,
-    modelType: null,
+    modelType: JSON.parse(localStorage.getItem('storedModelType')),
     serialNumber: null,
     serverStatus: 'unreachable',
     postCodeValue: null,
@@ -150,6 +150,7 @@ const GlobalStore = {
             commit('setAssetTag', AssetTag);
             commit('setSerialNumber', SerialNumber);
             commit('setModelType', Model);
+            localStorage.setItem('storedModelType', JSON.stringify(Model));
             if (State === 'Quiesced' || State === 'InTest') {
               // OpenBMC's host state interface is mapped to 2 Redfish
               // properties "Status""State" and "PowerState". Look first

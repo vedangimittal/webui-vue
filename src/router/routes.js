@@ -1,6 +1,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import ChangePassword from '@/views/ChangePassword';
 import ConsoleLayout from '@/layouts/ConsoleLayout.vue';
+import ConcurrentMaintenance from '@/views/HardwareStatus/ConcurrentMaintenance';
 import DateTime from '@/views/Settings/DateTime';
 import EventLogs from '@/views/Logs/EventLogs';
 import FactoryReset from '@/views/Operations/FactoryReset';
@@ -146,6 +147,14 @@ const routes = [
         component: Sensors,
         meta: {
           title: i18n.t('appPageTitle.sensors'),
+        },
+      },
+      {
+        path: '/hardware-status/concurrent-maintenance',
+        name: 'concurrent-maintenance',
+        component: ConcurrentMaintenance,
+        meta: {
+          title: i18n.t('appPageTitle.concurrentMaintenance'),
         },
       },
       {
