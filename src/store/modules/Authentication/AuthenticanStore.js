@@ -74,6 +74,7 @@ const AuthenticationStore = {
             dateTime: new Date(data.DateTime),
             model: data.Model,
             serial: data.SerialNumber,
+            acfWindowActive: data.ACFWindowActive,
           };
           commit('setLoginPageDetails', loginPageDetails);
         })
