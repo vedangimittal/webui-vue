@@ -57,10 +57,10 @@
               @change="toggleSettingsSwitch(row)"
             >
               <span v-if="row.item.settings">
-                {{ $t('pageDeconfigurationHardware.configured') }}
+                {{ $t('pageDeconfigurationHardware.configure') }}
               </span>
               <span v-else>{{
-                $t('pageDeconfigurationHardware.deconfigured')
+                $t('pageDeconfigurationHardware.deconfigure')
               }}</span>
             </b-form-checkbox>
           </template>
