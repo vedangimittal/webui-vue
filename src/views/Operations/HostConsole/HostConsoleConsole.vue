@@ -46,6 +46,7 @@ export default {
   data() {
     return {
       resizeConsoleWindow: null,
+      ws: null,
     };
   },
   computed: {
@@ -68,13 +69,14 @@ export default {
     this.openTerminal();
   },
   beforeDestroy() {
+    this.ws.close();
     window.removeEventListener('resize', this.resizeConsoleWindow);
   },
   methods: {
     openTerminal() {
       const token = this.$store.getters['authentication/token'];
 
-      const ws = new WebSocket(`wss://${window.location.host}/console0`, [
+      this.ws = new WebSocket(`wss://${window.location.host}/console0`, [
         token,
       ]);
 
@@ -86,7 +88,7 @@ export default {
           'SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace',
       });
 
-      const attachAddon = new AttachAddon(ws);
+      const attachAddon = new AttachAddon(this.ws);
       term.loadAddon(attachAddon);
 
       const fitAddon = new FitAddon();
@@ -108,10 +110,10 @@ export default {
       window.addEventListener('resize', this.resizeConsoleWindow);
 
       try {
-        ws.onopen = function () {
+        this.ws.onopen = function () {
           console.log('websocket console0/ opened');
         };
-        ws.onclose = function (event) {
+        this.ws.onclose = function (event) {
           console.log(
             'websocket console0/ closed. code: ' +
               event.code +
