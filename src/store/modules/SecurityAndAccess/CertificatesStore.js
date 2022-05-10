@@ -5,11 +5,13 @@ export const CERTIFICATE_TYPES = [
     type: 'HTTPS Certificate',
     location: '/redfish/v1/Managers/bmc/NetworkProtocol/HTTPS/Certificates/',
     label: i18n.t('pageCertificates.httpsCertificate'),
+    limit: 1,
   },
   {
     type: 'LDAP Certificate',
     location: '/redfish/v1/AccountService/LDAP/Certificates/',
     label: i18n.t('pageCertificates.ldapCertificate'),
+    limit: 1,
   },
   {
     type: 'TrustStore Certificate',
@@ -18,11 +20,13 @@ export const CERTIFICATE_TYPES = [
     // 'TrustStore Certificate' after user testing revealed
     // the term 'TrustStore Certificate' wasn't recognized/was unfamilar
     label: i18n.t('pageCertificates.caCertificate'),
+    limit: 10,
   },
   {
     type: 'ServiceLogin Certificate',
     location: '/redfish/v1/AccountService/Accounts/service',
     label: i18n.t('pageCertificates.serviceLoginCertificate'),
+    limit: 1,
   },
 ];
 const getCertificateProp = (type, prop) => {
@@ -91,7 +95,7 @@ const CertificatesStore = {
         )
         .catch((error) => console.log(error));
     },
-    async getCertificates({ commit }) {
+    async getCertificates({ commit, dispatch }) {
       return await api
         .get('/redfish/v1/CertificateService/CertificateLocations')
         .then(({ data: { Links: { Certificates } } }) =>
@@ -121,17 +125,32 @@ const CertificatesStore = {
                   validUntil: new Date(ValidNotAfter),
                 };
               });
-              const availableUploadTypes = CERTIFICATE_TYPES.filter(
-                ({ type }) =>
-                  !certificates
-                    .map((certificate) => certificate.type)
-                    .includes(type)
-              );
               commit('setCertificates', certificates);
-              commit('setAvailableUploadTypes', availableUploadTypes);
+              dispatch('getAvailableCertificates');
             })
           );
         });
+    },
+    async getAvailableCertificates({ commit, state }) {
+      const availableUploadTypes = [];
+      const allCertificates = [
+        ...state.acfCertificate,
+        ...state.allCertificates,
+      ];
+      CERTIFICATE_TYPES.map((certificateType) => {
+        const certificateCount = allCertificates.filter((certificate) => {
+          return (
+            certificate.type === certificateType.type ||
+            certificate.certificate === certificateType.type
+          );
+        }).length;
+        if (certificateType.limit === certificateCount) {
+          return;
+        } else {
+          availableUploadTypes.push(certificateType);
+        }
+      });
+      commit('setAvailableUploadTypes', availableUploadTypes);
     },
     async addNewACFCertificate({ dispatch }, { file, type }) {
       const base64File = await convertFileToBase64(file);

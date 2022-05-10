@@ -123,7 +123,7 @@ export default {
       return this.$store.getters['certificates/availableUploadTypes'];
     },
     certificateOptions() {
-      return this.certificateTypes
+      const filteredCertificates = this.certificateTypes
         .filter((certificate) => {
           if (
             certificate.type === 'ServiceLogin Certificate' &&
@@ -139,9 +139,16 @@ export default {
             value: type,
           };
         });
+      if (filteredCertificates.length === 1) {
+        this.form.certificateType === filteredCertificates?.[0]?.value;
+      }
+      return filteredCertificates;
     },
     fileFormat() {
-      if (this.certificate?.certificate === 'ServiceLogin Certificate') {
+      if (
+        this.certificate?.certificate === 'ServiceLogin Certificate' ||
+        this.form.certificateType === 'ServiceLogin Certificate'
+      ) {
         return '.acf';
       } else {
         return '.pem';

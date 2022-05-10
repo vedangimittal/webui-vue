@@ -54,7 +54,7 @@
     <b-row>
       <b-col xl="11">
         <b-table
-          responsive="md"
+          responsive="xl"
           show-empty
           hover
           :busy="isBusy"
