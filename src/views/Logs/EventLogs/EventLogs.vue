@@ -33,10 +33,9 @@
         <b-button
           variant="primary"
           :class="{ disabled: allLogs.length === 0 }"
-          :download="exportFileNameByDate()"
-          :href="href"
+          @click="downloadEventLogs('all')"
         >
-          <icon-export /> {{ $t('global.action.exportAll') }}
+          <icon-download /> {{ $t('global.action.downloadAll') }}
         </b-button>
       </b-col>
     </b-row>
@@ -56,10 +55,9 @@
             <b-button variant="primary" @click="unresolveLogs">
               {{ $t('pageEventLogs.unresolve') }}
             </b-button>
-            <table-toolbar-export
-              :data="batchExportData"
-              :file-name="exportFileNameByDate()"
-            />
+            <b-button variant="primary" @click="downloadEventLogs">
+              {{ $t('global.action.download') }}
+            </b-button>
           </template>
         </table-toolbar>
         <b-table
@@ -170,15 +168,6 @@
                     <dd v-else>--</dd>
                   </dl>
                 </b-col>
-                <b-col class="text-nowrap">
-                  <b-button
-                    class="btn btn-secondary float-right"
-                    :href="item.additionalDataUri"
-                    target="_blank"
-                  >
-                    <icon-download />{{ $t('pageEventLogs.additionalDataUri') }}
-                  </b-button>
-                </b-col>
               </b-row>
             </b-container>
           </template>
@@ -220,12 +209,11 @@
               :value="action.value"
               :title="action.title"
               :row-data="row.item"
-              :export-name="exportFileNameByDate('export')"
               :data-test-id="`eventLogs-button-deleteRow-${row.index}`"
               @click-table-action="onTableRowAction($event, row.item)"
             >
               <template #icon>
-                <icon-export v-if="action.value === 'export'" />
+                <icon-download v-if="action.value === 'download'" />
                 <icon-trashcan v-if="action.value === 'delete'" />
               </template>
             </table-row-action>
@@ -266,10 +254,8 @@
 <script>
 import IconDelete from '@carbon/icons-vue/es/trash-can/20';
 import IconTrashcan from '@carbon/icons-vue/es/trash-can/20';
-import IconExport from '@carbon/icons-vue/es/document--export/20';
 import IconChevron from '@carbon/icons-vue/es/chevron--down/20';
 import IconDownload from '@carbon/icons-vue/es/download/20';
-import { omit } from 'lodash';
 
 import PageTitle from '@/components/Global/PageTitle';
 import StatusIcon from '@/components/Global/StatusIcon';
@@ -279,7 +265,6 @@ import TableDateFilter from '@/components/Global/TableDateFilter';
 import TableFilter from '@/components/Global/TableFilter';
 import TableRowAction from '@/components/Global/TableRowAction';
 import TableToolbar from '@/components/Global/TableToolbar';
-import TableToolbarExport from '@/components/Global/TableToolbarExport';
 import InfoTooltip from '@/components/Global/InfoTooltip';
 
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
@@ -307,7 +292,6 @@ import SearchFilterMixin, {
 export default {
   components: {
     IconDelete,
-    IconExport,
     IconTrashcan,
     IconChevron,
     IconDownload,
@@ -319,7 +303,6 @@ export default {
     TableFilter,
     TableRowAction,
     TableToolbar,
-    TableToolbarExport,
     TableDateFilter,
   },
   mixins: [
@@ -418,9 +401,6 @@ export default {
     };
   },
   computed: {
-    href() {
-      return `data:text/json;charset=utf-8,${this.exportAllLogs()}`;
-    },
     currentUser() {
       return this.$store.getters['global/currentUser'];
     },
@@ -438,8 +418,8 @@ export default {
           ...event,
           actions: [
             {
-              value: 'export',
-              title: this.$t('global.action.export'),
+              value: 'download',
+              title: this.$t('global.action.download'),
             },
             {
               value: 'delete',
@@ -448,9 +428,6 @@ export default {
           ],
         };
       });
-    },
-    batchExportData() {
-      return this.selectedRows.map((row) => omit(row, 'actions'));
     },
     filteredLogsByDate() {
       return this.getFilteredTableDataByDate(
@@ -478,6 +455,25 @@ export default {
     });
   },
   methods: {
+    downloadFile(pelJsonInfo) {
+      let date = new Date();
+      date =
+        date.toISOString().slice(0, 10) +
+        '_' +
+        date.toString().split(':').join('-').split(' ')[4];
+      let fileName;
+      fileName = 'event_logs_' + date;
+      var element = document.createElement('a');
+      element.setAttribute(
+        'href',
+        'data:text/plain;charset=utf-8,' + encodeURIComponent(pelJsonInfo)
+      );
+      element.setAttribute('download', fileName);
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    },
     checkForUserData() {
       if (!this.currentUser) {
         this.$store.dispatch('userManagement/getUsers');
@@ -542,14 +538,6 @@ export default {
           });
         });
     },
-    exportAllLogs() {
-      {
-        return this.$store.getters['eventLog/allEvents'].map((eventLogs) => {
-          const allEventLogsString = JSON.stringify(eventLogs);
-          return allEventLogsString;
-        });
-      }
-    },
     onFilterChange({ activeFilters }) {
       this.activeFilters = activeFilters;
     },
@@ -558,7 +546,7 @@ export default {
         return this.sortStatus(a, b, key);
       }
     },
-    onTableRowAction(action, { uri }) {
+    onTableRowAction(action, { id, name, uri }) {
       if (action === 'delete') {
         this.$bvModal
           .msgBoxConfirm(this.$tc('pageEventLogs.modal.deleteMessage'), {
@@ -569,6 +557,31 @@ export default {
           .then((deleteConfirmed) => {
             if (deleteConfirmed) this.deleteLogs([uri]);
           });
+      } else if (action === 'download') {
+        //  download single log
+        const pelJsonInfo = [];
+        this.startLoader();
+        if (name === 'System CE Log Entry') {
+          this.$store
+            .dispatch('eventLog/downloadCELogData', id)
+            .then((returned) => {
+              pelJsonInfo.push(returned);
+            })
+            .finally(() => {
+              this.downloadFile(pelJsonInfo);
+              this.endLoader();
+            });
+        } else {
+          this.$store
+            .dispatch('eventLog/downloadEventLogData', id)
+            .then((returned) => {
+              pelJsonInfo.push(returned);
+            })
+            .finally(() => {
+              this.downloadFile(pelJsonInfo);
+              this.endLoader();
+            });
+        }
       }
     },
     onBatchAction(action) {
@@ -616,21 +629,6 @@ export default {
     onFiltered(filteredItems) {
       this.searchTotalFilteredRows = filteredItems.length;
     },
-    // Create export file name based on date
-    exportFileNameByDate(value) {
-      let date = new Date();
-      date =
-        date.toISOString().slice(0, 10) +
-        '_' +
-        date.toString().split(':').join('-').split(' ')[4];
-      let fileName;
-      if (value === 'export') {
-        fileName = 'event_log_';
-      } else {
-        fileName = 'all_event_logs_';
-      }
-      return fileName + date;
-    },
     resolveLogs() {
       this.$store
         .dispatch('eventLog/resolveEventLogs', this.selectedRows)
@@ -658,6 +656,89 @@ export default {
             }
           });
         });
+    },
+    async downloadEventLogs(value) {
+      const pelJsonInfo = [];
+      this.infoToast(this.$t('pageEventLogs.toast.infoStartDownload'));
+      if (value === 'all') {
+        //  download all logs
+        let counter = 1;
+        while (counter <= this.allLogs.length) {
+          this.startLoader();
+          if (this.allLogs[counter - 1].name === 'System CE Log Entry') {
+            await this.$store
+              .dispatch(
+                'eventLog/downloadCELogData',
+                this.allLogs[counter - 1].id
+              )
+              .then((returned) => {
+                pelJsonInfo.push(returned);
+                counter = counter + 1;
+              })
+              .finally(() => {
+                if (pelJsonInfo.length === this.allLogs.length) {
+                  this.downloadFile(pelJsonInfo);
+                  this.endLoader();
+                }
+              });
+          } else {
+            await this.$store
+              .dispatch(
+                'eventLog/downloadEventLogData',
+                this.allLogs[counter - 1].id
+              )
+              .then((returned) => {
+                pelJsonInfo.push(returned);
+                counter = counter + 1;
+              })
+              .finally(() => {
+                if (pelJsonInfo.length === this.allLogs.length) {
+                  this.downloadFile(pelJsonInfo);
+                  this.endLoader();
+                }
+              });
+          }
+        }
+      } else {
+        // several logs
+        let counter = 1;
+        while (counter <= this.selectedRows.length) {
+          this.startLoader();
+          if (this.selectedRows[counter - 1].name === 'System CE Log Entry') {
+            await this.$store
+              .dispatch(
+                'eventLog/downloadCELogData',
+                this.selectedRows[counter - 1].id
+              )
+              .then((returned) => {
+                pelJsonInfo.push(returned);
+                counter = counter + 1;
+              })
+              .finally(() => {
+                if (pelJsonInfo.length === this.selectedRows.length) {
+                  this.downloadFile(pelJsonInfo);
+                  this.endLoader();
+                }
+              });
+          } else {
+            await this.$store
+              .dispatch(
+                'eventLog/downloadEventLogData',
+                this.selectedRows[counter - 1].id
+              )
+              .then((returned) => {
+                pelJsonInfo.push(returned);
+                counter = counter + 1;
+              })
+              .finally(() => {
+                if (pelJsonInfo.length === this.selectedRows.length) {
+                  this.downloadFile(pelJsonInfo);
+                  this.endLoader();
+                }
+              });
+          }
+        }
+      }
     },
   },
 };
