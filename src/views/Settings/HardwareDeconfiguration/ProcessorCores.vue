@@ -53,7 +53,7 @@
               v-model="row.item.settings"
               name="switch"
               switch
-              :disabled="!isServerOff"
+              :disabled="!isServerOff || isBusy"
               @change="toggleSettingsSwitch(row)"
             >
               <span v-if="row.item.settings">
