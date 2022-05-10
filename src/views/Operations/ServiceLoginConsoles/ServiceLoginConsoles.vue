@@ -90,11 +90,11 @@ export default {
       // and must be passed down as an argument
 
       const token = this.$store.getters['authentication/token'];
-
-      this.ws = new WebSocket(
-        `wss://${window.location.host}/${selectedConsole}`,
-        [token]
-      );
+      var host =
+        window.location.origin.replace('https://', '') +
+        window.location.pathname;
+      host = host.replace(/\/$/, '');
+      this.ws = new WebSocket(`wss://${host}/${selectedConsole}`, [token]);
 
       // Refer https://github.com/xtermjs/xterm.js/ for xterm implementation and addons.
 

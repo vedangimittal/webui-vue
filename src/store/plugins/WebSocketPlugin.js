@@ -27,7 +27,10 @@ const WebSocketPlugin = (store) => {
       process.env.VUE_APP_SUBSCRIBE_SOCKET_DISABLED === 'true' ? true : false;
     if (socketDisabled) return;
     const token = store.getters['authentication/token'];
-    ws = new WebSocket(`wss://${window.location.host}/subscribe`, [token]);
+    var host =
+      window.location.origin.replace('https://', '') + window.location.pathname;
+    host = host.replace(/\/$/, '');
+    ws = new WebSocket(`wss://${host}/subscribe`, [token]);
     ws.onopen = () => {
       ws.send(JSON.stringify(data));
     };

@@ -5,6 +5,7 @@ import Axios from 'axios';
 import store from '../store';
 
 const api = Axios.create({
+  baseURL: window.location.origin + window.location.pathname,
   withCredentials: true,
 });
 

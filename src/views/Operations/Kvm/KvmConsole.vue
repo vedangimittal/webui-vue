@@ -106,11 +106,13 @@ export default {
     },
     openTerminal() {
       const token = this.$store.getters['authentication/token'];
-      this.rfb = new RFB(
-        this.$refs.panel,
-        `wss://${window.location.host}/kvm/0`,
-        { wsProtocols: [token] }
-      );
+      var host =
+        window.location.origin.replace('https://', '') +
+        window.location.pathname;
+      host = host.replace(/\/$/, '');
+      this.rfb = new RFB(this.$refs.panel, `wss://${host}/kvm/0`, {
+        wsProtocols: [token],
+      });
 
       this.rfb.scaleViewport = true;
       this.rfb.clipViewport = true;

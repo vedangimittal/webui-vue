@@ -75,10 +75,11 @@ export default {
   methods: {
     openTerminal() {
       const token = this.$store.getters['authentication/token'];
-
-      this.ws = new WebSocket(`wss://${window.location.host}/console0`, [
-        token,
-      ]);
+      var host =
+        window.location.origin.replace('https://', '') +
+        window.location.pathname;
+      host = host.replace(/\/$/, '');
+      this.ws = new WebSocket(`wss://${host}/console0`, [token]);
 
       // Refer https://github.com/xtermjs/xterm.js/ for xterm implementation and addons.
 
