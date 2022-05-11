@@ -29,6 +29,10 @@
               :label="$t('pageProfileSettings.newPassword')"
               label-for="input-1"
             >
+              <template #label>
+                {{ $t('pageUserManagement.modal.userPassword') }}
+                <info-tooltip-password />
+              </template>
               <b-form-text id="password-help-block">
                 {{
                   $t('pageUserManagement.modal.passwordMustBeBetween', {
@@ -132,6 +136,7 @@
 
 <script>
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
+import InfoTooltipPassword from '@/components/Global/InfoTooltipPassword';
 import InputPasswordToggle from '@/components/Global/InputPasswordToggle';
 import { maxLength, minLength, sameAs } from 'vuelidate/lib/validators';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
@@ -142,7 +147,12 @@ import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
 
 export default {
   name: 'ProfileSettings',
-  components: { InputPasswordToggle, PageSection, PageTitle },
+  components: {
+    InfoTooltipPassword,
+    InputPasswordToggle,
+    PageSection,
+    PageTitle,
+  },
   mixins: [
     BVToastMixin,
     LocalTimezoneLabelMixin,

@@ -131,14 +131,10 @@
               :label="$t('pageUserManagement.modal.userPassword')"
               label-for="password"
             >
-              <b-form-text id="password-help-block">
-                {{
-                  $t('pageUserManagement.modal.passwordMustBeBetween', {
-                    min: passwordRequirements.minLength,
-                    max: passwordRequirements.maxLength,
-                  })
-                }}
-              </b-form-text>
+              <template #label>
+                {{ $t('pageUserManagement.modal.userPassword') }}
+                <info-tooltip-password />
+              </template>
               <input-password-toggle>
                 <b-form-input
                   id="password"
@@ -236,11 +232,12 @@ import {
   requiredIf,
 } from 'vuelidate/lib/validators';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
+import InfoTooltipPassword from '@/components/Global/InfoTooltipPassword';
 import InputPasswordToggle from '@/components/Global/InputPasswordToggle';
 import Alert from '@/components/Global/Alert';
 
 export default {
-  components: { Alert, InputPasswordToggle },
+  components: { Alert, InfoTooltipPassword, InputPasswordToggle },
   mixins: [VuelidateMixin],
   props: {
     user: {

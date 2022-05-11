@@ -16,6 +16,10 @@
           label-for="password"
           :label="$t('pageChangePassword.newPassword')"
         >
+          <template #label>
+            {{ $t('pageUserManagement.modal.userPassword') }}
+            <info-tooltip-password />
+          </template>
           <input-password-toggle>
             <b-form-input
               id="password"
@@ -75,12 +79,13 @@
 import { required, sameAs } from 'vuelidate/lib/validators';
 import Alert from '@/components/Global/Alert';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin';
+import InfoTooltipPassword from '@/components/Global/InfoTooltipPassword';
 import InputPasswordToggle from '@/components/Global/InputPasswordToggle';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 
 export default {
   name: 'ChangePassword',
-  components: { Alert, InputPasswordToggle },
+  components: { Alert, InfoTooltipPassword, InputPasswordToggle },
   mixins: [VuelidateMixin, BVToastMixin],
   data() {
     return {
