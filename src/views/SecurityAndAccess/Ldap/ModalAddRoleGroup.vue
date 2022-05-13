@@ -108,7 +108,9 @@ export default {
   },
   computed: {
     accountRoles() {
-      return this.$store.getters['userManagement/filteredAccountRoles'];
+      return this.$store?.getters['userManagement/filteredAccountRoles'].filter(
+        (role) => role !== 'Operator'
+      );
     },
   },
   watch: {
