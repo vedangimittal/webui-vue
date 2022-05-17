@@ -55,7 +55,7 @@ const AuthenticationStore = {
       api
         .post('/logout', { data: [] })
         .then(() => commit('logout'))
-        .then(() => router.go('/login'))
+        .then(() => router.replace('/login'))
         .catch((error) => console.log(error));
     },
     async checkPasswordChangeRequired(_, username) {

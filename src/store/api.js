@@ -3,6 +3,7 @@ import Axios from 'axios';
 //Exact match alias set to support
 //dotenv customizations.
 import store from '../store';
+import router from '@/router';
 
 const api = Axios.create({
   baseURL: window.location.origin + window.location.pathname,
@@ -14,10 +15,10 @@ api.interceptors.response.use(undefined, (error) => {
 
   // TODO: Provide user with a notification and way to keep system active
   if (response.status == 401) {
-    if (response.config.url != '/login') {
-      window.location = '/login';
+    if (response.config.url !== '/login') {
       // Commit logout to remove XSRF-TOKEN cookie
       store.commit('authentication/logout');
+      router.replace('/login');
     }
   }
 
