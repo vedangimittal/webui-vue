@@ -4,7 +4,10 @@
       <b-row>
         <b-col sm="8" md="6" xl="12">
           <dl>
-            <dt>{{ $t('pagePower.powerConsumption') }}</dt>
+            <dt>
+              {{ $t('pagePower.powerConsumption') }}
+              <info-tooltip :title="$t('pagePower.powerConsumptionTooltip')" />
+            </dt>
             <dd>
               {{
                 powerConsumption
@@ -87,13 +90,14 @@
 <script>
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import DataFormatterMixin from '@/components/Mixins/DataFormatterMixin';
+import InfoTooltip from '@/components/Global/InfoTooltip';
 import LoadingBarMixin, { loading } from '@/components/Mixins/LoadingBarMixin';
 import VuelidateMixin from '@/components/Mixins/VuelidateMixin.js';
 import { required, between, numeric } from 'vuelidate/lib/validators';
 import PageSection from '../../../components/Global/PageSection.vue';
 
 export default {
-  components: { PageSection },
+  components: { InfoTooltip, PageSection },
   mixins: [BVToastMixin, DataFormatterMixin, LoadingBarMixin, VuelidateMixin],
   data() {
     return {
