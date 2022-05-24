@@ -139,6 +139,7 @@
                 <b-form-input
                   id="password"
                   v-model="form.password"
+                  autocomplete="off"
                   type="password"
                   data-test-id="userManagement-input-password"
                   aria-describedby="password-help-block"
@@ -174,6 +175,7 @@
                 <b-form-input
                   id="password-confirmation"
                   v-model="form.passwordConfirmation"
+                  autocomplete="off"
                   data-test-id="userManagement-input-passwordConfirmation"
                   type="password"
                   :state="getValidationState($v.form.passwordConfirmation)"

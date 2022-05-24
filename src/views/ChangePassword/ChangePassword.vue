@@ -24,6 +24,7 @@
             <b-form-input
               id="password"
               v-model="form.password"
+              autocomplete="off"
               autofocus="autofocus"
               type="password"
               :state="getValidationState($v.form.password)"
@@ -46,6 +47,7 @@
             <b-form-input
               id="password-confirm"
               v-model="form.passwordConfirm"
+              autocomplete="off"
               type="password"
               :state="getValidationState($v.form.passwordConfirm)"
               class="form-control-with-button"

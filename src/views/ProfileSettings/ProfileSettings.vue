@@ -45,6 +45,7 @@
                 <b-form-input
                   id="password"
                   v-model="form.newPassword"
+                  autocomplete="off"
                   type="password"
                   aria-describedby="password-help-block"
                   :disabled="isServiceUser"
@@ -79,6 +80,7 @@
                 <b-form-input
                   id="password-confirmation"
                   v-model="form.confirmPassword"
+                  autocomplete="off"
                   type="password"
                   :disabled="isServiceUser"
                   :state="getValidationState($v.form.confirmPassword)"

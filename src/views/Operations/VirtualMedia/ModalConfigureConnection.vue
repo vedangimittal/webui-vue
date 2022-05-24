@@ -46,6 +46,7 @@
         <b-form-input
           id="password"
           v-model="form.password"
+          autocomplete="off"
           type="password"
           data-test-id="configureConnection-input-password"
         />
