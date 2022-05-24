@@ -117,7 +117,10 @@ export default {
     },
     onResetToDefaultsConfirm() {
       this.$store
-        .dispatch('factoryReset/resetToDefaults')
+        .dispatch('factoryReset/resetBios')
+        .then(() => {
+          return this.$store.dispatch('factoryReset/resetToDefaults');
+        })
         .then((title) => {
           this.successToast('', {
             title,

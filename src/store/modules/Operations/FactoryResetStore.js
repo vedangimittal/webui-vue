@@ -9,7 +9,9 @@ const FactoryResetStore = {
         .post('/redfish/v1/Managers/bmc/Actions/Manager.ResetToDefaults', {
           ResetToDefaultsType: 'ResetAll',
         })
-        .then(() => i18n.t('pageFactoryReset.toast.resetToDefaultsSuccess'))
+        .then(() => {
+          return i18n.t('pageFactoryReset.toast.resetToDefaultsSuccess');
+        })
         .catch((error) => {
           console.log('Factory Reset: ', error);
           throw new Error(
