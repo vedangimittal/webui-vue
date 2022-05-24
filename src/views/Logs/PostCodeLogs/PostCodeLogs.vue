@@ -29,31 +29,7 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col xl="12" class="text-right">
-        <b-button
-          variant="primary"
-          :disabled="allLogs.length === 0"
-          :download="exportFileNameByDate()"
-          :href="href"
-        >
-          <icon-export /> {{ $t('pagePostCodeLogs.button.exportAll') }}
-        </b-button>
-      </b-col>
-    </b-row>
-    <b-row>
       <b-col>
-        <table-toolbar
-          ref="toolbar"
-          :selected-items-count="selectedRows.length"
-          @clear-selected="clearSelectedRows($refs.table)"
-        >
-          <template #toolbar-buttons>
-            <table-toolbar-export
-              :data="batchExportData"
-              :file-name="exportFileNameByDate()"
-            />
-          </template>
-        </table-toolbar>
         <b-table
           id="table-post-code-logs"
           ref="table"
@@ -63,9 +39,9 @@
           sort-icon-left
           hover
           no-sort-reset
-          sort-desc
+          sort-by="date"
+          :sort-desc="true"
           show-empty
-          sort-by="id"
           :fields="fields"
           :items="filteredLogs"
           :empty-text="$t('global.table.emptyMessage')"
@@ -77,51 +53,10 @@
           @filtered="onFiltered"
           @row-selected="onRowSelected($event, filteredLogs.length)"
         >
-          <!-- Checkbox column -->
-          <template #head(checkbox)>
-            <b-form-checkbox
-              v-model="tableHeaderCheckboxModel"
-              data-test-id="postCode-checkbox-selectAll"
-              :indeterminate="tableHeaderCheckboxIndeterminate"
-              @change="onChangeHeaderCheckbox($refs.table)"
-            >
-              <span class="sr-only">{{ $t('global.table.selectAll') }}</span>
-            </b-form-checkbox>
-          </template>
-          <template #cell(checkbox)="row">
-            <b-form-checkbox
-              v-model="row.rowSelected"
-              :data-test-id="`postCode-checkbox-selectRow-${row.index}`"
-              @change="toggleSelectRow($refs.table, row.index)"
-            >
-              <span class="sr-only">{{ $t('global.table.selectItem') }}</span>
-            </b-form-checkbox>
-          </template>
           <!-- Date column -->
           <template #cell(date)="{ value }">
             <p class="mb-0">{{ value | formatDate }}</p>
             <p class="mb-0">{{ value | formatTime }}</p>
-          </template>
-
-          <!-- Actions column -->
-          <template #cell(actions)="row">
-            <table-row-action
-              v-for="(action, index) in row.item.actions"
-              :key="index"
-              :value="action.value"
-              :title="action.title"
-              :row-data="row.item"
-              :btn-icon-only="true"
-              :export-name="exportFileNameByDate(action.value)"
-              :download-location="row.item.uri"
-              :download-in-new-tab="true"
-              :show-button="false"
-            >
-              <template #icon>
-                <icon-export v-if="action.value === 'export'" />
-                <icon-download v-if="action.value === 'download'" />
-              </template>
-            </table-row-action>
           </template>
         </b-table>
       </b-col>
@@ -157,17 +92,12 @@
 </template>
 
 <script>
-import IconDownload from '@carbon/icons-vue/es/download/20';
-import IconExport from '@carbon/icons-vue/es/document--export/20';
 import IconLaunch from '@carbon/icons-vue/es/launch/20';
 import { omit } from 'lodash';
 import PageTitle from '@/components/Global/PageTitle';
 import Search from '@/components/Global/Search';
 import TableCellCount from '@/components/Global/TableCellCount';
 import TableDateFilter from '@/components/Global/TableDateFilter';
-import TableRowAction from '@/components/Global/TableRowAction';
-import TableToolbar from '@/components/Global/TableToolbar';
-import TableToolbarExport from '@/components/Global/TableToolbarExport';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 import TableFilterMixin from '@/components/Mixins/TableFilterMixin';
 import BVPaginationMixin, {
@@ -191,15 +121,10 @@ import SearchFilterMixin, {
 
 export default {
   components: {
-    IconExport,
     IconLaunch,
-    IconDownload,
     PageTitle,
     Search,
     TableCellCount,
-    TableRowAction,
-    TableToolbar,
-    TableToolbarExport,
     TableDateFilter,
   },
   mixins: [
@@ -223,10 +148,6 @@ export default {
       isBusy: true,
       fields: [
         {
-          key: 'checkbox',
-          sortable: false,
-        },
-        {
           key: 'date',
           label: this.$t('pagePostCodeLogs.table.created'),
           sortable: true,
@@ -242,11 +163,6 @@ export default {
         {
           key: 'postCode',
           label: this.$t('pagePostCodeLogs.table.postCode'),
-        },
-        {
-          key: 'actions',
-          label: '',
-          tdClass: 'text-right text-nowrap',
         },
       ],
       expandRowLabel,
@@ -264,9 +180,6 @@ export default {
     };
   },
   computed: {
-    href() {
-      return `data:text/json;charset=utf-8,${this.exportAllLogsString()}`;
-    },
     filteredRows() {
       return this.searchFilter
         ? this.searchTotalFilteredRows
@@ -322,16 +235,6 @@ export default {
         '_blank',
         'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=200,height=200'
       );
-    },
-    exportAllLogsString() {
-      {
-        return this.$store.getters['postCodeLogs/allPostCodes'].map(
-          (postCodes) => {
-            const allLogsString = JSON.stringify(postCodes);
-            return allLogsString;
-          }
-        );
-      }
     },
     onFilterChange({ activeFilters }) {
       this.activeFilters = activeFilters;
