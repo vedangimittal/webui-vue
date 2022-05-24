@@ -68,6 +68,8 @@ const GlobalStore = {
     currentUser: (state) => state.currentUser,
     isServiceUser: (state) =>
       state.currentUser?.RoleId === 'OemIBMServiceAgent' || !state.currentUser,
+    isAdminUser: (state) =>
+      state.currentUser?.RoleId === 'Administrator' || !state.currentUser,
     isAuthorized: (state) => state.isAuthorized,
   },
   mutations: {
