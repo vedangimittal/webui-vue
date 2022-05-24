@@ -21,6 +21,7 @@ const BmcStore = {
       bmc.model = data.Model;
       bmc.name = data.Name;
       bmc.partNumber = data.PartNumber;
+      bmc.powerState = data.PowerState;
       bmc.serialNumber = data.SerialNumber;
       bmc.sparePartNumber = data.SparePartNumber;
       bmc.statusState = data.Status.State;
