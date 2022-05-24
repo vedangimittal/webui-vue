@@ -128,8 +128,25 @@
             </b-form-checkbox>
           </template>
           <!-- Severity column -->
-          <template #cell(severity)="{ value }">
-            {{ value }}
+          <template #cell(severity)="row">
+            <span v-if="row.item.severity === 'Critical'">
+              {{ $t('pageDeconfigurationRecords.fatal') }}
+            </span>
+            <span
+              v-if="
+                row.item.severity === 'Warning' && row.item.additionalDataUri
+              "
+            >
+              {{ $t('pageDeconfigurationRecords.predictive') }}
+            </span>
+            <span
+              v-if="
+                row.item.severity === 'Warning' &&
+                row.item.additionalDataUri === 'undefined'
+              "
+            >
+              {{ $t('pageDeconfigurationRecords.manual') }}
+            </span>
           </template>
           <!-- Date column -->
           <template #cell(date)="{ value }">
