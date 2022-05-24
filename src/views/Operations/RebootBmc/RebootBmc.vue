@@ -49,7 +49,10 @@ export default {
   },
   computed: {
     lastBmcRebootTime() {
-      return this.$store.getters['controls/lastBmcRebootTime'];
+      return this.$store?.getters['controls/lastBmcRebootTime'];
+    },
+    systemDumpActive() {
+      return this.$store?.getters['serverBootSettings/systemDumpActive'];
     },
   },
   created() {
@@ -60,15 +63,29 @@ export default {
   },
   methods: {
     onClick() {
-      this.$bvModal
-        .msgBoxConfirm(this.$t('pageRebootBmc.modal.confirmMessage'), {
-          title: this.$t('pageRebootBmc.modal.confirmTitle'),
-          okTitle: this.$t('global.action.confirm'),
-          cancelTitle: this.$t('global.action.cancel'),
-        })
-        .then((confirmed) => {
-          if (confirmed) this.rebootBmc();
-        });
+      this.$store.dispatch('serverBootSettings/getBiosAttributes').then(() => {
+        this.$bvModal
+          .msgBoxConfirm(
+            `${
+              this.systemDumpActive
+                ? this.$t('pageRebootBmc.modal.confirmMessage2')
+                : ''
+            }
+            ${this.$t('pageRebootBmc.modal.confirmMessage')}
+            `,
+            {
+              title: this.$t('pageRebootBmc.modal.confirmTitle'),
+              okTitle: this.systemDumpActive
+                ? this.$t('pageRebootBmc.rebootBmc')
+                : this.$t('global.action.confirm'),
+              okVariant: this.systemDumpActive ? 'danger' : 'primary',
+              cancelTitle: this.$t('global.action.cancel'),
+            }
+          )
+          .then((confirmed) => {
+            if (confirmed) this.rebootBmc();
+          });
+      });
     },
     rebootBmc() {
       this.$store
