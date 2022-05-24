@@ -6,7 +6,7 @@
       hover
       sort-by="name"
       :sort-desc="false"
-      responsive="md"
+      responsive="xl"
       :items="items"
       :fields="fields"
       show-empty

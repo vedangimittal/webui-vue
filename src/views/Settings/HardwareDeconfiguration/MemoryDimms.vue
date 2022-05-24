@@ -9,7 +9,7 @@
       <b-col xl="12">
         <b-table
           ref="table"
-          responsive="md"
+          responsive="xl"
           no-select-on-click
           sort-icon-left
           hover
