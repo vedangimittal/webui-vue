@@ -139,17 +139,25 @@ const DumpsStore = {
         )
         .catch((error) => {
           console.log(error);
-          const messageId =
+          const errorMsg =
             error.response.data.error['@Message.ExtendedInfo'][0].MessageId;
 
-          const message =
-            messageId === 'Base.1.8.1.ResourceInStandby'
-              ? i18n.t('pageDumps.toast.errorStartDumpAnotherInProgress', {
+          switch (errorMsg) {
+            case 'Base.1.8.1.ResourceInUse':
+              throw new Error(
+                i18n.t('pageDumps.toast.errorStartDumpAnotherInProgress', {
                   dump: dumpType,
                 })
-              : i18n.t('pageDumps.toast.errorStartSystemDump');
-
-          throw new Error(message);
+              );
+            case 'Base.1.8.1.ResourceInStandby':
+              throw new Error(
+                i18n.t('pageDumps.toast.errorStartDumpResourceInStandby', {
+                  dump: dumpType,
+                })
+              );
+            default:
+              throw new Error(i18n.t('pageDumps.toast.errorStartSystemDump'));
+          }
         });
     },
     async deleteDumps({ dispatch }, dumps) {
