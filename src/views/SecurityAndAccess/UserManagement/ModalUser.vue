@@ -280,7 +280,9 @@ export default {
     privilegeTypes() {
       return this.$store.getters['userManagement/accountRoles'].filter(
         (privilege) =>
-          privilege !== 'OemIBMServiceAgent' && privilege !== 'Operator'
+          privilege !== 'OemIBMServiceAgent' &&
+          privilege !== 'ServiceAgent' &&
+          privilege !== 'Operator'
       );
     },
   },

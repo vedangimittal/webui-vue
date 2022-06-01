@@ -92,11 +92,19 @@ const UserManagementStore = {
     getAccountRoles({ commit }) {
       api
         .get('/redfish/v1/AccountService/Roles')
-        .then(({ data: { Members = [] } = {} }) => {
-          const roles = Members.map((role) => {
-            return role['@odata.id'].split('/').pop();
-          });
-          commit('setAccountRoles', roles);
+        .then(async ({ data: { Members = [] } = {} }) => {
+          return await api.all(
+            Members.map(async (member) => {
+              return await api
+                .get(member['@odata.id'])
+                .then(async ({ data }) => {
+                  return await data.Description;
+                });
+            })
+          );
+        })
+        .then((res) => {
+          commit('setAccountRoles', res);
         })
         .catch((error) => console.log(error));
     },

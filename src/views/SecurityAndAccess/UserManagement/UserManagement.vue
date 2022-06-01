@@ -200,15 +200,27 @@ export default {
     };
   },
   computed: {
+    accountRoles() {
+      return this.$store.getters['userManagement/accountRoles'];
+    },
     allUsers() {
-      return this.$store.getters['userManagement/allUsers'];
+      return this.$store.getters['userManagement/allUsers'].map((user) => {
+        // Changing users' description with redfish role description
+        const userDescription = this.accountRoles.filter((role) =>
+          user.RoleId.includes(role)
+        )[0];
+
+        if (userDescription) user.Description = userDescription;
+
+        return user;
+      });
     },
     tableItems() {
       // transform user data to table data
       return this.allUsers.map((user) => {
         return {
           username: user.UserName,
-          privilege: user.RoleId,
+          privilege: user.Description,
           status: user.Locked
             ? 'Locked'
             : user.Enabled
@@ -239,7 +251,10 @@ export default {
   },
   created() {
     this.startLoader();
-    this.$store.dispatch('userManagement/getUsers').finally(() => {
+    Promise.all([
+      this.$store.dispatch('userManagement/getAccountRoles'),
+      this.$store.dispatch('userManagement/getUsers'),
+    ]).finally(() => {
       this.endLoader();
       this.isBusy = false;
     });
