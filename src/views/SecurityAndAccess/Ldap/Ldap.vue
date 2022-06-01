@@ -382,6 +382,7 @@ export default {
       this.form.baseDn = baseDn;
       this.form.userIdAttribute = userAttribute;
       this.form.groupIdAttribute = groupsAttribute;
+      this.form.secureLdapEnabled = false;
     },
     handleSubmit() {
       this.$v.$touch();
