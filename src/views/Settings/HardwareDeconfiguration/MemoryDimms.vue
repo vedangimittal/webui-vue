@@ -151,6 +151,12 @@ export default {
           tdClass: 'text-nowrap',
         },
         {
+          key: 'pelID',
+          sortable: true,
+          formatter: this.dataFormatter,
+          label: this.$t('pageDeconfigurationHardware.table.pelId'),
+        },
+        {
           key: 'deconfigurationType',
           sortable: true,
           formatter: this.dataFormatter,
