@@ -13,6 +13,10 @@
       :empty-text="$t('global.table.emptyMessage')"
       :busy="isBusy"
     >
+      <template #head(identifyLed)="row">
+        {{ row.label }}
+        <info-tooltip :title="$t('pageInventory.identifyLedInfo')" />
+      </template>
       <!-- Expand chevron icon -->
       <template #cell(expandRow)="row">
         <b-button
@@ -45,6 +49,7 @@
           v-if="hasIdentifyLed(row.item.identifyLed)"
           v-model="row.item.identifyLed"
           name="switch"
+          :disabled="serverStatus"
           switch
           @change="toggleIdentifyLedValue(row.item)"
         >
@@ -84,6 +89,7 @@
 
 <script>
 import PageSection from '@/components/Global/PageSection';
+import InfoTooltip from '@/components/Global/InfoTooltip';
 import IconChevron from '@carbon/icons-vue/es/chevron--down/20';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import TableRowExpandMixin, {
@@ -92,8 +98,14 @@ import TableRowExpandMixin, {
 import DataFormatterMixin from '@/components/Mixins/DataFormatterMixin';
 
 export default {
-  components: { IconChevron, PageSection },
+  components: { IconChevron, InfoTooltip, PageSection },
   mixins: [BVToastMixin, TableRowExpandMixin, DataFormatterMixin],
+  props: {
+    chassis: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
       isBusy: true,
@@ -155,13 +167,35 @@ export default {
         return [];
       }
     },
+    serverStatus() {
+      if (this.chassis.endsWith('chassis')) {
+        return false;
+      } else if (this.$store.getters['global/serverStatus'] !== 'on') {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
+  watch: {
+    chassis: function (value) {
+      this.$store
+        .dispatch('assemblies/getAssemblyInfo', { uri: value })
+        .finally(() => {
+          // Emit initial data fetch complete to parent component
+          this.$root.$emit('hardware-status-assembly-complete');
+          this.isBusy = false;
+        });
+    },
   },
   created() {
-    this.$store.dispatch('assemblies/getAssemblyInfo').finally(() => {
-      // Emit initial data fetch complete to parent component
-      this.$root.$emit('hardware-status-assembly-complete');
-      this.isBusy = false;
-    });
+    this.$store
+      .dispatch('assemblies/getAssemblyInfo', { uri: this.chassis })
+      .finally(() => {
+        // Emit initial data fetch complete to parent component
+        this.$root.$emit('hardware-status-assembly-complete');
+        this.isBusy = false;
+      });
   },
   methods: {
     toggleIdentifyLedValue(row) {

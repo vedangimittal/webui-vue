@@ -5,46 +5,146 @@
     <!-- Service indicators -->
     <service-indicator />
 
-    <!-- Quicklinks section -->
-    <page-section :section-title="$t('pageInventory.quicklinkTitle')">
-      <b-row class="w-75">
-        <b-col v-for="column in quicklinkColumns" :key="column.id" xl="4">
-          <div v-for="item in column" :key="item.id">
-            <b-link
-              :href="item.href"
-              :data-ref="item.dataRef"
-              @click.prevent="scrollToOffset"
-            >
-              <jump-link /> {{ item.linkText }}
-            </b-link>
-          </div>
-        </b-col>
-      </b-row>
-    </page-section>
-
-    <!-- System table -->
-    <table-system ref="system" />
-
-    <!-- BMC manager table -->
-    <table-bmc-manager ref="bmc" />
-
     <!-- Chassis table -->
-    <table-chassis ref="chassis" />
+    <table-chassis />
+    <b-row>
+      <b-col>
+        <b-card no-body>
+          <b-tabs content-class="mt-3" fill>
+            <b-tab
+              v-for="(value, index) in chassis"
+              :key="index"
+              :title="
+                index === 0
+                  ? 'System chassis'
+                  : 'I/O expansion chassis ' + `${index}`
+              "
+              @click="currentTabUpdate(index)"
+            >
+              <b-container fluid="xl">
+                <!-- Quicklinks section -->
+                <page-section
+                  v-if="currentTab === 0"
+                  :section-title="$t('pageInventory.quicklinkTitle')"
+                >
+                  <b-row class="w-75">
+                    <b-col
+                      v-for="column in quicklinkColumns"
+                      :key="column.id"
+                      xl="4"
+                    >
+                      <div v-for="item in column" :key="item.id">
+                        <b-link
+                          :href="item.href"
+                          :data-ref="item.dataRef"
+                          @click.prevent="
+                            scrollToOffsetInventory($event, currentTab)
+                          "
+                        >
+                          <jump-link /> {{ item.linkText }}
+                        </b-link>
+                      </div>
+                    </b-col>
+                  </b-row>
+                </page-section>
+                <page-section
+                  v-else
+                  :section-title="$t('pageInventory.quicklinkTitle')"
+                >
+                  <b-row class="w-75">
+                    <b-col
+                      v-for="column in quicklinkMexColumns"
+                      :key="column.id"
+                      xl="4"
+                    >
+                      <div v-for="item in column" :key="item.id">
+                        <b-link
+                          :href="item.href"
+                          :data-ref="item.dataRef"
+                          @click.prevent="
+                            scrollToOffsetInventory($event, currentTab)
+                          "
+                        >
+                          <jump-link /> {{ item.linkText }}
+                        </b-link>
+                      </div>
+                    </b-col>
+                  </b-row>
+                </page-section>
+                <!-- System table -->
+                <table-system v-if="currentTab === 0" ref="system" />
 
-    <!-- DIMM slot table -->
-    <table-dimm-slot ref="dimms" />
+                <!-- BMC manager table -->
+                <table-bmc-manager v-if="currentTab === 0" ref="bmc" />
 
-    <!-- Fans table -->
-    <table-fans ref="fans" />
+                <!-- DIMM slot table -->
+                <table-dimm-slot v-if="currentTab === 0" ref="dimms" />
 
-    <!-- Power supplies table -->
-    <table-power-supplies ref="powerSupply" />
+                <!-- Fans table -->
+                <table-fans
+                  v-if="currentTab === 0"
+                  ref="fans"
+                  :chassis="chassis[currentTab].uri"
+                />
 
-    <!-- Processors table -->
-    <table-processors ref="processors" />
+                <!-- Power supplies table -->
+                <table-power-supplies
+                  v-if="currentTab === 0"
+                  ref="powerSupply"
+                  :chassis="chassis[currentTab].uri"
+                />
 
-    <!-- Assembly table -->
-    <table-assembly ref="assembly" />
+                <!-- Processors table -->
+                <table-processors v-if="currentTab === 0" ref="processors" />
+
+                <!-- Assembly table -->
+                <table-assembly
+                  v-if="currentTab === 0"
+                  ref="assembly"
+                  :chassis="chassis[currentTab].uri"
+                />
+
+                <!-- PCIe slots table -->
+                <table-pcie-slots
+                  v-if="currentTab === 0"
+                  ref="pcieSlots"
+                  :chassis="chassis[currentTab].uri"
+                />
+
+                <!-- Mex Chassis -->
+                <!-- Fans table -->
+                <table-fans
+                  v-if="currentTab > 0"
+                  ref="fans"
+                  :chassis="chassis[currentTab].uri"
+                />
+
+                <!-- Power supplies table -->
+                <table-power-supplies
+                  v-if="currentTab > 0"
+                  ref="powerSupply"
+                  :chassis="chassis[currentTab].uri"
+                />
+
+                <!-- Assembly table -->
+                <table-assembly
+                  v-if="currentTab > 0"
+                  ref="assembly"
+                  :chassis="chassis[currentTab].uri"
+                />
+
+                <!-- PCIe slots table -->
+                <table-pcie-slots
+                  v-if="currentTab > 0"
+                  ref="pcieSlots"
+                  :chassis="chassis[currentTab].uri"
+                />
+              </b-container>
+            </b-tab>
+          </b-tabs>
+        </b-card>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
@@ -58,6 +158,7 @@ import TableBmcManager from './InventoryTableBmcManager';
 import TableChassis from './InventoryTableChassis';
 import TableProcessors from './InventoryTableProcessors';
 import TableAssembly from './InventoryTableAssembly';
+import TablePcieSlots from './InventoryTablePcieSlots';
 import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
 import PageSection from '@/components/Global/PageSection';
 import ServiceIndicator from './InventoryServiceIndicator';
@@ -77,6 +178,7 @@ export default {
     TableChassis,
     TableProcessors,
     TableAssembly,
+    TablePcieSlots,
     PageSection,
     JumpLink: JumpLink16,
   },
@@ -89,6 +191,7 @@ export default {
   },
   data() {
     return {
+      currentTab: 0,
       links: [
         {
           id: 'system',
@@ -101,12 +204,6 @@ export default {
           dataRef: 'bmc',
           href: '#bmc',
           linkText: this.$t('pageInventory.bmcManager'),
-        },
-        {
-          id: 'chassis',
-          dataRef: 'chassis',
-          href: '#chassis',
-          linkText: this.$t('pageInventory.chassis'),
         },
         {
           id: 'dimms',
@@ -138,6 +235,38 @@ export default {
           href: '#assembly',
           linkText: this.$t('pageInventory.assemblies'),
         },
+        {
+          id: 'pcieSlots',
+          dataRef: 'pcieSlots',
+          href: '#pcieSlots',
+          linkText: this.$t('pageInventory.pcieSlots'),
+        },
+      ],
+      mexLinks: [
+        {
+          id: 'fans',
+          dataRef: 'fans',
+          href: '#fans',
+          linkText: this.$t('pageInventory.fans'),
+        },
+        {
+          id: 'powerSupply',
+          dataRef: 'powerSupply',
+          href: '#powerSupply',
+          linkText: this.$t('pageInventory.powerSupplies'),
+        },
+        {
+          id: 'assembly',
+          dataRef: 'assembly',
+          href: '#assembly',
+          linkText: this.$t('pageInventory.assemblies'),
+        },
+        {
+          id: 'pcieSlots',
+          dataRef: 'pcieSlots',
+          href: '#pcieSlots',
+          linkText: this.$t('pageInventory.pcieSlots'),
+        },
       ],
     };
   },
@@ -146,9 +275,17 @@ export default {
       // Chunk links array to 3 array's to display 3 items per column
       return chunk(this.links, 3);
     },
+    quicklinkMexColumns() {
+      // Chunk links array to 2 array's to display 2 items per column
+      return chunk(this.mexLinks, 2);
+    },
+    chassis() {
+      return this.$store.getters['chassis/chassis'];
+    },
   },
   created() {
     this.startLoader();
+    this.$store.dispatch('chassis/getChassisInfo');
     const bmcManagerTablePromise = new Promise((resolve) => {
       this.$root.$on('hardware-status-bmc-manager-complete', () => resolve());
     });
@@ -178,6 +315,9 @@ export default {
     const assemblyTablePromise = new Promise((resolve) => {
       this.$root.$on('hardware-status-assembly-complete', () => resolve());
     });
+    const pcieSlotsTablePromise = new Promise((resolve) => {
+      this.$root.$on('hardware-status-pcie-slots-complete', () => resolve());
+    });
     // Combine all child component Promises to indicate
     // when page data load complete
     Promise.all([
@@ -190,7 +330,13 @@ export default {
       serviceIndicatorPromise,
       systemTablePromise,
       assemblyTablePromise,
+      pcieSlotsTablePromise,
     ]).finally(() => this.endLoader());
+  },
+  methods: {
+    currentTabUpdate(index) {
+      this.currentTab = index;
+    },
   },
 };
 </script>

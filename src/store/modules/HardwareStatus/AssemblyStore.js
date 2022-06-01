@@ -40,9 +40,9 @@ const AssemblyStore = {
     },
   },
   actions: {
-    async getAssemblyInfo({ commit }) {
+    async getAssemblyInfo({ commit }, requestBody) {
       return await api
-        .get('/redfish/v1/Chassis/chassis/Assembly')
+        .get(`${requestBody.uri}/Assembly`)
         .then(({ data }) => commit('setAssemblyInfo', data?.Assemblies))
         .catch((error) => console.log(error));
     },
