@@ -20,7 +20,7 @@
       </b-row>
 
       <b-form @submit.prevent="submitForm">
-        <b-form-group :disabled="loading">
+        <b-form-group :disabled="loading || safeMode">
           <b-row>
             <b-col sm="8" md="6" xl="12">
               <b-form-group :label="$t('pagePower.powerCapSettingLabel')">
@@ -99,6 +99,12 @@ import PageSection from '../../../components/Global/PageSection.vue';
 export default {
   components: { InfoTooltip, PageSection },
   mixins: [BVToastMixin, DataFormatterMixin, LoadingBarMixin, VuelidateMixin],
+  props: {
+    safeMode: {
+      type: Boolean,
+      default: null,
+    },
+  },
   data() {
     return {
       loading,

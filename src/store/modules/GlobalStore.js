@@ -36,6 +36,7 @@ const GlobalStore = {
     expirationDate: null,
     modelType: JSON.parse(localStorage.getItem('storedModelType')),
     serialNumber: null,
+    safeMode: null,
     serverStatus: 'unreachable',
     postCodeValue: null,
     languagePreference: localStorage.getItem('storedLanguage') || 'en-US',
@@ -57,6 +58,7 @@ const GlobalStore = {
     assetTag: (state) => state.assetTag,
     modelType: (state) => state.modelType,
     serialNumber: (state) => state.serialNumber,
+    safeMode: (state) => state.safeMode,
     serverStatus: (state) => state.serverStatus,
     postCodeValue: (state) => state.postCodeValue,
     bmcTime: (state) => state.bmcTime,
@@ -84,6 +86,7 @@ const GlobalStore = {
       (state.acfInstalled = acfInstalled),
     setExpirationDate: (state, expirationDate) =>
       (state.expirationDate = expirationDate),
+    setSafeMode: (state, safeMode) => (state.safeMode = safeMode),
     setServerStatus: (state, serverState) =>
       (state.serverStatus = serverStateMapper(serverState)),
     setPostCodeValue: (state, postCodeValue) =>
@@ -146,6 +149,9 @@ const GlobalStore = {
               Model,
               PowerState,
               SerialNumber,
+              Oem: {
+                IBM: { SafeMode },
+              },
               Status: { State } = {},
             },
           } = {}) => {
@@ -153,6 +159,7 @@ const GlobalStore = {
             commit('setSerialNumber', SerialNumber);
             commit('setModelType', Model);
             localStorage.setItem('storedModelType', JSON.stringify(Model));
+            commit('setSafeMode', SafeMode);
             if (State === 'Quiesced' || State === 'InTest') {
               // OpenBMC's host state interface is mapped to 2 Redfish
               // properties "Status""State" and "PowerState". Look first

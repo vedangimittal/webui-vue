@@ -26,7 +26,11 @@
           </dd>
           <dd v-else>{{ $t('global.status.disabled') }}</dd>
           <dt>{{ $t('pageOverview.powerMode') }}</dt>
-          <dd>
+          <dd v-if="safeMode">
+            <status-icon status="danger" />
+            {{ $t('pageOverview.safeMode') }}
+          </dd>
+          <dd v-else>
             {{ dataFormatter(powerPerformanceMode) }}
           </dd>
         </dl>
@@ -38,20 +42,23 @@
 <script>
 import OverviewCard from './OverviewCard';
 import DataFormatterMixin from '@/components/Mixins/DataFormatterMixin';
+import StatusIcon from '@/components/Global/StatusIcon';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'Power',
   components: {
     OverviewCard,
+    StatusIcon,
   },
   mixins: [DataFormatterMixin],
   computed: {
     ...mapGetters({
+      idlePowerSaverData: 'powerControl/idlePowerSaverData',
       powerCapValue: 'powerControl/powerCap',
       powerConsumptionValue: 'powerControl/powerConsumption',
       powerPerformanceMode: 'powerControl/powerPerformanceMode',
-      idlePowerSaverData: 'powerControl/idlePowerSaverData',
+      safeMode: 'global/safeMode',
     }),
     isIdlePowerSaverDataEnabled() {
       return this.idlePowerSaverData?.Enabled;

@@ -6,6 +6,7 @@
           <b-form-group>
             <b-form-checkbox
               v-model="idlePowerSaver.isIdlePowerSaverEnabled"
+              :disabled="loading || safeMode"
               data-test-id="power-checkbox-toggleIdlePower"
               name="idle-power-saver"
             >
@@ -21,7 +22,7 @@
         @submit.prevent="saveIdlePowerSaverData"
         @reset.prevent="resetIdlePowerSaverData"
       >
-        <b-form-group>
+        <b-form-group :disabled="loading || safeMode">
           <div class="font-weight-bold mb-2">{{ $t('pagePower.toEnter') }}</div>
           <b-row>
             <b-col sm="8" md="6" xl="4">
@@ -189,6 +190,12 @@ export default {
   beforeRouteLeave(to, from, next) {
     this.hideLoader();
     next();
+  },
+  props: {
+    safeMode: {
+      type: Boolean,
+      default: null,
+    },
   },
   data() {
     return {

@@ -20,7 +20,7 @@
             id="form-power-saver"
             @submit.prevent="handlePowerPerformanceSubmit"
           >
-            <b-form-group :disabled="loading">
+            <b-form-group :disabled="loading || safeMode">
               <b-row>
                 <b-col>
                   <b-form-group :label="$t('pagePower.selectModeLabel')">
@@ -68,6 +68,12 @@ export default {
   beforeRouteLeave(to, from, next) {
     this.hideLoader();
     next();
+  },
+  props: {
+    safeMode: {
+      type: Boolean,
+      default: null,
+    },
   },
   data() {
     return {
