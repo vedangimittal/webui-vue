@@ -18,6 +18,7 @@ const ChassisStore = {
           LocationIndicatorActive,
           Name,
           Location,
+          Oem,
         } = chassis;
 
         return {
@@ -28,6 +29,7 @@ const ChassisStore = {
           identifyLed: LocationIndicatorActive,
           uri: chassis['@odata.id'],
           locationNumber: Location?.PartLocation?.ServiceLabel,
+          firmwareVersion: Oem?.OpenBMC?.FirmwareVersion,
         };
       });
     },

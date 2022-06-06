@@ -62,6 +62,13 @@
                 <dd>{{ dataFormatter(item.name) }}</dd>
               </dl>
             </b-col>
+            <b-col class="mt-2" sm="6" xl="6">
+              <dl>
+                <!-- Firmware version -->
+                <dt>{{ $t('pageInventory.table.firmwareVersion') }}</dt>
+                <dd>{{ dataFormatter(item.firmwareVersion) }}</dd>
+              </dl>
+            </b-col>
           </b-row>
         </b-container>
       </template>
