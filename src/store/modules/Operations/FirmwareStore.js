@@ -10,6 +10,7 @@ const FirmwareStore = {
     hostActiveFirmwareId: null,
     applyTime: null,
     tftpAvailable: false,
+    firmwareBootSide: null,
   },
   getters: {
     isTftpUploadAvailable: (state) => state.tftpAvailable,
@@ -34,6 +35,7 @@ const FirmwareStore = {
         (firmware) => firmware.id !== state.hostActiveFirmwareId
       );
     },
+    firmwareBootSide: (state) => state.firmwareBootSide,
   },
   mutations: {
     setActiveBmcFirmwareId: (state, id) => (state.bmcActiveFirmwareId = id),
@@ -45,6 +47,8 @@ const FirmwareStore = {
     setApplyTime: (state, applyTime) => (state.applyTime = applyTime),
     setTftpUploadAvailable: (state, tftpAvailable) =>
       (state.tftpAvailable = tftpAvailable),
+    setFirmwareBootSide: (state, firmwareBootSide) =>
+      (state.firmwareBootSide = firmwareBootSide),
   },
   actions: {
     async getFirmwareInformation({ dispatch }) {
@@ -67,6 +71,15 @@ const FirmwareStore = {
         .then(({ data: { Links } }) => {
           const id = Links?.ActiveSoftwareImage['@odata.id'].split('/').pop();
           commit('setActiveHostFirmwareId', id);
+        })
+        .catch((error) => console.log(error));
+    },
+    getFirmwareBootSide({ commit }) {
+      return api
+        .get('/redfish/v1/Systems/system/Bios')
+        .then(({ data }) => {
+          const fwBootSide = data.Attributes.fw_boot_side_current;
+          commit('setFirmwareBootSide', fwBootSide);
         })
         .catch((error) => console.log(error));
     },

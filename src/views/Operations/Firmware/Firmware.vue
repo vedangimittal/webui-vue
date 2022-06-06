@@ -97,6 +97,7 @@ export default {
     Promise.all([
       this.$store.dispatch('licenses/getLicenses'),
       this.$store.dispatch('firmware/getFirmwareInformation'),
+      this.$store.dispatch('firmware/getFirmwareBootSide'),
     ]).finally(() => this.endLoader());
   },
 };

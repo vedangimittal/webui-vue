@@ -13,6 +13,14 @@
             <dt>{{ $t('pageFirmware.cardBodyVersion') }}</dt>
             <dd class="mb-0">{{ runningVersion }}</dd>
           </dl>
+          <template #footer>
+            <div v-if="firmwareBootSide === 'Temp'">
+              <p class="m-0">{{ $t('pageFirmware.temporary') }}</p>
+            </div>
+            <div v-else>
+              <p class="m-0">{{ $t('pageFirmware.permanent') }}</p>
+            </div>
+          </template>
         </b-card>
 
         <!-- Backup image -->
@@ -32,6 +40,14 @@
               {{ backupVersion }}
             </dd>
           </dl>
+          <template #footer>
+            <div v-if="firmwareBootSide === 'Temp'">
+              <p class="m-0">{{ $t('pageFirmware.permanent') }}</p>
+            </div>
+            <div v-else>
+              <p class="m-0">{{ $t('pageFirmware.temporary') }}</p>
+            </div>
+          </template>
           <b-btn
             v-if="!switchToBackupImageDisabled"
             v-b-modal.modal-switch-to-running
@@ -110,6 +126,9 @@ export default {
       return (
         this.backupStatus === 'Critical' || this.backupStatus === 'Warning'
       );
+    },
+    firmwareBootSide() {
+      return this.$store.getters['firmware/firmwareBootSide'];
     },
   },
   methods: {
