@@ -109,7 +109,7 @@ export default {
   computed: {
     accountRoles() {
       return this.$store?.getters['userManagement/filteredAccountRoles'].filter(
-        (role) => role !== 'Operator'
+        (role) => role !== 'ServiceAgent' && role !== 'Operator'
       );
     },
   },
