@@ -17,6 +17,7 @@ const PostCodeLogsStore = {
       return await api
         .get('/redfish/v1/Systems/system/LogServices/PostCodes/Entries')
         .then(({ data: { Members = [] } = {} }) => {
+          Members = Members.filter((log) => log.MessageArgs[3] !== '00000000');
           const postCodeLogs = Members.map((log) => {
             const { Created, MessageArgs, AdditionalDataURI } = log;
             return {
