@@ -98,6 +98,7 @@
 
 <script>
 import TableFilter from '@/components/Global/TableFilter';
+import BVToastMixin from '@/components/Mixins/BVToastMixin';
 import TableToolbar from '@/components/Global/TableToolbar';
 import TableToolbarExport from '@/components/Global/TableToolbarExport';
 import BVPaginationMixin, {
@@ -126,6 +127,7 @@ export default {
   },
   mixins: [
     BVPaginationMixin,
+    BVToastMixin,
     TableFilterMixin,
     BVTableSelectableMixin,
     LoadingBarMixin,

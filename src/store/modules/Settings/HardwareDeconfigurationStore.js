@@ -147,7 +147,14 @@ const HardwareDeconfigurationStore = {
       };
       return await api.patch(uri, updatedSettingsValue).catch((error) => {
         console.log('error', error);
-        if (settingsState.settings) {
+        const messageId =
+          error.response.data.error['@Message.ExtendedInfo'][0].MessageId;
+
+        if (messageId === 'Base.1.8.1.ResourceCannotBeDeleted') {
+          throw new Error(
+            i18n.t('pageDeconfigurationHardware.toast.deleteReqFailed')
+          );
+        } else if (settingsState.settings) {
           throw new Error(
             i18n.t('pageDeconfigurationHardware.toast.errorEnablingSetting')
           );
@@ -165,7 +172,14 @@ const HardwareDeconfigurationStore = {
       };
       return await api.patch(uri, updatedSettingsValue).catch((error) => {
         console.log('error', error);
-        if (settingsState.settings) {
+        const messageId =
+          error.response.data.error['@Message.ExtendedInfo'][0].MessageId;
+
+        if (messageId === 'Base.1.8.1.ResourceCannotBeDeleted') {
+          throw new Error(
+            i18n.t('pageDeconfigurationHardware.toast.deleteReqFailed')
+          );
+        } else if (settingsState.settings) {
           throw new Error(
             i18n.t('pageDeconfigurationHardware.toast.errorEnablingSetting')
           );
