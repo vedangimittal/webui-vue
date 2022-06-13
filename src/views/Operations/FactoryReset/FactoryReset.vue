@@ -116,21 +116,19 @@ export default {
         });
     },
     onResetToDefaultsConfirm() {
-      this.$store
-        .dispatch('factoryReset/resetBios')
-        .then(() => {
-          return this.$store.dispatch('factoryReset/resetToDefaults');
+      this.startLoader();
+      Promise.all([
+        this.$store.dispatch('factoryReset/resetBios'),
+        this.$store.dispatch('factoryReset/resetToDefaults'),
+      ])
+        .then((message) => {
+          this.successToast(message);
+          setTimeout(() => {
+            this.$store.dispatch('authentication/logout');
+          }, 3000);
         })
-        .then((title) => {
-          this.successToast('', {
-            title,
-          });
-        })
-        .catch(({ message }) => {
-          this.errorToast('', {
-            title: message,
-          });
-        });
+        .catch(({ message }) => this.errorToast(message))
+        .finally(() => this.endLoader());
     },
   },
 };
