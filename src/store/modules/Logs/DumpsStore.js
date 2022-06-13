@@ -65,7 +65,7 @@ const DumpsStore = {
         .catch((error) => {
           console.log(error);
           const messageId =
-            error.response.data.error['@Message.ExtendedInfo'][0].MessageId;
+            error.response.data.error?.['@Message.ExtendedInfo'][0].MessageId;
 
           const message =
             messageId === 'Base.1.8.1.ResourceInStandby'
@@ -140,7 +140,7 @@ const DumpsStore = {
         .catch((error) => {
           console.log(error);
           const errorMsg =
-            error.response.data.error['@Message.ExtendedInfo'][0].MessageId;
+            error.response.data.error?.['@Message.ExtendedInfo'][0].MessageId;
 
           switch (errorMsg) {
             case 'Base.1.8.1.ResourceInUse':

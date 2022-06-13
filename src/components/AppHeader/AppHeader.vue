@@ -105,7 +105,7 @@
         </b-navbar-nav>
       </b-navbar>
     </header>
-    <loading-bar />
+    <loading-bar @checkLoadingStatus="checkLoadingStatus" />
   </div>
 </template>
 
@@ -137,6 +137,7 @@ export default {
   },
   data() {
     return {
+      loadingStatus: null,
       isNavigationOpen: false,
       altLogo: process.env.VUE_APP_COMPANY_NAME || 'Built on OpenBMC',
       headerText: 'ASMI',
@@ -195,7 +196,7 @@ export default {
   },
   watch: {
     isAuthorized(value) {
-      if (value === false) {
+      if (value === false && this.loadingStatus) {
         this.errorToast(this.$t('global.toast.unAuthDescription'), {
           title: this.$t('global.toast.unAuthTitle'),
         });
@@ -216,6 +217,9 @@ export default {
     );
   },
   methods: {
+    checkLoadingStatus(loadingStatus) {
+      this.loadingStatus = loadingStatus;
+    },
     getSystemInfo() {
       this.$store.dispatch('global/getSystemInfo');
     },

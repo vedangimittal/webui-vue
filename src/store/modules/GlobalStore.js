@@ -98,7 +98,7 @@ const GlobalStore = {
     setUtcTime: (state, isUtcDisplay) => (state.isUtcDisplay = isUtcDisplay),
     setUnauthorized: (state) => {
       state.isAuthorized = false;
-      window.setTimeout(() => {
+      setTimeout(() => {
         state.isAuthorized = true;
       }, 100);
     },

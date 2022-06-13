@@ -38,6 +38,7 @@ export default {
       this.clearTimeout();
       this.loadingIndicatorValue = 0;
       this.isLoadingComplete = false;
+      this.$emit('checkLoadingStatus', this.isLoadingComplete);
       this.loadingIntervalId = setInterval(() => {
         this.loadingIndicatorValue += 1;
         if (this.loadingIndicatorValue > 100) this.clearLoadingInterval();
@@ -51,6 +52,7 @@ export default {
         // Let animation complete before hiding
         // the loading bar
         this.isLoadingComplete = true;
+        this.$emit('checkLoadingStatus', this.isLoadingComplete);
       }, 1000);
     },
     hideLoadingBar() {
