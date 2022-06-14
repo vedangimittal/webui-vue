@@ -98,6 +98,9 @@ export default {
     };
   },
   computed: {
+    bootProgress() {
+      return this.$store.getters['global/bootProgress'];
+    },
     isSingleFileUploadEnabled() {
       return this.$store.getters['firmware/isSingleFileUploadEnabled'];
     },
@@ -134,13 +137,35 @@ export default {
   methods: {
     switchToRunning() {
       this.startLoader();
-      const timerId = setTimeout(() => {
-        this.endLoader();
-        this.infoToast(this.$t('pageFirmware.toast.verifySwitchMessage'), {
-          title: this.$t('pageFirmware.toast.verifySwitch'),
-          refreshAction: true,
+      const timerId = (checkCounter = 0) => {
+        checkCounter++;
+
+        if (checkCounter > 10) return;
+
+        this.$store.dispatch('global/getBootProgress').then(() => {
+          if (this.bootProgress) {
+            this.infoToast(this.$t('pageFirmware.toast.taskCompleteMessage'), {
+              title: this.$t('pageFirmware.toast.taskComplete'),
+            });
+            setTimeout(() => {
+              this.endLoader();
+              this.infoToast(
+                this.$t('pageFirmware.toast.verifySwitchMessage'),
+                {
+                  title: this.$t('pageFirmware.toast.verifySwitch'),
+                  refreshAction: true,
+                }
+              );
+              return;
+            }, 120000);
+          } else {
+            setTimeout(() => {
+              timerId(checkCounter);
+            }, 60000);
+          }
         });
-      }, 60000);
+      };
+      timerId();
 
       this.$store
         .dispatch('firmware/switchBmcFirmwareAndReboot')
@@ -151,7 +176,6 @@ export default {
         )
         .catch(({ message }) => {
           this.errorToast(message);
-          clearTimeout(timerId);
           this.endLoader();
         });
     },

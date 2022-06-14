@@ -179,7 +179,10 @@ const GlobalStore = {
           const bootProgress = data.BootProgress.LastState;
           commit('setBootProgress', bootProgress);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          commit('setBootProgress', null);
+        });
     },
   },
 };
