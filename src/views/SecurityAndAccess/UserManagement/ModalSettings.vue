@@ -141,9 +141,9 @@ export default {
   data() {
     return {
       form: {
-        lockoutThreshold: 0,
-        unlockMethod: 0,
-        lockoutDuration: null,
+        lockoutThreshold: this.settings.lockoutThreshold || 0,
+        unlockMethod: this.settings.unlockMethod || 0,
+        lockoutDuration: this.settings.lockoutDuration || null,
       },
     };
   },

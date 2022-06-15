@@ -3,12 +3,13 @@
     <page-title />
     <b-row>
       <b-col xl="9" class="text-right">
-        <b-button variant="link" @click="initModalSettings">
+        <b-button variant="link" :disabled="isBusy" @click="initModalSettings">
           <icon-settings />
           {{ $t('pageUserManagement.accountPolicySettings') }}
         </b-button>
         <b-button
           variant="primary"
+          :disabled="isBusy"
           data-test-id="userManagement-button-addUser"
           @click="initModalUser(null)"
         >
@@ -387,11 +388,15 @@ export default {
     },
     saveAccountSettings(settings) {
       this.startLoader();
+      this.isBusy = true;
       this.$store
         .dispatch('userManagement/saveAccountSettings', settings)
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message))
-        .finally(() => this.endLoader());
+        .finally(() => {
+          this.endLoader();
+          this.isBusy = false;
+        });
     },
   },
 };
