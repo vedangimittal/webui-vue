@@ -5,9 +5,11 @@ const ChassisStore = {
   namespaced: true,
   state: {
     chassis: [],
+    powerState: null,
   },
   getters: {
     chassis: (state) => state.chassis,
+    powerState: (state) => state.powerState,
   },
   mutations: {
     setChassisInfo: (state, data) => {
@@ -33,6 +35,7 @@ const ChassisStore = {
         };
       });
     },
+    setPowerState: (state, powerState) => (state.powerState = powerState),
   },
   actions: {
     async getChassisInfo({ commit }) {
@@ -69,6 +72,14 @@ const ChassisStore = {
             );
           }
         });
+    },
+    async getPowerState({ commit }) {
+      return await api
+        .get('/redfish/v1/Chassis/chassis')
+        .then(({ data: { PowerState = null } }) => {
+          commit('setPowerState', PowerState);
+        })
+        .catch((error) => console.log(error));
     },
   },
 };

@@ -58,18 +58,24 @@ export default {
   data() {
     return {
       resizeConsoleWindow: null,
-      ws: null,
+      ws: null, // websocket object
+      wsConnection: null, // websocket connection status
     };
   },
   computed: {
     serverStatus() {
-      return this.$store.getters['global/serverStatus'];
+      let status = null;
+      if (this.consoleType === 'bmc-console') status = this.wsConnection;
+      if (this.consoleType === 'console1')
+        status =
+          this.$store.getters['global/isInPhypStandby'] && this.wsConnection;
+      return status;
     },
     serverStatusIcon() {
-      return this.serverStatus === 'on' ? 'success' : 'danger';
+      return this.serverStatus ? 'success' : 'danger';
     },
     connectionStatus() {
-      return this.serverStatus === 'on'
+      return this.serverStatus
         ? this.$t('global.status.connected')
         : this.$t('global.status.disconnected');
     },
@@ -86,14 +92,11 @@ export default {
   },
   methods: {
     openTerminal(selectedConsole = this.consoleType) {
-      // this.consoleType is out of scope for the try part of the function
-      // and must be passed down as an argument
-
       const token = this.$store.getters['authentication/token'];
-      var host =
-        window.location.origin.replace('https://', '') +
-        window.location.pathname;
-      host = host.replace(/\/$/, '');
+      const host = `${window.location.origin.replace(
+        'https://',
+        ''
+      )}${window.location.pathname.replace(/\/$/, '')}`;
       this.ws = new WebSocket(`wss://${host}/${selectedConsole}`, [token]);
 
       // Refer https://github.com/xtermjs/xterm.js/ for xterm implementation and addons.
@@ -126,10 +129,12 @@ export default {
       window.addEventListener('resize', this.resizeConsoleWindow);
 
       try {
-        this.ws.onopen = function () {
+        this.ws.onopen = () => {
+          this.wsConnection = true;
           console.log(`websocket ${selectedConsole}/ opened`);
         };
-        this.ws.onclose = function (event) {
+        this.ws.onclose = (event) => {
+          this.wsConnection = false;
           console.log(
             `websocket ${selectedConsole}/ closed.
             code: ${event.code}

@@ -46,24 +46,27 @@ export default {
   data() {
     return {
       resizeConsoleWindow: null,
-      ws: null,
+      ws: null, // websocket object
+      wsConnection: null, // websocket connection status
     };
   },
   computed: {
     serverStatus() {
-      return this.$store.getters['global/serverStatus'];
+      return (
+        this.$store.getters['chassis/powerState'] !== 'Off' && this.wsConnection
+      );
     },
     serverStatusIcon() {
-      return this.serverStatus === 'on' ? 'success' : 'danger';
+      return this.serverStatus ? 'success' : 'danger';
     },
     connectionStatus() {
-      return this.serverStatus === 'on'
+      return this.serverStatus
         ? this.$t('global.status.connected')
         : this.$t('global.status.disconnected');
     },
   },
   created() {
-    this.$store.dispatch('global/getSystemInfo');
+    this.$store.dispatch('chassis/getPowerState');
   },
   mounted() {
     this.openTerminal();
@@ -75,10 +78,10 @@ export default {
   methods: {
     openTerminal() {
       const token = this.$store.getters['authentication/token'];
-      var host =
-        window.location.origin.replace('https://', '') +
-        window.location.pathname;
-      host = host.replace(/\/$/, '');
+      const host = `${window.location.origin.replace(
+        'https://',
+        ''
+      )}${window.location.pathname.replace(/\/$/, '')}`;
       this.ws = new WebSocket(`wss://${host}/console0`, [token]);
 
       // Refer https://github.com/xtermjs/xterm.js/ for xterm implementation and addons.
@@ -111,15 +114,16 @@ export default {
       window.addEventListener('resize', this.resizeConsoleWindow);
 
       try {
-        this.ws.onopen = function () {
+        this.ws.onopen = () => {
+          this.wsConnection = true;
           console.log('websocket console0/ opened');
         };
-        this.ws.onclose = function (event) {
+        this.ws.onclose = (event) => {
+          this.wsConnection = false;
           console.log(
-            'websocket console0/ closed. code: ' +
-              event.code +
-              ' reason: ' +
-              event.reason
+            `websocket console0/ closed.
+            code: ${event.code}
+            reason: ${event.reason}`
           );
         };
       } catch (error) {
