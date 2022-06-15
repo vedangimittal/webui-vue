@@ -13,7 +13,7 @@
         <b-button
           variant="link"
           :disabled="allEntries.length === 0"
-          @click="deleteAllEntries"
+          @click="clearAllEntries"
         >
           <icon-delete /> {{ $t('global.action.clearAll') }}
         </b-button>
@@ -32,9 +32,7 @@
         <table-toolbar
           ref="toolbar"
           :selected-items-count="selectedRows.length"
-          :actions="batchActions"
           @clear-selected="clearSelectedRows($refs.table)"
-          @batch-action="onBatchAction"
         >
           <template #toolbar-buttons>
             <table-toolbar-export
@@ -126,27 +124,6 @@
             >
               <span class="sr-only">{{ $t('global.table.selectItem') }}</span>
             </b-form-checkbox>
-          </template>
-          <!-- Severity column -->
-          <template #cell(severity)="row">
-            <span v-if="row.item.severity === 'Critical'">
-              {{ $t('pageDeconfigurationRecords.fatal') }}
-            </span>
-            <span
-              v-if="
-                row.item.severity === 'Warning' && row.item.additionalDataUri
-              "
-            >
-              {{ $t('pageDeconfigurationRecords.predictive') }}
-            </span>
-            <span
-              v-if="
-                row.item.severity === 'Warning' &&
-                row.item.additionalDataUri === 'undefined'
-              "
-            >
-              {{ $t('pageDeconfigurationRecords.manual') }}
-            </span>
           </template>
           <!-- Date column -->
           <template #cell(date)="{ value }">
@@ -278,7 +255,7 @@ export default {
         {
           key: 'severity',
           label: this.$t('pageDeconfigurationRecords.table.severity'),
-          sortable: false,
+          sortable: true,
         },
         {
           key: 'type',
@@ -304,12 +281,6 @@ export default {
         },
       ],
       activeFilters: [],
-      batchActions: [
-        {
-          value: 'delete',
-          label: this.$t('global.action.delete'),
-        },
-      ],
       selectedRows: selectedRows,
       tableHeaderCheckboxModel: tableHeaderCheckboxModel,
       tableHeaderCheckboxIndeterminate: tableHeaderCheckboxIndeterminate,
@@ -342,7 +313,7 @@ export default {
       .finally(() => this.endLoader());
   },
   methods: {
-    deleteAllEntries() {
+    clearAllEntries() {
       this.$bvModal
         .msgBoxConfirm(
           this.$t('pageDeconfigurationRecords.modal.deleteAllMessage'),
@@ -357,7 +328,7 @@ export default {
           if (deleteConfirmed) {
             this.$store
               .dispatch(
-                'deconfigurationRecords/deleteAllEntries',
+                'deconfigurationRecords/clearAllEntries',
                 this.allEntries
               )
               .then((message) => this.successToast(message))
@@ -419,41 +390,6 @@ export default {
           )
           .then((deleteConfirmed) => {
             if (deleteConfirmed) this.deleteRecords([uri]);
-          });
-      }
-    },
-    onBatchAction(action) {
-      if (action === 'delete') {
-        const uris = this.selectedRows.map((row) => row.uri);
-        this.$bvModal
-          .msgBoxConfirm(
-            this.$tc(
-              'pageDeconfigurationRecords.modal.deleteMessage',
-              this.selectedRows.length
-            ),
-            {
-              title: this.$tc(
-                'pageDeconfigurationRecords.modal.deleteTitle',
-                this.selectedRows.length
-              ),
-              okTitle: this.$t('global.action.delete'),
-              cancelTitle: this.$t('global.action.cancel'),
-            }
-          )
-          .then((deleteConfirmed) => {
-            if (deleteConfirmed) {
-              if (this.selectedRows.length === this.allEntries.length) {
-                this.$store
-                  .dispatch(
-                    'deconfigurationRecords/deleteAllEntries',
-                    this.selectedRows.length
-                  )
-                  .then((message) => this.successToast(message))
-                  .catch(({ message }) => this.errorToast(message));
-              } else {
-                this.deleteRecords(uris);
-              }
-            }
           });
       }
     },

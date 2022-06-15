@@ -1,4 +1,4 @@
-import api, { getResponseCount } from '@/store/api';
+import api from '@/store/api';
 import i18n from '@/i18n';
 
 const DeconfigurationRecordsStore = {
@@ -31,24 +31,31 @@ const DeconfigurationRecordsStore = {
               EntryType,
             } = log;
             return {
-              id: Id,
-              type: EntryType,
-              srcDetails: EventId,
-              severity: Severity,
+              additionalDataUri: AdditionalDataURI,
               date: new Date(Created),
               description: Message,
-              name: Name,
               filterByStatus: Resolved ? 'Resolved' : 'Unresolved',
+              id: Id,
+              name: Name,
+              srcDetails: EventId,
               status: Resolved, //true or false
+              type: EntryType,
               uri: log['@odata.id'],
-              additionalDataUri: AdditionalDataURI,
+              severity:
+                Severity === 'Warning' && AdditionalDataURI
+                  ? 'Predictive'
+                  : Severity === 'Critical'
+                  ? 'Fatal'
+                  : Severity === 'Warning' && !AdditionalDataURI
+                  ? 'Manual'
+                  : '--',
             };
           });
           commit('setDeconfigurationRecordInfo', deconfigRecords);
         })
         .catch((error) => console.log(error));
     },
-    async deleteAllEntries({ dispatch }, data) {
+    async clearAllEntries({ dispatch }, data) {
       return await api
         .post(
           '/redfish/v1/Systems/system/LogServices/HardwareIsolation/Actions/LogService.ClearLog'
@@ -63,44 +70,6 @@ const DeconfigurationRecordsStore = {
             i18n.tc('pageDeconfigurationRecords.toast.errorDelete', data.length)
           );
         });
-    },
-    async deleteRecords({ dispatch }, uris = []) {
-      const promises = uris.map((uri) =>
-        api.delete(uri).catch((error) => {
-          console.log(error);
-          return error;
-        })
-      );
-      return await api
-        .all(promises)
-        .then((response) => {
-          dispatch('getDeconfigurationRecordInfo');
-          return response;
-        })
-        .then(
-          api.spread((...responses) => {
-            const { successCount, errorCount } = getResponseCount(responses);
-            const toastMessages = [];
-
-            if (successCount) {
-              const message = i18n.tc(
-                'pageDeconfigurationRecords.toast.successDelete',
-                successCount
-              );
-              toastMessages.push({ type: 'success', message });
-            }
-
-            if (errorCount) {
-              const message = i18n.tc(
-                'pageDeconfigurationRecords.toast.errorDelete',
-                errorCount
-              );
-              toastMessages.push({ type: 'error', message });
-            }
-
-            return toastMessages;
-          })
-        );
     },
   },
 };
