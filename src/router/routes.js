@@ -25,6 +25,7 @@ import ProfileSettings from '@/views/ProfileSettings';
 import RebootBmc from '@/views/Operations/RebootBmc';
 import Policies from '@/views/SecurityAndAccess/Policies';
 import KeyClear from '@/views/Operations/KeyClear';
+import PcieTopology from '@/views/HardwareStatus/PcieTopology';
 import Sensors from '@/views/HardwareStatus/Sensors';
 import HostConsole from '@/views/Operations/HostConsole';
 import HostConsoleConsole from '@/views/Operations/HostConsole/HostConsoleConsole';
@@ -147,6 +148,14 @@ const routes = [
         component: Sensors,
         meta: {
           title: i18n.t('appPageTitle.sensors'),
+        },
+      },
+      {
+        path: '/hardware-status/pcie-topology',
+        name: 'pcie-topology',
+        component: PcieTopology,
+        meta: {
+          title: i18n.t('appPageTitle.pcieTopology'),
         },
       },
       {

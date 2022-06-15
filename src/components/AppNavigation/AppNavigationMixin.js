@@ -60,6 +60,11 @@ const AppNavigationMixin = {
               route: '/hardware-status/sensors',
             },
             {
+              id: 'pcie-topology',
+              label: this.$t('appNavigation.pcieTopology'),
+              route: '/hardware-status/pcie-topology',
+            },
+            {
               id: 'concurrent-maintenance',
               label: this.$t('appNavigation.concurrentMaintanence'),
               route: '/hardware-status/concurrent-maintenance',
