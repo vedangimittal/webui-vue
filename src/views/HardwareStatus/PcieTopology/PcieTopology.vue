@@ -205,7 +205,7 @@
                   </div>
                   <b-row>
                     <b-col>
-                      <template>
+                      <template v-if="item.ioSlots.length > 0">
                         <div
                           v-for="(val, i) in item.ioSlots"
                           :key="i"
@@ -214,7 +214,7 @@
                           {{ dataFormatter(val.locationNumber) }}
                         </div>
                       </template>
-                      <div>--</div>
+                      <div v-else>--</div>
                     </b-col>
                   </b-row>
                 </b-col>
