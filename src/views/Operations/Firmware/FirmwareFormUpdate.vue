@@ -120,6 +120,9 @@ export default {
     };
   },
   computed: {
+    bootProgress() {
+      return this.$store.getters['global/bootProgress'];
+    },
     isTftpUploadAvailable() {
       return this.$store.getters['firmware/isTftpUploadAvailable'];
     },
@@ -151,13 +154,40 @@ export default {
   methods: {
     updateFirmware() {
       this.startLoader();
-      const timerId = setTimeout(() => {
-        this.endLoader();
-        this.infoToast(this.$t('pageFirmware.toast.verifyUpdateMessage'), {
-          title: this.$t('pageFirmware.toast.verifyUpdate'),
-          refreshAction: true,
+      const timerId = (checkCounter = 0) => {
+        checkCounter++;
+
+        // This counter goes up by 1 every time this function runs
+        // If the function successfully goes to last toast, it won't run anymore
+        // if this function runs more than 10 times, it won't run anymore
+        // This function may only run more than once upon connection failure
+        if (checkCounter > 10) return;
+
+        this.$store.dispatch('global/getBootProgress').then(() => {
+          if (this.bootProgress) {
+            this.infoToast(this.$t('pageFirmware.toast.taskCompleteMessage'), {
+              title: this.$t('pageFirmware.toast.taskComplete'),
+            });
+            setTimeout(() => {
+              this.endLoader();
+              this.infoToast(
+                this.$t('pageFirmware.toast.verifyUpdateMessage'),
+                {
+                  title: this.$t('pageFirmware.toast.verifyUpdate'),
+                  refreshAction: true,
+                }
+              );
+              return;
+            }, 240000); // After task is complete, it takes about 4 minutes for BMC to boot up.
+          } else {
+            setTimeout(() => {
+              timerId(checkCounter);
+            }, 60000); // If the connection fails retry in 1 minute.
+          }
         });
-      }, 360000);
+      };
+      timerId();
+
       this.infoToast(this.$t('pageFirmware.toast.updateStartedMessage'), {
         title: this.$t('pageFirmware.toast.updateStarted'),
         timestamp: true,
