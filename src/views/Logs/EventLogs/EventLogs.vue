@@ -519,7 +519,10 @@ export default {
           if (deleteConfirmed) {
             this.$store
               .dispatch('eventLog/deleteAllEventLogs', this.allLogs)
-              .then((message) => this.successToast(message))
+              .then((message) => {
+                this.reloadEventLogData();
+                this.successToast(message);
+              })
               .catch(({ message }) => this.errorToast(message));
           }
         });
