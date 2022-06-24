@@ -28,13 +28,13 @@
         <b-col class="mb-4" sm="8" md="6" xl="4">
           <!-- Update form -->
           <form-update
-            :is-server-off="isServerOff"
             :is-page-disabled="isPageDisabled"
+            @loadingStatus="loadingStatus"
           />
         </b-col>
         <b-col sm="8" md="6" xl="4">
           <!-- Access key expiration -->
-          <firmware-access-key />
+          <firmware-access-key :is-page-disabled="isPageDisabled" />
         </b-col>
       </b-row>
     </page-section>
@@ -99,6 +99,11 @@ export default {
       this.$store.dispatch('firmware/getFirmwareInformation'),
       this.$store.dispatch('firmware/getFirmwareBootSide'),
     ]).finally(() => this.endLoader());
+  },
+  methods: {
+    loadingStatus(loading) {
+      this.loading = loading;
+    },
   },
 };
 </script>

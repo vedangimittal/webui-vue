@@ -184,6 +184,11 @@ const GlobalStore = {
           commit('setBootProgress', null);
         });
     },
+    async getCurrentTask(_, task) {
+      return await api.get(task).then(({ data }) => {
+        return data;
+      });
+    },
   },
 };
 

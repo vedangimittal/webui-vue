@@ -13,6 +13,7 @@
       <b-link
         class="d-inline-block mb-4 m-md-0"
         to="/resource-management/capacity-on-demand"
+        :disabled="isPageDisabled"
       >
         {{ $t('pageFirmware.form.updateFirmware.manageAccessKeys') }}
       </b-link>
@@ -27,6 +28,13 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'FirmwareAccessKey',
   mixins: [LoadingBarMixin, BVToastMixin],
+  props: {
+    isPageDisabled: {
+      required: true,
+      type: Boolean,
+      default: false,
+    },
+  },
   computed: {
     ...mapGetters('licenses', ['firmwareAccessKeyInfo']),
 

@@ -161,7 +161,7 @@ const FirmwareStore = {
         })
         .catch((error) => {
           console.log(error);
-          throw new Error(i18n.t('pageFirmware.toast.errorUpdateFirmware'));
+          throw new Error(i18n.t('pageFirmware.toast.errorUploadFirmware'));
         });
     },
     async uploadFirmwareTFTP({ state, dispatch }, fileAddress) {
