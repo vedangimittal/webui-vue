@@ -74,9 +74,9 @@
             </b-button>
           </template>
           <template #row-details="{ item }">
-            <b-container fluid>
+            <b-container fluid="xl">
               <b-row>
-                <b-col>
+                <b-col cols="4">
                   <dl>
                     <!-- Event Id -->
                     <dt>
@@ -94,7 +94,19 @@
                     <dd>{{ dataFormatter(item.srcDetails) }}</dd>
                   </dl>
                 </b-col>
-                <b-col v-if="item.additionalDataUri" class="text-nowrap">
+                <b-col cols="4">
+                  <dl>
+                    <dt>
+                      {{ $t('pageDeconfigurationHardware.table.locationCode') }}
+                    </dt>
+                    <dd>{{ dataFormatter(item.location) }}</dd>
+                  </dl>
+                </b-col>
+                <b-col
+                  v-if="item.additionalDataUri"
+                  cols="4"
+                  class="text-nowrap"
+                >
                   <b-button
                     class="btn btn-secondary float-right"
                     :href="item.additionalDataUri"

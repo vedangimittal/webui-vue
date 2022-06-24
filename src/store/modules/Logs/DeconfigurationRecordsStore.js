@@ -17,8 +17,38 @@ const DeconfigurationRecordsStore = {
     async getDeconfigurationRecordInfo({ commit }) {
       return await api
         .get('/redfish/v1/Systems/system/LogServices/HardwareIsolation/Entries')
-        .then(({ data: { Members = [] } = {} }) => {
+        .then(async ({ data: { Members = [] } = {} }) => {
+          const manualMember = Members.filter(
+            (item) => item.Severity === 'Warning' && !item.AdditionalDataURI
+          );
+          let LocationMap = [];
+          await api.all(
+            manualMember.map(async (item) => {
+              let uri = item.Links?.OriginOfCondition['@odata.id'];
+              if (uri.toString().includes('Processors')) {
+                uri = uri.slice(0, uri.lastIndexOf('/'));
+                uri = uri.slice(0, uri.lastIndexOf('/'));
+              }
+              await api.get(uri).then(async (response) => {
+                let locationCode =
+                  response.data.Location.PartLocation.ServiceLabel;
+                let locationId = item.Id;
+                LocationMap.push({
+                  locationId: locationId,
+                  locationCode: locationCode,
+                });
+              });
+              return api.get(uri).catch((error) => {
+                console.log(error);
+                return error;
+              });
+            })
+          );
           const deconfigRecords = Members.map((log) => {
+            let locationCode = '';
+            LocationMap.map((item) => {
+              if (item.locationId == log.Id) locationCode = item.locationCode;
+            });
             const {
               Id,
               Severity,
@@ -49,6 +79,7 @@ const DeconfigurationRecordsStore = {
                   : Severity === 'Warning' && !AdditionalDataURI
                   ? 'Manual'
                   : '--',
+              location: locationCode,
             };
           });
           commit('setDeconfigurationRecordInfo', deconfigRecords);
