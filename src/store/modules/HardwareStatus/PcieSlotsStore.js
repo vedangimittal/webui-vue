@@ -25,7 +25,15 @@ const PcieSlotsStore = {
     async getPcieSlotsInfo({ commit }, requestBody) {
       return await api
         .get(`${requestBody.uri}/PCIeSlots`)
-        .then(({ data }) => commit('setPcieSlotsInfo', data.Slots))
+        .then(({ data }) => {
+          let slotsList = [];
+          data.Slots.map((slot) => {
+            if (slot.SlotType !== 'OEM') {
+              slotsList.push(slot);
+            }
+          });
+          commit('setPcieSlotsInfo', slotsList);
+        })
         .catch((error) => console.log(error));
     },
     async updateIdentifyLedValue({ dispatch, state }, led) {

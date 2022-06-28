@@ -39,11 +39,10 @@
         <table-filter :filters="tableFilters" @filter-change="onFilterChange" />
         <b-button
           variant="primary"
-          :class="{ disabled: entries.length === 0 }"
-          :download="exportFileNameByDate()"
-          :href="href"
+          :disabled="isBusy"
+          @click="savePcieTopology"
         >
-          <icon-export /> {{ $t('global.action.exportAll') }}
+          {{ $t('pagePcieTopology.savePcieTopology') }}
         </b-button>
       </b-col>
     </b-row>
@@ -190,7 +189,7 @@
                       <b-col lg="3" xl="3" md="3" sm="3" xs="3">
                         <div class="fontStyle">
                           {{ $t('pagePcieTopology.cableLength') }}:
-                          {{ dataFormatter(item.cableLength[i]) }}
+                          {{ dataFormatter(item.cableLength[i]) }}m
                         </div>
                         <div class="fontStyle">
                           {{ $t('pagePcieTopology.cableStatus') }}:
@@ -265,7 +264,6 @@
 <script>
 import Alert from '@/components/Global/Alert';
 import IconChevron from '@carbon/icons-vue/es/chevron--down/20';
-import IconExport from '@carbon/icons-vue/es/document--export/20';
 import PageTitle from '@/components/Global/PageTitle';
 import Search from '@/components/Global/Search';
 import TableCellCount from '@/components/Global/TableCellCount';
@@ -293,7 +291,6 @@ export default {
   name: 'PcieTopology',
   components: {
     Alert,
-    IconExport,
     IconChevron,
     PageTitle,
     Search,
@@ -315,7 +312,7 @@ export default {
   data() {
     return {
       isBusy: true,
-      resetOption: -1,
+      resetOption: null,
       resetLinkUri: '',
       selectedObj: {},
       fields: [
@@ -396,9 +393,6 @@ export default {
     };
   },
   computed: {
-    href() {
-      return `data:text/json;charset=utf-8,${this.exportAllEntries()}`;
-    },
     filteredRows() {
       return this.searchFilter
         ? this.searchTotalFilteredRows
@@ -421,10 +415,9 @@ export default {
   },
   methods: {
     checkIfInPhypStandby(checkCounter = 0) {
-      this.startLoader();
       checkCounter++;
-      if (checkCounter > 15) return;
       if (this.isInPhypStandby) {
+        this.startLoader();
         this.$store.dispatch('pcieTopology/refreshPage').then(() => {
           this.$store.dispatch('pcieTopology/getTopologyScreen').finally(() => {
             this.isBusy = false;
@@ -446,29 +439,25 @@ export default {
       this.selectedObj = value;
       this.$bvModal.show('modal-leds');
     },
-    exportAllEntries() {
-      {
-        return this.$store.getters['pcieTopology/entries'].map((entry) => {
-          const allEntriesString = JSON.stringify(entry);
-          return allEntriesString;
-        });
-      }
+    savePcieTopology() {
+      this.$store
+        .dispatch('pcieTopology/savePcie')
+        .then(() =>
+          this.successToast(
+            this.$t('pagePcieTopology.toast.successSavePcieTopology')
+          )
+        )
+        .catch(() =>
+          this.errorToast(
+            this.$t('pagePcieTopology.toast.errorSavePcieTopology')
+          )
+        );
     },
     onFilterChange({ activeFilters }) {
       this.activeFilters = activeFilters;
     },
     onFiltered(filteredItems) {
       this.searchTotalFilteredRows = filteredItems.length;
-    },
-    exportFileNameByDate() {
-      let date = new Date();
-      date =
-        date.toISOString().slice(0, 10) +
-        '_' +
-        date.toString().split(':').join('-').split(' ')[4];
-      let fileName;
-      fileName = 'pcie_topology_';
-      return fileName + date;
     },
   },
 };

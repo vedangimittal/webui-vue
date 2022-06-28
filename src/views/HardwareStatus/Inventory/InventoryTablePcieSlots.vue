@@ -97,10 +97,12 @@ import SearchFilterMixin, {
 import TableRowExpandMixin, {
   expandRowLabel,
 } from '@/components/Mixins/TableRowExpandMixin';
+import BVToastMixin from '@/components/Mixins/BVToastMixin';
 
 export default {
   components: { IconChevron, PageSection, Search, TableCellCount },
   mixins: [
+    BVToastMixin,
     TableRowExpandMixin,
     DataFormatterMixin,
     TableSortMixin,
@@ -169,6 +171,7 @@ export default {
       this.$store
         .dispatch('pcieSlots/getPcieSlotsInfo', { uri: value })
         .finally(() => {
+          this.$root.$emit('hardware-status-pcie-slots-complete');
           this.isBusy = false;
         });
     },
@@ -177,6 +180,7 @@ export default {
     this.$store
       .dispatch('pcieSlots/getPcieSlotsInfo', { uri: this.chassis })
       .finally(() => {
+        this.$root.$emit('hardware-status-pcie-slots-complete');
         this.isBusy = false;
       });
   },

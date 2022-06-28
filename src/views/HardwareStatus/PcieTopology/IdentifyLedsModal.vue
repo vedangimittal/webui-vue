@@ -21,8 +21,10 @@
       {{ $t('pagePcieTopology.bridgeOrHost') }}
     </div>
     <b-row v-if="pcieBridgeLed.length > 0">
-      <b-col>{{ dataFormatter(pcieBridgeLed[0].locationNumber) }}</b-col>
-      <b-col>
+      <b-col cols="8">{{
+        dataFormatter(pcieBridgeLed[0].locationNumber)
+      }}</b-col>
+      <b-col cols="4">
         <b-form-checkbox
           id="switch"
           v-model="pcieBridgeLed[0].led"
@@ -38,8 +40,8 @@
       {{ $t('pagePcieTopology.localPort') }}
     </div>
     <b-row v-for="(value, i) in localPortLed" :key="'local-port-' + i">
-      <b-col>{{ dataFormatter(value.locationNumber) }}</b-col>
-      <b-col>
+      <b-col cols="8">{{ dataFormatter(value.locationNumber) }}</b-col>
+      <b-col cols="4">
         <b-form-checkbox
           :id="'local-port-index-' + i"
           v-model="value.led"
@@ -55,8 +57,8 @@
       {{ $t('pagePcieTopology.remotePort') }}s
     </div>
     <b-row v-for="(value, i) in remotePortLed" :key="'remote-port-' + i">
-      <b-col>{{ dataFormatter(value.locationNumber) }}</b-col>
-      <b-col>
+      <b-col cols="8">{{ dataFormatter(value.locationNumber) }}</b-col>
+      <b-col cols="4">
         <b-form-checkbox
           :id="'remote-port-index-' + i"
           v-model="value.led"
@@ -72,8 +74,8 @@
       {{ $t('pagePcieTopology.ioSlots') }}
     </div>
     <b-row v-for="(value, i) in ioSlotsLed" :key="'io-slot-i' + i">
-      <b-col>{{ dataFormatter(value.locationNumber) }}</b-col>
-      <b-col>
+      <b-col cols="8">{{ dataFormatter(value.locationNumber) }}</b-col>
+      <b-col cols="4">
         <b-form-checkbox
           :id="'io-slot-index-' + i"
           v-model="value.led"

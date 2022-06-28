@@ -91,7 +91,7 @@ export default {
         .dispatch('pcieTopology/resetTheLink', { uri: this.resetUri })
         .then(() => {
           this.successToast(
-            this.$t('pagePcieTopology.toast.sucessReset', {
+            this.$t('pagePcieTopology.toast.successReset', {
               id: this.resetType,
             })
           );
