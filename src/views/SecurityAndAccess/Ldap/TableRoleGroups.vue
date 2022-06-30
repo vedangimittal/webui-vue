@@ -246,9 +246,10 @@ export default {
       this.activeRoleGroup = roleGroup;
       this.$bvModal.show('modal-role-group');
     },
-    saveRoleGroup({ addNew, groupName, groupPrivilege }) {
+    saveRoleGroup({ addNew, groupNamePreviously, groupName, groupPrivilege }) {
       this.activeRoleGroup = null;
       const data = { groupName, groupPrivilege };
+      const saveData = { groupNamePreviously, groupName, groupPrivilege };
       this.startLoader();
       if (addNew) {
         this.$store
@@ -258,7 +259,7 @@ export default {
           .finally(() => this.endLoader());
       } else {
         this.$store
-          .dispatch('ldap/saveRoleGroup', data)
+          .dispatch('ldap/saveRoleGroup', saveData)
           .then((success) => this.successToast(success))
           .catch(({ message }) => this.errorToast(message))
           .finally(() => this.endLoader());

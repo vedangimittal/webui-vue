@@ -210,12 +210,15 @@ const LdapStore = {
           throw new Error(i18n.t('pageLdap.toast.errorAddRoleGroup'));
         });
     },
-    async saveRoleGroup({ dispatch, getters }, { groupName, groupPrivilege }) {
+    async saveRoleGroup(
+      { dispatch, getters },
+      { groupNamePreviously, groupName, groupPrivilege }
+    ) {
       const data = {};
       const enabledRoleGroups = getters['enabledRoleGroups'];
       const isActiveDirectoryEnabled = getters['isActiveDirectoryEnabled'];
       const RemoteRoleMapping = enabledRoleGroups.map((group) => {
-        if (group.RemoteGroup === groupName) {
+        if (group.RemoteGroup === groupNamePreviously) {
           return {
             RemoteGroup: groupName,
             LocalRole: groupPrivilege,

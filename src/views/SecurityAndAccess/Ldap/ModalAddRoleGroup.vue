@@ -12,31 +12,20 @@
       <b-row>
         <b-col sm="8">
           <b-form id="role-group" @submit.prevent="handleSubmit">
-            <!-- Edit role group -->
-            <template v-if="roleGroup !== null">
-              <dl class="mb-4">
-                <dt>{{ $t('pageLdap.modal.groupName') }}</dt>
-                <dd>{{ form.groupName }}</dd>
-              </dl>
-            </template>
-
-            <!-- Add new role group -->
-            <template v-else>
-              <b-form-group
-                :label="$t('pageLdap.modal.groupName')"
-                label-for="role-group-name"
-              >
-                <b-form-input
-                  id="role-group-name"
-                  v-model="form.groupName"
-                  :state="getValidationState($v.form.groupName)"
-                  @input="$v.form.groupName.$touch()"
-                />
-                <b-form-invalid-feedback role="alert">
-                  {{ $t('global.form.fieldRequired') }}
-                </b-form-invalid-feedback>
-              </b-form-group>
-            </template>
+            <b-form-group
+              :label="$t('pageLdap.modal.groupName')"
+              label-for="role-group-name"
+            >
+              <b-form-input
+                id="role-group-name"
+                v-model="form.groupName"
+                :state="getValidationState($v.form.groupName)"
+                @input="$v.form.groupName.$touch()"
+              />
+              <b-form-invalid-feedback role="alert">
+                {{ $t('global.form.fieldRequired') }}
+              </b-form-invalid-feedback>
+            </b-form-group>
 
             <b-form-group
               :label="$t('pageLdap.modal.groupPrivilege')"
@@ -140,6 +129,9 @@ export default {
       if (this.$v.$invalid) return;
       this.$emit('ok', {
         addNew: !this.roleGroup,
+        groupNamePreviously: this.roleGroup?.groupName
+          ? this.roleGroup?.groupName
+          : null,
         groupName: this.form.groupName,
         groupPrivilege: this.form.groupPrivilege,
       });
