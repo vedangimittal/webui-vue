@@ -104,10 +104,8 @@ export default {
     onResetBiosConfirm() {
       this.$store
         .dispatch('factoryReset/resetBios')
-        .then((title) => {
-          this.successToast('', {
-            title,
-          });
+        .then((message) => {
+          this.successToast(message);
         })
         .catch(({ message }) => {
           this.errorToast('', {
@@ -117,10 +115,11 @@ export default {
     },
     onResetToDefaultsConfirm() {
       this.startLoader();
-      Promise.all([
-        this.$store.dispatch('factoryReset/resetBios'),
-        this.$store.dispatch('factoryReset/resetToDefaults'),
-      ])
+      this.$store
+        .dispatch('factoryReset/resetBios')
+        .then(() => {
+          return this.$store.dispatch('factoryReset/resetToDefaults');
+        })
         .then((message) => {
           this.successToast(message);
           setTimeout(() => {
