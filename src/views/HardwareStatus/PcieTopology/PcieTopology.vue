@@ -38,6 +38,7 @@
       <b-col class="text-right">
         <table-filter :filters="tableFilters" @filter-change="onFilterChange" />
         <b-button
+          v-if="isServiceUser"
           variant="primary"
           :disabled="isBusy"
           @click="savePcieTopology"
@@ -406,6 +407,9 @@ export default {
     },
     isInPhypStandby() {
       return this.$store.getters['global/isInPhypStandby'];
+    },
+    isServiceUser() {
+      return this.$store.getters['global/isServiceUser'];
     },
   },
   created() {
