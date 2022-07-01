@@ -156,6 +156,8 @@
                 v-model.number="ioAdapterCapacity"
                 data-test-id="io-adapter-capacity"
                 type="number"
+                :min="0"
+                :max="21"
                 :state="getValidationState($v.ioAdapterCapacity)"
                 :disabled="!isServerOff()"
               ></b-form-input>
@@ -169,7 +171,7 @@
                   {{
                     $t('global.form.valueMustBeBetween', {
                       min: 0,
-                      max: 255,
+                      max: 21,
                     })
                   }}
                 </template>
@@ -342,7 +344,7 @@ export default {
       },
       ioAdapterCapacity: {
         minValue: minValue(0),
-        maxValue: maxValue(255),
+        maxValue: maxValue(21),
       },
       systemMemoryPageSetup: {
         minValue: minValue(0),
