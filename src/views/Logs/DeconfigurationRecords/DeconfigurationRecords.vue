@@ -44,7 +44,7 @@
         <b-table
           id="table-deconfiguration-records"
           ref="table"
-          responsive="md"
+          responsive="xl"
           selectable
           no-select-on-click
           sort-icon-left
@@ -108,7 +108,7 @@
                   class="text-nowrap"
                 >
                   <b-button
-                    class="btn btn-secondary float-right"
+                    class="btn btn-secondary"
                     :href="item.additionalDataUri"
                     target="_blank"
                   >
