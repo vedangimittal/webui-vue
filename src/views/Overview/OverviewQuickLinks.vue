@@ -10,7 +10,7 @@
           <dd v-else>--</dd>
         </dl>
       </b-col>
-      <b-col sm="6" lg="3" class="mb-2 mt-2">
+      <b-col v-if="canUseHostConsole" sm="6" lg="3" class="mb-2 mt-2">
         <b-button
           to="/operations/host-console"
           variant="secondary"
@@ -38,6 +38,15 @@ export default {
   computed: {
     bmcTime() {
       return this.$store.getters['global/bmcTime'];
+    },
+    currentUserRole() {
+      return this.$store?.getters['global/currentUser']?.RoleId;
+    },
+    canUseHostConsole() {
+      return (
+        this.currentUserRole === 'Administrator' ||
+        this.currentUserRole === 'OemIBMServiceAgent'
+      );
     },
   },
   created() {

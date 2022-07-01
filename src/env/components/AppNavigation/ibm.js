@@ -42,7 +42,7 @@ const AppNavigationMixin = {
               id: 'host-console',
               label: this.$t('appNavigation.hostConsole'),
               route: '/operations/host-console',
-              restrictTo: [],
+              restrictTo: ['Administrator', 'OemIBMServiceAgent'],
             },
             {
               id: 'service-login',
