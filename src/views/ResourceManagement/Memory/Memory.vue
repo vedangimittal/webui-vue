@@ -387,6 +387,7 @@ export default {
         });
     },
     updatePageSetup() {
+      if (this.$v.$invalid) return;
       this.startLoader();
       this.$store
         .dispatch('resourceMemory/savePageSetup')
