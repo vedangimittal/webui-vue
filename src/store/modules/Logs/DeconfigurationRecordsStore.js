@@ -18,40 +18,20 @@ const DeconfigurationRecordsStore = {
       return await api
         .get('/redfish/v1/Systems/system/LogServices/HardwareIsolation/Entries')
         .then(async ({ data: { Members = [] } = {} }) => {
-          const manualMember = Members.filter(
-            (item) => item.Severity === 'Warning' && !item.AdditionalDataURI
-          );
-          let locationMap = [];
-          await api.all(
-            manualMember.map(async (item) => {
-              let uri = item.Links?.OriginOfCondition['@odata.id'];
-              if (uri.toString().includes('Processors')) {
-                uri = uri
-                  .slice(0, uri.lastIndexOf('/'))
-                  .slice(0, uri.lastIndexOf('/'));
-              }
-              await api.get(uri).then(async (response) => {
-                let locationCode =
-                  response?.data?.Location?.PartLocation?.ServiceLabel;
-                let locationId = item.Id;
-                locationMap.push({
-                  locationId: locationId,
-                  locationCode: locationCode,
-                });
+          const allMembers = await api.all(
+            Members.map(async (member) => {
+              const uri = member?.Links?.OriginOfCondition?.['@odata.id']
+                .split('/SubProcessors')
+                .shift();
+              await api.get(uri).then(async ({ data: { Location = {} } }) => {
+                member.LocationCode = Location?.PartLocation?.ServiceLabel;
               });
-              return api.get(uri).catch((error) => {
-                console.log(error);
-                return error;
-              });
+              return member;
             })
           );
 
           const deconfigRecords = await api.all(
-            Members.map(async (log) => {
-              let locationCode = '';
-              locationMap.map((item) => {
-                if (item.locationId == log.Id) locationCode = item.locationCode;
-              });
+            allMembers.map(async (log) => {
               const {
                 Id,
                 Severity,
@@ -65,6 +45,7 @@ const DeconfigurationRecordsStore = {
                       .then(async ({ data }) => await data)
                   : null,
                 EntryType,
+                LocationCode,
               } = log;
               return {
                 additionalDataUri: AdditionalDataURI,
@@ -80,14 +61,14 @@ const DeconfigurationRecordsStore = {
                 type: EntryType,
                 uri: log['@odata.id'],
                 severity:
-                  Severity === 'Warning' && AdditionalDataURI
-                    ? 'Predictive'
-                    : Severity === 'Critical'
+                  Severity === 'Critical'
                     ? 'Fatal'
-                    : Severity === 'Warning' && !AdditionalDataURI
+                    : Severity === 'Warning'
+                    ? 'Predictive'
+                    : Severity === 'OK'
                     ? 'Manual'
                     : '--',
-                location: locationCode,
+                location: LocationCode,
               };
             })
           );
