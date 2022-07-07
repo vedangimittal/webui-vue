@@ -61,8 +61,9 @@
                 {{ $t('global.status.disabled') }}
               </b-form-radio>
             </b-form-group>
+            <!-- Todo - replace editDisabled with computed property notService -->
             <b-form-group
-              v-if="notService"
+              v-if="editDisabled"
               :label="$t('pageUserManagement.modal.username')"
               label-for="username"
             >
@@ -265,6 +266,9 @@ export default {
     };
   },
   computed: {
+    editDisabled() {
+      return !this.user?.RoleId; // Todo - erase this. Use computed property notService
+    },
     newUser() {
       return this.user ? false : true;
     },
