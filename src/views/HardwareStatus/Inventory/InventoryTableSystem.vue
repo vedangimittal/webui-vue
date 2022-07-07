@@ -31,9 +31,9 @@
       <!-- Status -->
       <template #cell(status)="row">
         {{
-          row.item.statusState === 'Enabled'
-            ? $t('global.status.present')
-            : $t('global.status.absent')
+          row.item.statusState === 'Absent'
+            ? $t('global.status.absent')
+            : $t('global.status.present')
         }}
       </template>
 
