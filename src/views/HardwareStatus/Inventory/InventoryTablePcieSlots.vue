@@ -70,8 +70,6 @@
           <b-row>
             <b-col sm="6" xl="6">
               <dl>
-                <!-- Name -->
-                <!-- <dt>{{ $t('pageInventory.table.name') }}</dt> -->
                 <dt>{{ $t('pageInventory.table.slotType') }}</dt>
                 <dd>{{ dataFormatter(item.type) }}</dd>
               </dl>
@@ -154,7 +152,14 @@ export default {
         : this.pcieSlots.length;
     },
     pcieSlots() {
-      return this.$store.getters['pcieSlots/pcieSlots'];
+      let slotsList = [];
+      const slots = this.$store.getters['pcieSlots/pcieSlots'];
+      slots.map((slot) => {
+        if (slot.type !== 'OEM') {
+          slotsList.push(slot);
+        }
+      });
+      return slotsList;
     },
     serverStatus() {
       if (this.chassis.endsWith('chassis')) {
