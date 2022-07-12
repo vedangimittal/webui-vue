@@ -26,13 +26,7 @@ const PcieSlotsStore = {
       return await api
         .get(`${requestBody.uri}/PCIeSlots`)
         .then(({ data }) => {
-          let slotsList = [];
-          data.Slots.map((slot) => {
-            if (slot.SlotType !== 'OEM') {
-              slotsList.push(slot);
-            }
-          });
-          commit('setPcieSlotsInfo', slotsList);
+          commit('setPcieSlotsInfo', data.Slots);
         })
         .catch((error) => console.log(error));
     },
@@ -52,7 +46,7 @@ const PcieSlotsStore = {
         .patch(`${led.uri}/PCIeSlots`, updatedIdentifyLedValue)
         .then(() => dispatch('getPcieSlotsInfo', { uri: led.uri }))
         .catch((error) => {
-          dispatch('getPcieSlotsInfo');
+          dispatch('getPcieSlotsInfo', { uri: led.uri });
           console.log('error', error);
           if (led.identifyLed) {
             throw new Error(
