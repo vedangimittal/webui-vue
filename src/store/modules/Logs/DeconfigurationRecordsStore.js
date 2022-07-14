@@ -20,40 +20,25 @@ const DeconfigurationRecordsStore = {
         .then(async ({ data: { Members = [] } = {} }) => {
           const allMembers = await api.all(
             Members.map(async (member) => {
-              // Check to see if record has @odata.id
-              const hasOdataId = member?.Links?.OriginOfCondition?.['@odata.id']
-                ? true
-                : false;
-
-              let url = null;
-              let arrayNumber = null;
-
-              if (hasOdataId) {
-                url = member?.Links?.OriginOfCondition?.['@odata.id']
-                  .split('/SubProcessors')
-                  .shift();
-              } else {
-                url = member?.Links?.OriginOfCondition;
-                arrayNumber = url.split('Assemblies/').pop();
-              }
-
-              await api.get(url).then(async ({ data }) => {
-                // Has @odata.id, other gaurds
-                if (hasOdataId) {
+              const arrayNumber = Number(
+                member?.Links?.OriginOfCondition?.['@odata.id'].split('/').pop()
+              );
+              const uri = member?.Links?.OriginOfCondition?.['@odata.id']
+                .split('/SubProcessors')
+                .shift();
+              await api.get(uri).then(async ({ data }) => {
+                if (data?.Location) {
                   member.LocationCode =
-                    data.Location?.PartLocation?.ServiceLabel;
+                    data?.Location?.PartLocation?.ServiceLabel;
                 } else {
-                  if (arrayNumber) {
-                    const tpmObject = data.Assemblies.filter((member) => {
-                      return (
-                        member['@odata.id'] ==
-                        `/redfish/v1/Chassis/chassis/Assembly#/Assemblies/${arrayNumber}`
-                      );
-                    })[0];
-
-                    member.LocationCode =
-                      tpmObject.Location?.PartLocation?.ServiceLabel;
-                  }
+                  const tpmObject = data.Assemblies.filter((member) => {
+                    return (
+                      member['@odata.id'] ==
+                      `/redfish/v1/Chassis/chassis/Assembly#/Assemblies/${arrayNumber}`
+                    );
+                  })[0];
+                  member.LocationCode =
+                    tpmObject?.Location?.PartLocation?.ServiceLabel;
                 }
               });
               return member;
