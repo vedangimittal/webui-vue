@@ -504,7 +504,10 @@ const PcieTopologyStore = {
             row.cableStatus = [];
             if (slot?.pcieDevice) {
               row.linkSpeed = slot?.pcieDevice?.PCIeInterface?.PCIeType;
-              row.linkWidth = slot?.pcieDevice?.PCIeInterface?.LanesInUse;
+              row.linkWidth =
+                slot?.pcieDevice?.PCIeInterface?.LanesInUse === -1
+                  ? 'unknown'
+                  : slot?.pcieDevice?.PCIeInterface?.LanesInUse;
               if (
                 slot?.pcieDevice?.Status?.State === 'Enabled' &&
                 slot?.pcieDevice?.Status?.Health === 'OK'
@@ -688,6 +691,7 @@ const PcieTopologyStore = {
                         );
 
                         if (
+                          cable.detailedInfo?.downstreamPorts[0] &&
                           cable.detailedInfo.downstreamPorts[0].data?.Location
                             ?.PartLocation?.ServiceLabel
                         ) {
