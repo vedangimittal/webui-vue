@@ -280,6 +280,11 @@ export default {
           sortable: false,
         },
         {
+          key: 'location',
+          label: this.$t('pageDeconfigurationHardware.table.locationCode'),
+          sortable: false,
+        },
+        {
           key: 'status',
           label: this.$t('pageDeconfigurationRecords.table.status'),
           sortable: false,

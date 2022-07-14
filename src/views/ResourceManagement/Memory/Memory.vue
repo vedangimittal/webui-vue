@@ -3,7 +3,7 @@
     <page-title />
     <b-row>
       <b-col md="8" xl="6">
-        <alert v-if="!isServerOff()" variant="warning" class="mb-4">
+        <alert v-if="!isSectionEditable()" variant="warning" class="mb-4">
           <div class="font-weight-bold">
             {{ $t('pageMemory.alert.heading') }}
           </div>
@@ -48,7 +48,7 @@
                 id="logical-memory-size-option"
                 v-model="form.logicalMemorySizeOption"
                 :options="logicalMemorySizeOptions"
-                :disabled="!isServerOff()"
+                :disabled="!isSectionEditable()"
               >
               </b-form-select>
             </b-form-group>
@@ -56,7 +56,7 @@
               variant="primary"
               type="submit"
               class="mt-3 mb-3"
-              :disabled="!isServerOff()"
+              :disabled="!isSectionEditable()"
             >
               {{ $t('pageMemory.updateLogicalMemorySize') }}
             </b-button>
@@ -101,7 +101,7 @@
                 v-model.number="systemMemoryPageSetup"
                 data-test-id="system-memory-page-setup"
                 type="number"
-                :disabled="!isPageSetupEditable()"
+                :disabled="!isSectionEditable()"
                 :state="getValidationState($v.systemMemoryPageSetup)"
               ></b-form-input>
               <b-form-invalid-feedback role="alert">
@@ -123,7 +123,7 @@
                 variant="primary"
                 type="submit"
                 class="mt-3 mb-3"
-                :disabled="!isPageSetupEditable()"
+                :disabled="!isSectionEditable()"
               >
                 {{ $t('pageMemory.updatePageSetup') }}
               </b-button>
@@ -159,7 +159,7 @@
                 :min="0"
                 :max="21"
                 :state="getValidationState($v.ioAdapterCapacity)"
-                :disabled="!isServerOff()"
+                :disabled="!isSectionEditable()"
               ></b-form-input>
               <b-form-invalid-feedback role="alert">
                 <template
@@ -181,7 +181,7 @@
               variant="primary"
               type="submit"
               class="mt-3"
-              :disabled="!isServerOff()"
+              :disabled="!isSectionEditable()"
             >
               {{ $t('pageMemory.updateIoAdapterEnlargedCapacity') }}
             </b-button>
@@ -211,7 +211,7 @@
             <dt>
               {{ $t('pageMemory.activeMemoryMirroring') }}
             </dt>
-            <dd v-if="!isActiveMemoryMirroringEditable()">
+            <dd v-if="!isSectionEditable()">
               <span v-if="activeMemoryMirroringState">
                 {{ $t('global.status.enabled') }}
               </span>
@@ -222,7 +222,7 @@
                 id="activeMemoryMirroringSwitch"
                 v-model="activeMemoryMirroringState"
                 switch
-                :disabled="!isActiveMemoryMirroringEditable()"
+                :disabled="!isSectionEditable()"
                 @change="changeActiveMemoryMirroringState"
               >
                 <span v-if="activeMemoryMirroringState">
@@ -371,7 +371,7 @@ export default {
     isHmcManaged() {
       return this.hmcManaged === 'Enabled' ? true : false;
     },
-    isPageSetupEditable() {
+    isSectionEditable() {
       return this.isServerOff() && !this.isHmcManaged();
     },
     handleSubmit() {
@@ -408,9 +408,6 @@ export default {
           this.$v.form.$reset();
           this.endLoader();
         });
-    },
-    isActiveMemoryMirroringEditable() {
-      return this.isServerOff() && !this.isHmcManaged();
     },
     changeActiveMemoryMirroringState(state) {
       this.$store
