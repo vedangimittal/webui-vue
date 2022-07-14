@@ -57,6 +57,7 @@ export default {
   },
   data() {
     return {
+      checkingServerStatus: null, // used to prevent extra api calls
       resizeConsoleWindow: null,
       ws: null, // websocket object
       wsConnection: null, // websocket connection status
@@ -78,6 +79,17 @@ export default {
       return this.serverStatus
         ? this.$t('global.status.connected')
         : this.$t('global.status.disconnected');
+    },
+  },
+  watch: {
+    async checkingServerStatus(value) {
+      if (value) {
+        setTimeout(async () => {
+          await this.$store.dispatch('global/getSystemInfo').finally(() => {
+            this.checkingServerStatus = false;
+          });
+        }, 5000); // 5 seconds
+      }
     },
   },
   created() {
@@ -140,6 +152,11 @@ export default {
             code: ${event.code}
             reason: ${event.reason}`
           );
+        };
+        this.ws.onmessage = () => {
+          if (!this.checkingServerStatus) {
+            this.checkingServerStatus = true;
+          }
         };
       } catch (error) {
         console.log(error);
