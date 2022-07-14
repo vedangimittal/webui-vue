@@ -1,5 +1,19 @@
 <template>
   <page-section :section-title="$t('pageInventory.assemblies')">
+    <b-row class="align-items-end">
+      <b-col sm="6" md="5" xl="4">
+        <search
+          @change-search="onChangeSearchInput"
+          @clear-search="onClearSearchInput"
+        />
+      </b-col>
+      <b-col sm="6" md="3" xl="2">
+        <table-cell-count
+          :filtered-items-count="filteredRows"
+          :total-number-of-cells="items.length"
+        ></table-cell-count>
+      </b-col>
+    </b-row>
     <b-table
       sort-icon-left
       no-sort-reset
@@ -9,9 +23,12 @@
       responsive="xl"
       :items="items"
       :fields="fields"
+      :filter="searchFilter"
       show-empty
       :empty-text="$t('global.table.emptyMessage')"
+      :empty-filtered-text="$t('global.table.emptySearchMessage')"
       :busy="isBusy"
+      @filtered="onFiltered"
     >
       <template #head(identifyLed)="row">
         {{ row.label }}
@@ -89,6 +106,11 @@
 
 <script>
 import PageSection from '@/components/Global/PageSection';
+import Search from '@/components/Global/Search';
+import TableCellCount from '@/components/Global/TableCellCount';
+import SearchFilterMixin, {
+  searchFilter,
+} from '@/components/Mixins/SearchFilterMixin';
 import InfoTooltip from '@/components/Global/InfoTooltip';
 import IconChevron from '@carbon/icons-vue/es/chevron--down/20';
 import BVToastMixin from '@/components/Mixins/BVToastMixin';
@@ -98,8 +120,13 @@ import TableRowExpandMixin, {
 import DataFormatterMixin from '@/components/Mixins/DataFormatterMixin';
 
 export default {
-  components: { IconChevron, InfoTooltip, PageSection },
-  mixins: [BVToastMixin, TableRowExpandMixin, DataFormatterMixin],
+  components: { IconChevron, Search, InfoTooltip, PageSection, TableCellCount },
+  mixins: [
+    BVToastMixin,
+    SearchFilterMixin,
+    TableRowExpandMixin,
+    DataFormatterMixin,
+  ],
   props: {
     chassis: {
       type: String,
@@ -153,10 +180,17 @@ export default {
           formatter: this.dataFormatter,
         },
       ],
+      searchFilter: searchFilter,
+      searchTotalFilteredRows: 0,
       expandRowLabel: expandRowLabel,
     };
   },
   computed: {
+    filteredRows() {
+      return this.searchFilter
+        ? this.searchTotalFilteredRows
+        : this.items.length;
+    },
     assemblies() {
       return this.$store.getters['assemblies/assemblies'];
     },
@@ -198,6 +232,9 @@ export default {
       });
   },
   methods: {
+    onFiltered(filteredItems) {
+      this.searchTotalFilteredRows = filteredItems.length;
+    },
     toggleIdentifyLedValue(row) {
       this.$store
         .dispatch('assemblies/updateIdentifyLedValue', {
