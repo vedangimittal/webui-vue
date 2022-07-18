@@ -30,7 +30,7 @@
           v-model="pcieBridgeLed[0].led"
           data-test-id="pcie-toggle-pcieBridge"
           switch
-          @change="changeLedValue(pcieBridgeLed, 'pcieBridge')"
+          @change="changeLedValue(pcieBridgeLed[0], 'pcieBridge')"
         >
         </b-form-checkbox>
       </b-col>
@@ -146,18 +146,16 @@ export default {
           this.getAllLeds();
         })
         .catch(() => {
-          let operation = '';
-          if (value.locationIndicatorActive) {
-            operation = 'off';
+          this.getAllLeds();
+          if (!value.locationIndicatorActive) {
+            this.errorToast(
+              this.$t('pageInventory.toast.errorEnableIdentifyLed')
+            );
           } else {
-            operation = 'on';
+            this.errorToast(
+              this.$t('pageInventory.toast.errorDisableIdentifyLed')
+            );
           }
-          this.errorToast(
-            this.$t('pagePcieTopology.toast.errorReset', {
-              operation: operation,
-              id: value.locationNumber,
-            })
-          );
         });
     },
   },
