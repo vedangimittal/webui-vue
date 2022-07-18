@@ -649,8 +649,14 @@
         "step4": "Step 4 of 4 - Complete",
         "step4Message": "Firmware update successful. Click refresh to verify firmware level."
       },
-      "verifySwitch": "Verify switch",
-      "verifySwitchMessage": "Refresh the application to verify the running and backup images switched."
+      "switchToRunning": {
+        "step1": "Step 1 of 3 - Firmware switching",
+        "step1Message": "Process started. Firmware switching in progress.",
+        "step2": "Step 2 of 3 - Reboot",
+        "step2Message": "Firmware switching complete. BMC reboot in progress.",
+        "step3": "Step 3 of 3 - Complete",
+        "step3Message": "Firmware switch successful. Click refresh to verify the running and backup images switched."
+      }
     }
   },
   "pageHostConsole": {

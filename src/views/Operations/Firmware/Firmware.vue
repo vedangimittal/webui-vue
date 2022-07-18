@@ -13,6 +13,7 @@
         <bmc-cards
           :is-page-disabled="isPageDisabled"
           :is-server-off="isServerOff"
+          @loadingStatus="loadingStatus"
         />
 
         <!-- Host Firmware -->

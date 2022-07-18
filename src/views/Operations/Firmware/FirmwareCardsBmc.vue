@@ -134,50 +134,85 @@ export default {
       return this.$store.getters['firmware/firmwareBootSide'];
     },
   },
+  watch: {
+    loading: function (value) {
+      this.$emit('loadingStatus', value);
+    },
+  },
   methods: {
     switchToRunning() {
       this.startLoader();
-      const timerId = (checkCounter = 0) => {
-        checkCounter++;
+      this.$emit('loadingStatus', this.loading);
 
-        if (checkCounter > 10) return;
-
-        this.$store.dispatch('global/getBootProgress').then(() => {
-          if (this.bootProgress) {
-            this.infoToast(this.$t('pageFirmware.toast.taskCompleteMessage'), {
-              title: this.$t('pageFirmware.toast.taskComplete'),
-            });
-            setTimeout(() => {
-              this.endLoader();
-              this.infoToast(
-                this.$t('pageFirmware.toast.verifySwitchMessage'),
-                {
-                  title: this.$t('pageFirmware.toast.verifySwitch'),
-                  refreshAction: true,
-                }
-              );
-              return;
-            }, 120000);
-          } else {
-            setTimeout(() => {
-              timerId(checkCounter);
-            }, 60000);
+      // Step 1 - Switch firmware
+      const switchFirmware = () => {
+        this.infoToast(
+          this.$t('pageFirmware.toast.switchToRunning.step1Message'),
+          {
+            title: this.$t('pageFirmware.toast.switchToRunning.step1'),
+            timestamp: true,
           }
-        });
+        );
+        this.$store
+          .dispatch('firmware/switchBmcFirmwareAndReboot')
+          .then(async () => bmcReboot())
+          .catch(({ message }) => {
+            this.endLoader();
+            this.errorToast(message);
+          });
       };
-      timerId();
 
-      this.$store
-        .dispatch('firmware/switchBmcFirmwareAndReboot')
-        .then(() =>
-          this.infoToast(this.$t('pageFirmware.toast.rebootStartedMessage'), {
-            title: this.$t('pageFirmware.toast.rebootStarted'),
-          })
-        )
-        .catch(({ message }) => {
-          this.errorToast(message);
+      // Step 2 - BMC Reboot
+      const bmcReboot = () => {
+        this.infoToast(
+          this.$t('pageFirmware.toast.switchToRunning.step2Message'),
+          {
+            title: this.$t('pageFirmware.toast.switchToRunning.step2'),
+            timestamp: true,
+          }
+        );
+        const timer = (checkCounter = 0) => {
+          checkCounter++;
+
+          // This counter goes up by 1 every time this function runs
+          // If the function successfully goes to last toast, it won't run anymore
+          // if this function runs more than 10 times, it won't run anymore
+          if (checkCounter > 10) {
+            this.endLoader();
+            return this.errorToast(
+              this.$t('pageFirmware.toast.errorSwitchImages')
+            );
+          }
+
+          this.$store.dispatch('global/getBootProgress').then(() => {
+            if (this.bootProgress) {
+              step3();
+            } else {
+              setTimeout(() => {
+                timer(checkCounter);
+              }, 60000); // 1 minute;
+            }
+          });
+        };
+        timer();
+      };
+
+      // Step 3 - Firmware switch complete
+      const step3 = () => {
+        setTimeout(() => {
           this.endLoader();
-        });
+          return this.infoToast(
+            this.$t('pageFirmware.toast.switchToRunning.step3Message'),
+            {
+              title: this.$t('pageFirmware.toast.switchToRunning.step3'),
+              refreshAction: true,
+              timestamp: true,
+            }
+          );
+        }, 120000); // 2 minutes
+      };
+
+      switchFirmware();
     },
   },
 };
