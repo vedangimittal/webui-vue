@@ -4,7 +4,7 @@
 
     <b-row>
       <b-col>
-        <alert variant="warning" class="mb-5">
+        <alert v-if="isOperatingModeManual" variant="warning" class="mb-5">
           <b-row align-v="center">
             <b-col>
               <p class="mb-0">
