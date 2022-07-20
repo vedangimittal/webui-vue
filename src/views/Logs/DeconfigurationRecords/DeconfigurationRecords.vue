@@ -260,6 +260,11 @@ export default {
           sortable: true,
         },
         {
+          key: 'pelID',
+          label: this.$t('pageDeconfigurationRecords.table.pelId'),
+          sortable: true,
+        },
+        {
           key: 'date',
           label: this.$t('pageDeconfigurationRecords.table.date'),
           sortable: true,
@@ -270,18 +275,8 @@ export default {
           sortable: true,
         },
         {
-          key: 'type',
-          label: 'Type',
-          sortable: false,
-        },
-        {
           key: 'description',
           label: this.$t('pageDeconfigurationRecords.table.resource'),
-          sortable: false,
-        },
-        {
-          key: 'location',
-          label: this.$t('pageDeconfigurationHardware.table.locationCode'),
           sortable: false,
         },
         {

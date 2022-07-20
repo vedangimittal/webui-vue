@@ -417,6 +417,7 @@
       "description": "Description",
       "id": "Id",
       "name": "Name",
+      "pelId": "Pel Id",
       "reference": "Reference",
       "resource": "Resource",
       "severity": "Severity",

@@ -59,9 +59,14 @@ const DeconfigurationRecordsStore = {
                       .get(AdditionalDataURI.split('/attachment').shift())
                       .then(async ({ data }) => await data)
                   : null,
-                EntryType,
                 LocationCode,
               } = log;
+              let pelId = '';
+              const additionalDataURIValue = log.AdditionalDataURI;
+              if (additionalDataURIValue) {
+                const splitUrl = additionalDataURIValue.split('/');
+                pelId = splitUrl[splitUrl.length - 2];
+              }
               return {
                 additionalDataUri: AdditionalDataURI,
                 date: new Date(Created),
@@ -73,7 +78,6 @@ const DeconfigurationRecordsStore = {
                 name: Name,
                 srcDetails: AdditionalData?.EventId,
                 status: AdditionalData?.Resolved, //true or false
-                type: EntryType,
                 uri: log['@odata.id'],
                 severity:
                   Severity === 'Critical'
@@ -84,6 +88,7 @@ const DeconfigurationRecordsStore = {
                     ? 'Manual'
                     : '--',
                 location: LocationCode,
+                pelID: pelId,
               };
             })
           );
