@@ -88,24 +88,24 @@
                 <dt>{{ $t('pageInventory.table.name') }}</dt>
                 <dd>{{ dataFormatter(item.name) }}</dd>
               </dl>
-              <dl>
+              <dl v-if="!isIoExpansionChassis">
                 <!-- Serial number -->
                 <dt>{{ $t('pageInventory.table.serialNumber') }}</dt>
                 <dd>{{ dataFormatter(item.serialNumber) }}</dd>
               </dl>
-              <dl>
+              <dl v-if="!isIoExpansionChassis">
                 <!-- Part number -->
                 <dt>{{ $t('pageInventory.table.partNumber') }}</dt>
                 <dd>{{ dataFormatter(item.partNumber) }}</dd>
               </dl>
             </b-col>
             <b-col sm="6" xl="6">
-              <dl>
+              <dl v-if="!isIoExpansionChassis">
                 <!-- Spare part number -->
                 <dt>{{ $t('pageInventory.table.sparePartNumber') }}</dt>
                 <dd>{{ dataFormatter(item.sparePartNumber) }}</dd>
               </dl>
-              <dl>
+              <dl v-if="!isIoExpansionChassis">
                 <!-- Model -->
                 <dt>{{ $t('pageInventory.table.bmcManagerModel') }}</dt>
                 <dd>{{ dataFormatter(item.model) }}</dd>
@@ -213,6 +213,13 @@ export default {
         return true;
       } else {
         return false;
+      }
+    },
+    isIoExpansionChassis() {
+      if (this.chassis.endsWith('chassis')) {
+        return false;
+      } else {
+        return true;
       }
     },
   },

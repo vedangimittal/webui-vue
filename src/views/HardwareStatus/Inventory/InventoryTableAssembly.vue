@@ -22,7 +22,7 @@
       :sort-desc="false"
       responsive="xl"
       :items="items"
-      :fields="fields"
+      :fields="tableHeaders"
       :filter="searchFilter"
       show-empty
       :empty-text="$t('global.table.emptyMessage')"
@@ -82,20 +82,28 @@
         <b-container fluid>
           <b-row>
             <b-col class="mt-2" sm="6" xl="6">
-              <!-- Name -->
-              <dt>{{ $t('pageInventory.table.name') }}</dt>
-              <dd>{{ dataFormatter(item.name) }}</dd>
-              <!-- Serial number -->
-              <dt>{{ $t('pageInventory.table.serialNumber') }}</dt>
-              <dd>{{ dataFormatter(item.serialNumber) }}</dd>
+              <dl>
+                <!-- Name -->
+                <dt>{{ $t('pageInventory.table.name') }}</dt>
+                <dd>{{ dataFormatter(item.name) }}</dd>
+              </dl>
+              <dl v-if="!isIoExpansionChassis">
+                <!-- Serial number -->
+                <dt>{{ $t('pageInventory.table.serialNumber') }}</dt>
+                <dd>{{ dataFormatter(item.serialNumber) }}</dd>
+              </dl>
             </b-col>
             <b-col class="mt-2" sm="6" xl="6">
-              <!-- Model-->
-              <dt>{{ $t('pageInventory.table.bmcManagerModel') }}</dt>
-              <dd>{{ dataFormatter(item.model) }}</dd>
-              <!-- Spare Part Number -->
-              <dt>{{ $t('pageInventory.table.sparePartNumber') }}</dt>
-              <dd>{{ dataFormatter(item.sparePartNumber) }}</dd>
+              <dl v-if="!isIoExpansionChassis">
+                <!-- Model-->
+                <dt>{{ $t('pageInventory.table.bmcManagerModel') }}</dt>
+                <dd>{{ dataFormatter(item.model) }}</dd>
+              </dl>
+              <dl v-if="!isIoExpansionChassis">
+                <!-- Spare Part Number -->
+                <dt>{{ $t('pageInventory.table.sparePartNumber') }}</dt>
+                <dd>{{ dataFormatter(item.sparePartNumber) }}</dd>
+              </dl>
             </b-col>
           </b-row>
         </b-container>
@@ -163,12 +171,6 @@ export default {
           tdClass: 'text-nowrap',
         },
         {
-          key: 'partNumber',
-          label: this.$t('pageInventory.table.partNumber'),
-          formatter: this.dataFormatter,
-          sortable: true,
-        },
-        {
           key: 'locationNumber',
           label: this.$t('pageInventory.table.locationNumber'),
           formatter: this.dataFormatter,
@@ -209,6 +211,25 @@ export default {
       } else {
         return false;
       }
+    },
+    isIoExpansionChassis() {
+      if (this.chassis.endsWith('chassis')) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    tableHeaders() {
+      let tempFields = [...this.fields];
+      if (!this.isIoExpansionChassis) {
+        tempFields.splice(4, 0, {
+          key: 'partNumber',
+          label: this.$t('pageInventory.table.partNumber'),
+          formatter: this.dataFormatter,
+          sortable: true,
+        });
+      }
+      return tempFields;
     },
   },
   watch: {
