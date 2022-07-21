@@ -59,7 +59,7 @@ export default {
   data() {
     return {
       form: {
-        assetTag: '',
+        assetTag: this.tag ? this.tag : '',
       },
     };
   },
