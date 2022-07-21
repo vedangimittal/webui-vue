@@ -78,7 +78,14 @@ export default {
       serviceLogin() {
         const date = new Date(this.serviceLoginInfo?.bmcTime);
         const expirationDate = new Date(this.serviceLoginInfo?.expirationDate);
-        if (this.serviceLoginInfo?.acfInstalled && expirationDate >= date) {
+        const dateTimeStamp = date.getTime();
+        const expirationDateTimeStamp = expirationDate.getTime();
+
+        if (
+          this.serviceLoginInfo?.acfInstalled &&
+          expirationDateTimeStamp >= dateTimeStamp &&
+          this.serviceLoginInfo?.isServiceLoginEnabled
+        ) {
           this.serviceLoginStatus = this.$t('global.status.enabled');
         } else {
           this.serviceLoginStatus = this.$t('global.status.disabled');

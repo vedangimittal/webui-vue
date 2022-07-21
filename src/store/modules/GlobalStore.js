@@ -46,6 +46,7 @@ const GlobalStore = {
     username: localStorage.getItem('storedUsername'),
     currentUser: JSON.parse(sessionStorage.getItem('storedCurrentUser')),
     isAuthorized: true,
+    isServiceLoginEnabled: false,
   },
   getters: {
     bootProgress: (state) => state.bootProgress,
@@ -73,6 +74,7 @@ const GlobalStore = {
     isAdminUser: (state) =>
       state.currentUser?.RoleId === 'Administrator' || !state.currentUser,
     isAuthorized: (state) => state.isAuthorized,
+    isServiceLoginEnabled: (state) => state.isServiceLoginEnabled,
   },
   mutations: {
     setBootProgress: (state, bootProgress) =>
@@ -102,6 +104,8 @@ const GlobalStore = {
         state.isAuthorized = true;
       }, 100);
     },
+    setServiceLoginEnabled: (state, isServiceLoginEnabled) =>
+      (state.isServiceLoginEnabled = isServiceLoginEnabled),
   },
   actions: {
     async getBmcTime({ commit }) {
@@ -120,6 +124,7 @@ const GlobalStore = {
         .then((response) => {
           commit('setAcfInstalled', response.data.Oem.IBM.ACF.ACFInstalled);
           commit('setExpirationDate', response.data.Oem.IBM.ACF.ExpirationDate);
+          commit('setServiceLoginEnabled', response.data.Enabled);
         })
         .catch((error) => console.log(error));
     },
