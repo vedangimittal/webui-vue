@@ -135,7 +135,7 @@ const AppNavigationMixin = {
             },
             {
               id: 'hardware-deconfiguration',
-              label: this.$t('appNavigation.hardwareDeconfiguration'),
+              label: this.$t('appNavigation.deconfigurationHardware'),
               route: '/settings/hardware-deconfiguration',
             },
             {
