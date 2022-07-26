@@ -6,7 +6,7 @@
           <div class="login-brand mb-5">
             <img
               width="90px"
-              src="@/assets/images/login-ibm-logo.svg"
+              src="@/assets/images/login-company-logo.svg"
               :alt="altLogo"
             />
           </div>

@@ -38,7 +38,7 @@
             <img
               width="50px"
               class="header-logo"
-              src="@/assets/images/logo-ibm-header.svg"
+              src="@/assets/images/logo-header.svg"
               :alt="altLogo"
             />
             <span class="pl-1 nav-tags header-text">{{ headerText }}</span>
