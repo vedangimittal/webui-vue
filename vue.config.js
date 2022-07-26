@@ -53,6 +53,7 @@ module.exports = {
     },
     port: 8000,
   },
+  filenameHashing: false,
   productionSourceMap: false,
   configureWebpack: (config) => {
     const crypto = require('crypto');

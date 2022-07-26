@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
     base: "/webui-vue/",
+    filenameHashing: false,
     title: "OpenBMC Web UI Style Guide",
     description:
       "Guidance on code style and development for the OpenBMC browser-based UI",
