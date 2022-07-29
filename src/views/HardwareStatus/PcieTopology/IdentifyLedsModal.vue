@@ -111,6 +111,10 @@ export default {
   },
   watch: {
     selectedObj() {
+      this.pcieBridgeLed = [];
+      this.ioSlotsLed = [];
+      this.localPortLed = [];
+      this.remotePortLed = [];
       this.getAllLeds();
     },
   },

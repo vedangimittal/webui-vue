@@ -161,7 +161,8 @@
                         <div class="fontStyle">
                           {{ $t('pagePcieTopology.localPort') }}:
                           {{
-                            item.localPortLocation.length > 0
+                            item.localPortLocation.length > 0 &&
+                            item.localPortLocation[i]
                               ? item.localPortLocation[i].locationNumber
                               : '--'
                           }}
@@ -170,7 +171,8 @@
                           {{ $t('pagePcieTopology.remotePort') }}:
                           {{
                             dataFormatter(
-                              item.remotePortLocation.length > 0
+                              item.remotePortLocation.length > 0 &&
+                                item.remotePortLocation[i]
                                 ? item.remotePortLocation[i].locationNumber
                                 : '--'
                             )
