@@ -1361,7 +1361,7 @@
           "Normal": "Normal - Automatic"
         },
         "pvm_system_power_off_policy": {
-          "automaticHelperText": "System automatic power off",
+          "automaticHelperText": "With this setting, when the system is not partitioned, the behavior is the same as power off, and when the system is partitioned, the behavior of the system is the same as stay on",
           "powerOffHelperText": "When the last partition powers off, the server will power off",
           "stayOnHelperText": "When the last partition powers off, the server will stay on"
         }
