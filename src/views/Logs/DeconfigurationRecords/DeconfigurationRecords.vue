@@ -12,7 +12,7 @@
         <table-filter :filters="tableFilters" @filter-change="onFilterChange" />
         <b-button
           variant="link"
-          :disabled="allEntries.length === 0"
+          :disabled="allEntries.length === 0 || !isServerOff()"
           @click="clearAllEntries"
         >
           <icon-delete /> {{ $t('global.action.clearAll') }}
@@ -317,6 +317,9 @@ export default {
     filteredLogs() {
       return this.getFilteredTableData(this.recordItems, this.activeFilters);
     },
+    serverStatus() {
+      return this.$store.getters['global/serverStatus'];
+    },
   },
   created() {
     this.startLoader();
@@ -325,6 +328,9 @@ export default {
       .finally(() => this.endLoader());
   },
   methods: {
+    isServerOff() {
+      return this.serverStatus === 'off';
+    },
     clearAllEntries() {
       this.$bvModal
         .msgBoxConfirm(
