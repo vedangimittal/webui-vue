@@ -32,6 +32,7 @@
                 v-model="useDomainNameState"
                 data-test-id="networkSettings-switch-useDomainName"
                 switch
+                :disabled="!dhcpEnabledState"
                 @change="changeDomainNameState"
               >
                 <span v-if="useDomainNameState">
@@ -51,6 +52,7 @@
                 v-model="useDnsState"
                 data-test-id="networkSettings-switch-useDns"
                 switch
+                :disabled="!dhcpEnabledState"
                 @change="changeDnsState"
               >
                 <span v-if="useDnsState">
@@ -70,6 +72,7 @@
                 v-model="useNtpState"
                 data-test-id="networkSettings-switch-useNtp"
                 switch
+                :disabled="!dhcpEnabledState"
                 @change="changeNtpState"
               >
                 <span v-if="useNtpState">
