@@ -193,9 +193,9 @@ const AppNavigationMixin = {
           icon: 'iconResourceManagement',
           children: [
             {
-              id: 'lateral-cast-out-control',
-              label: this.$t('appNavigation.lateralCastOutControl'),
-              route: '/resource-management/lateral-cast-out-control',
+              id: 'added-optimization',
+              label: this.$t('appNavigation.addedOptimization'),
+              route: '/resource-management/added-optimization',
             },
             {
               id: 'memory',

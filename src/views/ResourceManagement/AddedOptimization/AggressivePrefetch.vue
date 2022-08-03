@@ -1,0 +1,61 @@
+<template>
+  <b-row class="section-divider">
+    <b-col class="d-flex align-items-center justify-content-between">
+      <dl class="mt-3 mr-3 w-75">
+        <dt id="aggressive-prefetch-label">
+          {{ $t('pageAddedOptimization.aggressivePrefetch') }}
+        </dt>
+        <dd id="aggressive-prefetch-description">
+          {{ $t('pageAddedOptimization.aggressivePrefetchDescription') }}
+        </dd>
+      </dl>
+      <b-form-checkbox
+        id="aggressivePrefetchSwitch"
+        v-model="aggressivePrefetchState"
+        aria-labelledby="aggressive-prefetch-label"
+        aria-describedby="aggressive-prefetch-description"
+        switch
+        @change="changeAggressivePrefetchState"
+      >
+        <span v-if="aggressivePrefetchState">
+          {{ $t('global.status.enabled') }}
+        </span>
+        <span v-else>{{ $t('global.status.disabled') }}</span>
+      </b-form-checkbox>
+    </b-col>
+  </b-row>
+</template>
+
+<script>
+import BVToastMixin from '@/components/Mixins/BVToastMixin';
+import LoadingBarMixin from '@/components/Mixins/LoadingBarMixin';
+
+export default {
+  name: 'AggressivePrefetch',
+  mixins: [LoadingBarMixin, BVToastMixin],
+  props: {
+    safeMode: {
+      type: Boolean,
+      default: null,
+    },
+  },
+  computed: {
+    aggressivePrefetchState: {
+      get() {
+        return this.$store.getters['addedOptimization/aggressivePrefetch'];
+      },
+      set(newValue) {
+        return newValue;
+      },
+    },
+  },
+  methods: {
+    changeAggressivePrefetchState(state) {
+      this.$store
+        .dispatch('addedOptimization/saveAggressivePrefetch', state)
+        .then((message) => this.successToast(message))
+        .catch(({ message }) => this.errorToast(message));
+    },
+  },
+};
+</script>

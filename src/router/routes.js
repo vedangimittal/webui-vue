@@ -34,7 +34,7 @@ import Certificates from '@/views/SecurityAndAccess/Certificates';
 import VirtualMedia from '@/views/Operations/VirtualMedia';
 import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
-import LateralCastOutControl from '@/views/ResourceManagement/LateralCastOutControl';
+import addedOptimization from '@/views/ResourceManagement/addedOptimization';
 import SnmpAlerts from '@/views/Settings/SnmpAlerts';
 import i18n from '@/i18n';
 
@@ -279,11 +279,11 @@ const routes = [
         },
       },
       {
-        path: '/resource-management/lateral-cast-out-control',
-        name: 'lateral-cast-out-control',
-        component: LateralCastOutControl,
+        path: '/resource-management/added-optimization',
+        name: 'added-optimization',
+        component: addedOptimization,
         meta: {
-          title: i18n.t('appPageTitle.lateralCastOutControl'),
+          title: i18n.t('appPageTitle.addedOptimization'),
         },
       },
       {

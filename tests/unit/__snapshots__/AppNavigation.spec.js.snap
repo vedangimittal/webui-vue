@@ -692,11 +692,11 @@ exports[`AppNavigation.vue should render correctly 1`] = `
               >
                 <a
                   class="nav-link"
-                  data-test-id="nav-item-lateral-cast-out-control"
-                  href="#/resource-management/lateral-cast-out-control"
+                  data-test-id="nav-item-added-optimization"
+                  href="#/resource-management/added-optimization"
                 >
                   
-                  appNavigation.lateralCastOutControl
+                  appNavigation.addedOptimization
                 
                 </a>
                 <a
@@ -1425,11 +1425,11 @@ exports[`AppNavigation.vue should render with nav-container open 1`] = `
               >
                 <a
                   class="nav-link"
-                  data-test-id="nav-item-lateral-cast-out-control"
-                  href="#/resource-management/lateral-cast-out-control"
+                  data-test-id="nav-item-added-optimization"
+                  href="#/resource-management/added-optimization"
                 >
                   
-                  appNavigation.lateralCastOutControl
+                  appNavigation.addedOptimization
                 
                 </a>
                 <a

@@ -132,7 +132,7 @@
     "inventory": "@:appPageTitle.inventory",
     "keyClear": "@:appPageTitle.keyClear",
     "kvm": "@:appPageTitle.kvm",
-    "lateralCastOutControl": "@:appPageTitle.lateralCastOutControl",
+    "addedOptimization": "@:appPageTitle.addedOptimization",
     "ldap": "@:appPageTitle.ldap",
     "logs": "Logs",
     "memory": "@:appPageTitle.memory",
@@ -174,7 +174,7 @@
     "inventory": "Inventory and LEDs",
     "keyClear": "Key clear",
     "kvm": "KVM",
-    "lateralCastOutControl": "Lateral cast out control",
+    "addedOptimization": "Added optimization",
     "ldap": "LDAP",
     "login": "Login",
     "memory": "Memory",
@@ -802,10 +802,10 @@
     "openNewTab": "Open in new tab",
     "status": "Status"
   },
-  "pageLateralCastOutControl": {
-    "lateralCastOut": "Lateral cast out",
-    "lateralCastOutControl": "Lateral cast out control",
-    "lateralCastOutControlDescription": "Only change this value if instructed by your service provider as it might degrade system performance.",
+  "pageAddedOptimization": {
+    "addedOptimization": "Lateral cast out control",
+    "aggressivePrefetch": "Aggressive prefetch",
+    "aggressivePrefetchDescription": "Only change this value if instructed by service provider as it might degrade system performance. Specifies if processor favor aggressive prefetch is disabled or enabled",
     "alert": {
       "message": "System has to be powered off. Changes made will take effect on next reboot",
       "title": "Applying changes"
@@ -813,8 +813,16 @@
     "button": {
       "saveSettings": "Save settings"
     },
+    "frequencyCap": "Frequency cap",
+    "frequencyCapDescription": "When enabled, prevents all processors in the system from exceeding the specified maximum operating frequency, in MHz",
+    "lateralCastOut": "Lateral cast out",
+    "lateralCastOutDescription": "Only change this value if instructed by your service provider as it might degrade system performance.",
     "toast": {
+      "errorSavingAggressivePrefetch": "Error saving aggressive prefetch",
+      "errorSavingFrequencyCap": "Error saving frequency cap",
       "errorSavingLateralCastOut": "Error saving lateral cast out mode",
+      "successSavingAggressivePrefetch": "Aggressive prefetch saved successfully",
+      "successSavingFrequencyCap": "Frequency cap saved successfully",
       "successSavingLateralCastOut": "Lateral cast out mode saved successfully"
     }
   },

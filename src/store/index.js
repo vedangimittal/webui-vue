@@ -36,7 +36,7 @@ import WebSocketPlugin from './plugins/WebSocketPlugin';
 import DateTimeStore from './modules/Settings/DateTimeStore';
 import VirtualMediaStore from './modules/Operations/VirtualMediaStore';
 import ResourceMemoryStore from './modules/ResourceManagement/ResourceMemoryStore';
-import LateralCastOutControlStore from './modules/ResourceManagement/LateralCastOutControlStore';
+import AddedOptimizationStore from './modules/ResourceManagement/AddedOptimizationStore';
 import DeconfigurationRecordsStore from './modules/Logs/DeconfigurationRecordsStore';
 import ConcurrentMaintenanceStore from './modules/HardwareStatus/ConcurrentMaintenanceStore';
 import PcieSlotsStore from './modules/HardwareStatus/PcieSlotsStore';
@@ -84,7 +84,7 @@ export default new Vuex.Store({
     resourceMemory: ResourceMemoryStore,
     hardwareDeconfiguration: HardwareDeconfigurationStore,
     deconfigurationRecords: DeconfigurationRecordsStore,
-    lateralCastOutControl: LateralCastOutControlStore,
+    addedOptimization: AddedOptimizationStore,
   },
   plugins: [WebSocketPlugin],
 });

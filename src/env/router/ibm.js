@@ -33,7 +33,7 @@ import ServerPowerOperations from '@/views/Operations/ServerPowerOperations';
 import Certificates from '@/views/SecurityAndAccess/Certificates';
 import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
-import LateralCastOutControl from '@/views/ResourceManagement/LateralCastOutControl';
+import AddedOptimization from '@/views/ResourceManagement/AddedOptimization';
 import SnmpAlerts from '@/views/Settings/SnmpAlerts';
 import CapacityOnDemand from '@/views/ResourceManagement/CapacityOnDemand';
 import FieldCoreOverride from '@/views/ResourceManagement/FieldCoreOverride';
@@ -277,11 +277,11 @@ const routes = [
         },
       },
       {
-        path: '/resource-management/lateral-cast-out-control',
-        name: 'lateral-cast-out-control',
-        component: LateralCastOutControl,
+        path: '/resource-management/added-optimization',
+        name: 'added-optimization',
+        component: AddedOptimization,
         meta: {
-          title: i18n.t('appPageTitle.lateralCastOutControl'),
+          title: i18n.t('appPageTitle.addedOptimization'),
         },
       },
       {
