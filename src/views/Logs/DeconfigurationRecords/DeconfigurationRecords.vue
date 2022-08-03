@@ -109,8 +109,8 @@
                 >
                   <b-button
                     class="btn btn-secondary"
-                    :href="item.additionalDataUri"
                     target="_blank"
+                    @click="downloadLog(item.oemPelAttachment, item.date)"
                   >
                     <icon-download />
                     {{ $t('pageDeconfigurationRecords.additionalDataUri') }}
@@ -366,6 +366,17 @@ export default {
             }
           });
         });
+    },
+    downloadLog(uri, date) {
+      this.startLoader();
+      this.$store
+        .dispatch('deconfigurationRecords/downloadLog', {
+          uri: uri,
+          date: date,
+        })
+        .then((message) => this.successToast(...message))
+        .catch(({ message }) => this.successToast(message))
+        .finally(() => this.endLoader());
     },
     // Create export file name based on date
     exportFileNameByDate(value) {

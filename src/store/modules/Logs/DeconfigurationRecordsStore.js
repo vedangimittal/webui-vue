@@ -74,6 +74,7 @@ const DeconfigurationRecordsStore = {
                 filterByStatus: AdditionalData?.Resolved
                   ? 'Resolved'
                   : 'Unresolved',
+                oemPelAttachment: `${AdditionalData?.['@odata.id']}/OemPelAttachment`,
                 id: Id,
                 name: Name,
                 srcDetails: AdditionalData?.EventId,
@@ -109,6 +110,50 @@ const DeconfigurationRecordsStore = {
           console.log(error);
           throw new Error(
             i18n.tc('pageDeconfigurationRecords.toast.errorDelete', data.length)
+          );
+        });
+    },
+    async downloadLog(_, { uri }) {
+      let date = new Date();
+      date =
+        date.toISOString().slice(0, 10) +
+        '_' +
+        date.toString().split(':').join('-').split(' ')[4];
+
+      const fileName = `attachment_${date}`;
+
+      return await api
+        .get(uri)
+        .then(({ data }) => {
+          const pelJsonInfo = data?.Oem?.IBM?.PelJson;
+
+          const element = document.createElement('a');
+          element.setAttribute(
+            'href',
+            `data:text/plain;charset=utf-8,${encodeURIComponent(pelJsonInfo)}`
+          );
+          element.setAttribute('download', fileName);
+          element.style.display = 'none';
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        })
+        .then(() => {
+          const message = [
+            i18n.t('pageDeconfigurationRecords.toast.successStartDownload'),
+            {
+              title: i18n.t(
+                'pageDeconfigurationRecords.toast.successStartDownloadTitle'
+              ),
+            },
+          ];
+
+          return message;
+        })
+        .catch((error) => {
+          console.log(error);
+          throw new Error(
+            i18n.t('pageDeconfigurationRecords.toast.errorStartDownload')
           );
         });
     },
