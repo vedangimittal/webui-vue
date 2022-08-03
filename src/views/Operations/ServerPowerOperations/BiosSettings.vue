@@ -13,6 +13,11 @@
           xl="6"
         >
           <b-form-group
+            v-if="
+              hmcManagedChecks(
+                $t(`${'pageServerPowerOperations.biosSettings'}.${key}`)
+              )
+            "
             :key="key"
             :label="$t(`${'pageServerPowerOperations.biosSettings'}.${key}`)"
             class="mb-4"
@@ -383,6 +388,9 @@ export default {
     };
   },
   computed: {
+    hmcManaged() {
+      return this.$store.getters['resourceMemory/hmcManaged'];
+    },
     attributeKeys() {
       return this.$store.getters['serverBootSettings/biosAttributes'];
     },
@@ -394,6 +402,7 @@ export default {
     },
   },
   created() {
+    this.$store.dispatch('resourceMemory/getHmcManaged');
     this.currentOperatingMode = this.attributeKeys['pvm_system_operating_mode'];
     if (this.currentOperatingMode === this.manualMode) {
       this.onChangeSystemOpsMode(this.manualMode);
@@ -403,6 +412,14 @@ export default {
     this.$emit('updated-attributes', this.attributeKeys);
   },
   methods: {
+    hmcManagedChecks(value) {
+      if (!this.isHmcManaged()) return true;
+      if (value === 'Server firmware start policy') return true;
+      return false;
+    },
+    isHmcManaged() {
+      return this.hmcManaged === 'Enabled' ? true : false;
+    },
     onChangeSystemOpsMode(value) {
       this.selectedOperatingMode = value;
       if (this.selectedOperatingMode === this.normalMode) {
