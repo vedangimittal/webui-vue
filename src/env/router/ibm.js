@@ -13,6 +13,7 @@ import UserManagement from '@/views/SecurityAndAccess/UserManagement';
 import Login from '@/views/Login';
 import LoginLayout from '@/layouts/LoginLayout';
 import Network from '@/views/Settings/Network';
+import Notices from '@/views/Notices';
 import HardwareDeconfiguration from '@/views/Settings/HardwareDeconfiguration';
 import Overview from '@/views/Overview';
 import PageNotFound from '@/views/PageNotFound';
@@ -114,6 +115,14 @@ const routes = [
         component: Overview,
         meta: {
           title: i18n.t('appPageTitle.overview'),
+        },
+      },
+      {
+        path: 'notices',
+        name: 'notices',
+        component: Notices,
+        meta: {
+          title: i18n.t('appPageTitle.notices'),
         },
       },
       {

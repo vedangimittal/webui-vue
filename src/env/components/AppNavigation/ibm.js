@@ -6,6 +6,7 @@ import IconSettings from '@carbon/icons-vue/es/settings/16';
 import IconSecurity from '@carbon/icons-vue/es/security/16';
 import IconChevronUp from '@carbon/icons-vue/es/chevron--up/16';
 import IconDataBase from '@carbon/icons-vue/es/data--base--alt/16';
+import IconDocument from '@carbon/icons-vue/es/document/16';
 
 const AppNavigationMixin = {
   components: {
@@ -17,6 +18,7 @@ const AppNavigationMixin = {
     iconSecurityAndAccess: IconSecurity,
     iconExpand: IconChevronUp,
     iconResourceManagement: IconDataBase,
+    iconDocument: IconDocument,
   },
   data() {
     return {
@@ -248,6 +250,12 @@ const AppNavigationMixin = {
               restrictTo: ['Administrator', 'OemIBMServiceAgent'],
             },
           ],
+        },
+        {
+          id: 'notices',
+          label: this.$t('appNavigation.notices'),
+          route: '/notices',
+          icon: 'iconDocument',
         },
       ],
     };
