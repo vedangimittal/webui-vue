@@ -9,10 +9,10 @@
       <b-col md="8" xl="6">
         <alert v-if="!isServerOff" variant="info" class="mb-4">
           <div class="font-weight-bold">
-            {{ $t('pageAddedOptimization.alert.title') }}
+            {{ $t('pageSystemParameters.alert.title') }}
           </div>
           <div>
-            {{ $t('pageAddedOptimization.alert.message') }}
+            {{ $t('pageSystemParameters.alert.message') }}
           </div>
         </alert>
       </b-col>
@@ -33,7 +33,7 @@ import FrequencyCap from './FrequencyCap';
 import AggressivePrefetch from './AggressivePrefetch';
 
 export default {
-  name: 'AddedOptimization',
+  name: 'SystemParameters',
   components: {
     PageTitle,
     Alert,
@@ -53,8 +53,8 @@ export default {
   created() {
     this.startLoader();
     Promise.all([
-      this.$store.dispatch('addedOptimization/getLateralCastOutMode'),
-      this.$store.dispatch('addedOptimization/getAggressivePrefetch'),
+      this.$store.dispatch('systemParameters/getLateralCastOutMode'),
+      this.$store.dispatch('systemParameters/getAggressivePrefetch'),
     ]).finally(() => this.endLoader());
   },
 };

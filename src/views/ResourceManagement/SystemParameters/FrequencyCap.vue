@@ -4,10 +4,10 @@
       <b-col class="d-flex align-items-center justify-content-between">
         <dl class="mt-3 mb-3 mr-3 w-75">
           <dt id="frequency-cap-label">
-            {{ $t('pageAddedOptimization.frequencyCap') }}
+            {{ $t('pageSystemParameters.frequencyCap') }}
           </dt>
           <dd id="frequency-cap-description">
-            {{ $t('pageAddedOptimization.frequencyCapDescription') }}
+            {{ $t('pageSystemParameters.frequencyCapDescription') }}
           </dd>
         </dl>
         <b-form-checkbox
@@ -111,13 +111,13 @@ export default {
   },
   computed: {
     frequencyMax() {
-      return this.$store.getters['addedOptimization/frequencyMax'];
+      return this.$store.getters['systemParameters/frequencyMax'];
     },
     frequencyMin() {
-      return this.$store.getters['addedOptimization/frequencyMin'];
+      return this.$store.getters['systemParameters/frequencyMin'];
     },
     frequencyRequestCurrent() {
-      return this.$store.getters['addedOptimization/frequencyRequestCurrent'];
+      return this.$store.getters['systemParameters/frequencyRequestCurrent'];
     },
     frequencyControl: {
       get() {
@@ -131,7 +131,7 @@ export default {
     frequencyRequestCurrentToggle: {
       get() {
         return this.$store.getters[
-          'addedOptimization/frequencyRequestCurrentToggle'
+          'systemParameters/frequencyRequestCurrentToggle'
         ];
       },
       set(newValue) {
@@ -150,9 +150,9 @@ export default {
   },
   created() {
     this.startLoader();
-    this.$store.dispatch('addedOptimization/getFrequencyCap').then(() => {
+    this.$store.dispatch('systemParameters/getFrequencyCap').then(() => {
       this.frequencyValue = this.$store.getters[
-        'addedOptimization/frequencyRequest'
+        'systemParameters/frequencyRequest'
       ];
       this.endLoader();
     });
@@ -162,7 +162,7 @@ export default {
       if (state) {
         this.frequencyValue = this.frequencyMax;
         this.$store
-          .dispatch('addedOptimization/saveFrequencyCap', {
+          .dispatch('systemParameters/saveFrequencyCap', {
             frequency: this.frequencyMax,
             state: state,
           })
@@ -171,7 +171,7 @@ export default {
       } else {
         this.frequencyValue = 0;
         this.$store
-          .dispatch('addedOptimization/saveFrequencyCap', {
+          .dispatch('systemParameters/saveFrequencyCap', {
             frequency: 0,
             state: state,
           })
@@ -183,7 +183,7 @@ export default {
       if (this.$v.$invalid) return;
       this.$store
         .dispatch(
-          'addedOptimization/newFrequencyCapRequest',
+          'systemParameters/newFrequencyCapRequest',
           this.frequencyValue
         )
         .then((message) => this.successToast(message))

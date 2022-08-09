@@ -692,11 +692,11 @@ exports[`AppNavigation.vue should render correctly 1`] = `
               >
                 <a
                   class="nav-link"
-                  data-test-id="nav-item-added-optimization"
-                  href="#/resource-management/added-optimization"
+                  data-test-id="nav-item-system-parameters"
+                  href="#/resource-management/system-parameters"
                 >
                   
-                  appNavigation.addedOptimization
+                  appNavigation.systemParameters
                 
                 </a>
                 <a
@@ -1425,11 +1425,11 @@ exports[`AppNavigation.vue should render with nav-container open 1`] = `
               >
                 <a
                   class="nav-link"
-                  data-test-id="nav-item-added-optimization"
-                  href="#/resource-management/added-optimization"
+                  data-test-id="nav-item-system-parameters"
+                  href="#/resource-management/system-parameters"
                 >
                   
-                  appNavigation.addedOptimization
+                  appNavigation.systemParameters
                 
                 </a>
                 <a

@@ -34,7 +34,7 @@ import ServerPowerOperations from '@/views/Operations/ServerPowerOperations';
 import Certificates from '@/views/SecurityAndAccess/Certificates';
 import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
-import AddedOptimization from '@/views/ResourceManagement/AddedOptimization';
+import SystemParameters from '@/views/ResourceManagement/SystemParameters';
 import SnmpAlerts from '@/views/Settings/SnmpAlerts';
 import CapacityOnDemand from '@/views/ResourceManagement/CapacityOnDemand';
 import FieldCoreOverride from '@/views/ResourceManagement/FieldCoreOverride';
@@ -286,11 +286,11 @@ const routes = [
         },
       },
       {
-        path: '/resource-management/added-optimization',
-        name: 'added-optimization',
-        component: AddedOptimization,
+        path: '/resource-management/system-parameters',
+        name: 'system-parameters',
+        component: SystemParameters,
         meta: {
-          title: i18n.t('appPageTitle.addedOptimization'),
+          title: i18n.t('appPageTitle.systemParameters'),
         },
       },
       {

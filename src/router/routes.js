@@ -34,7 +34,7 @@ import Certificates from '@/views/SecurityAndAccess/Certificates';
 import VirtualMedia from '@/views/Operations/VirtualMedia';
 import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
-import addedOptimization from '@/views/ResourceManagement/addedOptimization';
+import SystemParameters from '@/views/ResourceManagement/systemParameters';
 import SnmpAlerts from '@/views/Settings/SnmpAlerts';
 import i18n from '@/i18n';
 
@@ -279,11 +279,11 @@ const routes = [
         },
       },
       {
-        path: '/resource-management/added-optimization',
-        name: 'added-optimization',
-        component: addedOptimization,
+        path: '/resource-management/system-parameters',
+        name: 'system-parameters',
+        component: SystemParameters,
         meta: {
-          title: i18n.t('appPageTitle.addedOptimization'),
+          title: i18n.t('appPageTitle.systemParameters'),
         },
       },
       {

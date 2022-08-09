@@ -4,10 +4,10 @@
       <b-col class="d-flex align-items-center justify-content-between">
         <dl class="mr-3 w-75">
           <dt id="ateral-cast-out-label">
-            {{ $t('pageAddedOptimization.lateralCastOut') }}
+            {{ $t('pageSystemParameters.lateralCastOut') }}
           </dt>
           <dd id="lateral-cast-out-description">
-            {{ $t('pageAddedOptimization.lateralCastOutDescription') }}
+            {{ $t('pageSystemParameters.lateralCastOutDescription') }}
           </dd>
         </dl>
         <b-form-checkbox
@@ -44,7 +44,7 @@ export default {
   computed: {
     lateralCastOutModeState: {
       get() {
-        return this.$store.getters['addedOptimization/lateralCastOutMode'];
+        return this.$store.getters['systemParameters/lateralCastOutMode'];
       },
       set(newValue) {
         return newValue;
@@ -54,7 +54,7 @@ export default {
   methods: {
     changeLateralCastOutState(state) {
       this.$store
-        .dispatch('addedOptimization/saveLateralCastOutMode', state)
+        .dispatch('systemParameters/saveLateralCastOutMode', state)
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message));
     },

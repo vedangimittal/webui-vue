@@ -193,9 +193,9 @@ const AppNavigationMixin = {
           icon: 'iconResourceManagement',
           children: [
             {
-              id: 'added-optimization',
-              label: this.$t('appNavigation.addedOptimization'),
-              route: '/resource-management/added-optimization',
+              id: 'system-parameters',
+              label: this.$t('appNavigation.systemParameters'),
+              route: '/resource-management/system-parameters',
             },
             {
               id: 'memory',

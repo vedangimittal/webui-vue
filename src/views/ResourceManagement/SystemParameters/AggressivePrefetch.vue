@@ -3,10 +3,10 @@
     <b-col class="d-flex align-items-center justify-content-between">
       <dl class="mt-3 mr-3 w-75">
         <dt id="aggressive-prefetch-label">
-          {{ $t('pageAddedOptimization.aggressivePrefetch') }}
+          {{ $t('pageSystemParameters.aggressivePrefetch') }}
         </dt>
         <dd id="aggressive-prefetch-description">
-          {{ $t('pageAddedOptimization.aggressivePrefetchDescription') }}
+          {{ $t('pageSystemParameters.aggressivePrefetchDescription') }}
         </dd>
       </dl>
       <b-form-checkbox
@@ -42,7 +42,7 @@ export default {
   computed: {
     aggressivePrefetchState: {
       get() {
-        return this.$store.getters['addedOptimization/aggressivePrefetch'];
+        return this.$store.getters['systemParameters/aggressivePrefetch'];
       },
       set(newValue) {
         return newValue;
@@ -52,7 +52,7 @@ export default {
   methods: {
     changeAggressivePrefetchState(state) {
       this.$store
-        .dispatch('addedOptimization/saveAggressivePrefetch', state)
+        .dispatch('systemParameters/saveAggressivePrefetch', state)
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message));
     },

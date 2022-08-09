@@ -132,7 +132,7 @@
     "inventory": "@:appPageTitle.inventory",
     "keyClear": "@:appPageTitle.keyClear",
     "kvm": "@:appPageTitle.kvm",
-    "addedOptimization": "@:appPageTitle.addedOptimization",
+    "systemParameters": "@:appPageTitle.systemParameters",
     "ldap": "@:appPageTitle.ldap",
     "logs": "Logs",
     "memory": "@:appPageTitle.memory",
@@ -175,7 +175,7 @@
     "inventory": "Inventory and LEDs",
     "keyClear": "Key clear",
     "kvm": "KVM",
-    "addedOptimization": "Added optimization",
+    "systemParameters": "System parameters",
     "ldap": "LDAP",
     "login": "Login",
     "memory": "Memory",
@@ -804,8 +804,7 @@
     "openNewTab": "Open in new tab",
     "status": "Status"
   },
-  "pageAddedOptimization": {
-    "addedOptimization": "Lateral cast out control",
+  "pageSystemParameters": {
     "aggressivePrefetch": "Aggressive prefetch",
     "aggressivePrefetchDescription": "Only change this value if instructed by service provider as it might degrade system performance. Specifies if processor favor aggressive prefetch is disabled or enabled",
     "alert": {

@@ -1,7 +1,7 @@
 import api from '@/store/api';
 import i18n from '@/i18n';
 
-const addedOptimizationStore = {
+const systemParametersStore = {
   namespaced: true,
   state: {
     aggressivePrefetch: false,
@@ -60,14 +60,14 @@ const addedOptimizationStore = {
         )
         .then(() => {
           return i18n.t(
-            'pageAddedOptimization.toast.successSavingAggressivePrefetch'
+            'pageSystemParameters.toast.successSavingAggressivePrefetch'
           );
         })
         .catch((error) => {
           console.log(error);
           commit('setAggressivePrefetch', !updatedAggressivePrefetch);
           throw new Error(
-            i18n.t('pageAddedOptimization.toast.errorSavingAggressivePrefetch')
+            i18n.t('pageSystemParameters.toast.errorSavingAggressivePrefetch')
           );
         });
     },
@@ -99,14 +99,14 @@ const addedOptimizationStore = {
         )
         .then(() => {
           return i18n.t(
-            'pageAddedOptimization.toast.successSavingLateralCastOut'
+            'pageSystemParameters.toast.successSavingLateralCastOut'
           );
         })
         .catch((error) => {
           console.log(error);
           commit('setLateralCastOutMode', !lateralCastOutModeValue);
           throw new Error(
-            i18n.t('pageAddedOptimization.toast.errorSavingLateralCastOut')
+            i18n.t('pageSystemParameters.toast.errorSavingLateralCastOut')
           );
         });
     },
@@ -148,9 +148,7 @@ const addedOptimizationStore = {
         .patch('/redfish/v1/Systems/system/Bios/Settings', newFrequencyRequest)
         .then(() => {
           dispatch('getFrequencyCap');
-          return i18n.t(
-            'pageAddedOptimization.toast.successSavingFrequencyCap'
-          );
+          return i18n.t('pageSystemParameters.toast.successSavingFrequencyCap');
         })
         .catch((error) => {
           if (frequency == 0) {
@@ -160,11 +158,11 @@ const addedOptimizationStore = {
           }
           console.log(error);
           throw new Error(
-            i18n.t('pageAddedOptimization.toast.errorSavingFrequencyCap')
+            i18n.t('pageSystemParameters.toast.errorSavingFrequencyCap')
           );
         });
     },
   },
 };
 
-export default addedOptimizationStore;
+export default systemParametersStore;
