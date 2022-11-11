@@ -1591,6 +1591,7 @@
       "administrator": "Administrator",
       "privilege": "Privilege",
       "readOnly": "Read only",
+      "serviceAgent": "Service agent",
       "status": "Status",
       "username": "Username"
     },
