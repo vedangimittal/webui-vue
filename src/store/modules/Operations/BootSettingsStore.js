@@ -290,7 +290,9 @@ const BootSettingsStore = {
           },
         })
         .then((response) => {
-          commit('setBiosAttributes', biosSettings);
+          setTimeout(() => {
+            commit('setBiosAttributes', biosSettings);
+          }, 2000);
           return response;
         })
         .catch((error) => {
