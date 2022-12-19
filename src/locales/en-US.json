@@ -1081,6 +1081,8 @@
       }
   },
   "pagePolicies": {
+    "acfUploadEnablement": "Unauthenticated ACF upload enablement",
+    "acfUploadEnablementDescription": "Allow unauthenticated users to upload ACFs.",
     "hostTpm": "Host TPM",
     "hostTpmDescription": "Enable to ensure the system only boots when the TPM is functional.",
     "hostUsb": "Host USB enablement",
