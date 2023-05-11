@@ -4,10 +4,20 @@ import i18n from '@/i18n';
 const systemParametersStore = {
   namespaced: true,
   state: {
+    rpdPolicyOptions: [],
+    rpdFeatureOptions: [],
     aggressivePrefetch: false,
     frequencyCap: null,
     frequencyRequestCurrentToggle: false,
     lateralCastOutMode: null,
+    immediateTestRequested: false,
+    gardOnError: false,
+    rpdPolicy: null,
+    pvmRpdPolicy: null,
+    rpdPolicyCurrent: null,
+    rpdFeature: null,
+    rpdScheduledRun: null,
+    rpdScheduledRunDuration: null,
   },
   getters: {
     aggressivePrefetch: (state) => state.aggressivePrefetch,
@@ -19,6 +29,16 @@ const systemParametersStore = {
     frequencyRequestCurrentToggle: (state) =>
       state.frequencyRequestCurrentToggle,
     lateralCastOutMode: (state) => state.lateralCastOutMode,
+    immediateTestRequested: (state) => state.immediateTestRequested,
+    gardOnError: (state) => state.gardOnError,
+    rpdPolicy: (state) => state.rpdPolicy,
+    pvmRpdPolicy: (state) => state.pvmRpdPolicy,
+    rpdPolicyCurrent: (state) => state.rpdPolicyCurrent,
+    rpdFeature: (state) => state.rpdFeature,
+    rpdPolicyOptions: (state) => state.rpdPolicyOptions,
+    rpdFeatureOptions: (state) => state.rpdFeatureOptions,
+    rpdScheduledRun: (state) => state.rpdScheduledRun,
+    rpdScheduledRunDuration: (state) => state.rpdScheduledRunDuration,
   },
   mutations: {
     setFrequencyRequestCurrentToggle: (state, frequencyRequestCurrentToggle) =>
@@ -29,6 +49,23 @@ const systemParametersStore = {
       (state.frequencyCap = frequencyCap),
     setLateralCastOutMode: (state, lateralCastOutMode) =>
       (state.lateralCastOutMode = lateralCastOutMode),
+    setImmediateTestRequested: (state, immediateTestRequested) =>
+      (state.immediateTestRequested = immediateTestRequested),
+    setGardOnError: (state, gardOnError) => (state.gardOnError = gardOnError),
+    setRpdPolicy: (state, rpdPolicy) => (state.rpdPolicy = rpdPolicy),
+    setPvmRpdPolicy: (state, pvmRpdPolicy) =>
+      (state.pvmRpdPolicy = pvmRpdPolicy),
+    setRpdPolicyCurrent: (state, rpdPolicyCurrent) =>
+      (state.rpdPolicyCurrent = rpdPolicyCurrent),
+    setRpdFeature: (state, rpdFeature) => (state.rpdFeature = rpdFeature),
+    setRpdPolicyOptions: (state, rpdPolicyOptions) =>
+      (state.rpdPolicyOptions = rpdPolicyOptions),
+    setRpdFeatureOptions: (state, rpdFeatureOptions) =>
+      (state.rpdFeatureOptions = rpdFeatureOptions),
+    setRpdScheduledRun: (state, rpdScheduledRun) =>
+      (state.rpdScheduledRun = rpdScheduledRun),
+    setRpdScheduledRunDuration: (state, rpdScheduledRunDuration) =>
+      (state.rpdScheduledRunDuration = rpdScheduledRunDuration),
   },
   actions: {
     async getAggressivePrefetch({ commit }) {
@@ -44,6 +81,148 @@ const systemParametersStore = {
           let aggressivePrefetchValue = aggressivePrefetch[0].CurrentValue;
           let modeValue = aggressivePrefetchValue == 'Enabled' ? true : false;
           commit('setAggressivePrefetch', modeValue);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getRpdPolicy({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const rpdPolicy = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_policy'
+          );
+          let rpdPolicyValue = rpdPolicy[0].CurrentValue;
+          commit('setRpdPolicy', rpdPolicyValue);
+          commit('setPvmRpdPolicy', rpdPolicyValue);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getRpdPolicyCurrent({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const rpdPolicyCurr = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_feature_current'
+          );
+          let rpdPolicyCurrValue = rpdPolicyCurr[0].CurrentValue;
+          commit('setRpdPolicyCurrent', rpdPolicyCurrValue);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getRpdFeature({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const rpdFeature = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_feature'
+          );
+          let rpdFeatureValue = rpdFeature[0].CurrentValue;
+          commit('setRpdFeature', rpdFeatureValue);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getImmediateTestRequested({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const immediateTestRequested = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_immediate_test'
+          );
+          let immediateTestRequestedValue =
+            immediateTestRequested[0].CurrentValue;
+          let modeValue =
+            immediateTestRequestedValue == 'Enabled' ? true : false;
+          commit('setImmediateTestRequested', modeValue);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getGardOnError({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const immediateTestRequested = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_gard_policy'
+          );
+          let immediateTestRequestedValue =
+            immediateTestRequested[0].CurrentValue;
+          let modeValue =
+            immediateTestRequestedValue == 'Enabled' ? true : false;
+          commit('setGardOnError', modeValue);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getRpdPolicyOptions({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const rpdPolicy = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_policy'
+          );
+          let rpdPolicyOptions = rpdPolicy[0].Value.map(
+            ({ ValueName }) => ValueName
+          );
+          commit('setRpdPolicyOptions', rpdPolicyOptions);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getRpdFeatureOptions({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const rpdPolicy = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_feature'
+          );
+          let rpdFeatureOptions = rpdPolicy[0].Value.map(
+            ({ ValueName }) => ValueName
+          );
+          commit('setRpdFeatureOptions', rpdFeatureOptions);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getRpdScheduledRun({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const rpdScheduledRun = RegistryEntries.Attributes.filter(
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_scheduled_tod'
+          );
+          let RpdScheduledRunValue = rpdScheduledRun[0].CurrentValue;
+          const hours = Math.floor(RpdScheduledRunValue / 3600);
+          const minutes = Math.floor((RpdScheduledRunValue % 3600) / 60);
+          const hourString = hours.toString().padStart(2, '0');
+          const minuteString = minutes.toString().padStart(2, '0');
+          commit('setRpdScheduledRun', `${hourString}:${minuteString}`);
+        })
+        .catch((error) => console.log(error));
+    },
+    async getRpdScheduledRunDuration({ commit }) {
+      return await api
+        .get(
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+        )
+        .then(({ data: { RegistryEntries } }) => {
+          const rpdScheduledRunDuration = RegistryEntries.Attributes.filter(
+            (Attribute) =>
+              Attribute.AttributeName == 'pvm_rpd_scheduled_duration'
+          );
+          let rpdScheduledRunValue = rpdScheduledRunDuration[0].CurrentValue;
+          commit('setRpdScheduledRunDuration', rpdScheduledRunValue);
         })
         .catch((error) => console.log(error));
     },
@@ -68,6 +247,123 @@ const systemParametersStore = {
           commit('setAggressivePrefetch', !updatedAggressivePrefetch);
           throw new Error(
             i18n.t('pageSystemParameters.toast.errorSavingAggressivePrefetch')
+          );
+        });
+    },
+    async saveRpdPolicy({ commit, dispatch }, rpdPolicyValue) {
+      const updatedRpdPolicyValue = {
+        Attributes: { pvm_rpd_policy: rpdPolicyValue },
+      };
+      return await api
+        .patch(
+          '/redfish/v1/Systems/system/Bios/Settings',
+          updatedRpdPolicyValue
+        )
+        .then(() => {
+          commit(
+            'setRpdPolicy',
+            updatedRpdPolicyValue.Attributes.pvm_rpd_policy
+          );
+          dispatch('getRpdPolicy');
+          return i18n.t('pageSystemParameters.toast.successSavingRpdPolicy');
+        })
+        .catch((error) => {
+          console.log('error', error);
+          throw new Error(
+            i18n.t('pageSystemParameters.toast.errorSavingRpdPolicy')
+          );
+        });
+    },
+    async saveRpdFeature({ commit }, rpdFeatureValue) {
+      const updatedRpdFeatureValue = {
+        Attributes: { pvm_rpd_feature: rpdFeatureValue },
+      };
+      return await api
+        .patch(
+          '/redfish/v1/Systems/system/Bios/Settings',
+          updatedRpdFeatureValue
+        )
+        .then(() => {
+          commit(
+            'setRpdFeature',
+            updatedRpdFeatureValue.Attributes.pvm_rpd_feature
+          );
+          return i18n.t('pageSystemParameters.toast.successSavingRpdFeature');
+        })
+        .catch((error) => {
+          console.log('error', error);
+          throw new Error(
+            i18n.t('pageSystemParameters.toast.errorSavingRpdFeature')
+          );
+        });
+    },
+    async saveImmediateTestRequested({ commit }) {
+      commit('setImmediateTestRequested', true);
+      const updatedImmediateTestRequestedValue = {
+        Attributes: { pvm_rpd_immediate_test: 'Enabled' },
+      };
+      return api
+        .patch(
+          '/redfish/v1/Systems/system/Bios/Settings',
+          updatedImmediateTestRequestedValue
+        )
+        .then(() => {
+          return i18n.t(
+            'pageSystemParameters.toast.successSavingImmediateTestRequested'
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+          commit('setImmediateTestRequested', false);
+          throw new Error(
+            i18n.t(
+              'pageSystemParameters.toast.errorSavingImmediateTestRequested'
+            )
+          );
+        });
+    },
+    async saveGardOnError({ commit }, updatedImmediateTestRequested) {
+      let updatedValue = updatedImmediateTestRequested ? 'Enabled' : 'Disabled';
+      commit('setGardOnError', updatedImmediateTestRequested);
+      const updatedImmediateTestRequestedValue = {
+        Attributes: { pvm_rpd_gard_policy: updatedValue },
+      };
+      return api
+        .patch(
+          '/redfish/v1/Systems/system/Bios/Settings',
+          updatedImmediateTestRequestedValue
+        )
+        .then(() => {
+          return i18n.t('pageSystemParameters.toast.successSavingGardOnError');
+        })
+        .catch((error) => {
+          console.log(error);
+          commit('setGardOnError', !updatedImmediateTestRequested);
+          throw new Error(
+            i18n.t('pageSystemParameters.toast.errorSavingGardOnError')
+          );
+        });
+    },
+    async saveRpdScheduledRun({ commit }, payload) {
+      const updatedIoEnlargedCapacity = {
+        Attributes: {
+          pvm_rpd_scheduled_tod: payload.totalSeconds,
+          pvm_rpd_scheduled_duration: payload.duration,
+        },
+      };
+      return await api
+        .patch(
+          '/redfish/v1/Systems/system/Bios/Settings',
+          updatedIoEnlargedCapacity
+        )
+        .then(() => {
+          commit('setRpdScheduledRun', payload.startTime);
+          return i18n.t('pageSystemParameters.toast.successSavingRpdRun');
+        })
+        .catch((error) => {
+          console.log('error', error);
+          throw new Error(
+            i18n.t('pageSystemParameters.toast.errorSavingRpdRun')
           );
         });
     },
