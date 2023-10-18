@@ -454,6 +454,7 @@
       "locationCode": "Location Code",
       "name": "Name",
       "pelId": "Pel ID",
+      "eventId": "Event ID",
       "settings": "Settings",
       "size": "Size in mebibytes"
     }
@@ -493,6 +494,7 @@
       "id": "Id",
       "name": "Name",
       "pelId": "Pel Id",
+      "eventId": "Event ID",
       "reference": "Reference",
       "resource": "Resource",
       "severity": "Severity",
