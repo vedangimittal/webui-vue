@@ -164,6 +164,12 @@ const AppNavigationMixin = {
               restrictTo: [],
             },
             {
+              id: 'ibmi-service-functions',
+              label: this.$t('appNavigation.ibmiServiceFunctions'),
+              route: '/logs/ibmi-service-functions',
+              restrictTo: ['NonHMCManaged'],
+            },
+            {
               id: 'deconfiguration-records',
               label: this.$t('appNavigation.deconfigurationRecords'),
               route: '/logs/deconfiguration-records',
@@ -274,6 +280,16 @@ const AppNavigationMixin = {
     systemInfo() {
       return this.$store?.getters['global/modelType'];
     },
+    isHmcManged() {
+      if (this.hmcInfo === 'Enabled') {
+        return 'HMCManaged';
+      } else {
+        return 'NonHMCManaged';
+      }
+    },
+    hmcInfo() {
+      return this.$store?.getters['global/hmcManaged'];
+    },
     navigationItems() {
       return this.navigationData.map((section) => {
         let restrictedPages = [];
@@ -282,7 +298,9 @@ const AppNavigationMixin = {
             const isPageNeeded =
               page.restrictTo.filter(
                 (requiredRole) =>
-                  requiredRole === this.roleId || requiredRole === this.model
+                  requiredRole === this.roleId ||
+                  requiredRole === this.model ||
+                  requiredRole === this.isHmcManged
               ).length > 0;
             if (!isPageNeeded) restrictedPages.push(page);
           }
@@ -296,6 +314,9 @@ const AppNavigationMixin = {
         return section;
       });
     },
+  },
+  created() {
+    this.$store.dispatch('global/getHmcManaged');
   },
 };
 
