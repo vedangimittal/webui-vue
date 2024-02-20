@@ -122,6 +122,7 @@
     "titleShowNavigation": "Show navigation"
   },
   "appNavigation": {
+    "auditLogs": "@:appPageTitle.auditLogs",
     "capacityOnDemand": "@:appPageTitle.capacityOnDemand",
     "certificates": "@:appPageTitle.certificates",
     "concurrentMaintenance": "@:appPageTitle.concurrentMaintenance",
@@ -166,6 +167,7 @@
     "virtualMedia": "@:appPageTitle.virtualMedia"
   },
   "appPageTitle": {
+    "auditLogs": "Audit logs",
     "capacityOnDemand": "Capacity on demand",
     "certificates": "Certificates",
     "changePassword": "Change password",
@@ -207,6 +209,24 @@
     "userManagement": "User management",
     "virtualMedia": "Virtual media"
   },
+  "pageAuditLogs": {
+    "table": {
+      "id": "ID",
+      "op": "Operation",
+      "acct": "Account",
+      "addr": "Address",
+      "res": "Response",
+      "messageArgs": "MessageArgs",
+      "message": "Message",
+      "searchLogs": "Search logs",
+      "eventTimeStamp": "Date"
+    },
+    "toast": {
+      "infoStartDownload": "Download might take several minutes to complete.",
+      "errorStartDownload": "Error downloading Logs",
+      "successStartDownload": "Logs downloaded successfully"
+    }
+},
   "pageCapacityOnDemand": {
     "absent": "Absent",
     "deferring": "Deferring",
