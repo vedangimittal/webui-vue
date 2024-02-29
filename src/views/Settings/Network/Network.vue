@@ -105,6 +105,7 @@ export default {
       this.subnet = item.SubnetMask;
       this.ipAddress = item.Address;
     });
+    this.$store.dispatch('network/setSelectedTabIndex', 0);
   },
   created() {
     this.startLoader();
