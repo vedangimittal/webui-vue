@@ -584,7 +584,7 @@
       "resourceSelectorTooltip": "Command length cannot exceed 80 characters",
       "retryPartitionDump": "Retry partition dump (disruptive)",
       "selectDumpType": "Select dump type",
-      "selectDumpTypeTooltip": "Resource dump and system dump are only available when system is powered on",
+      "selectDumpTypeTooltip": "Resource dump, System dump, Partition dump (when applicable) are only available when system is powered on.",
       "systemDump": "System dump (disruptive)"
     },
     "modal": {
