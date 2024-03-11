@@ -1636,13 +1636,13 @@
         "errorMessage": "Value must be in range of 0-100 and include decimals with up to one decimal point."
       },
       "ibmiLoadSource": {
-        "description": "Specifies the load source the system will use to start the logical partition."
+        "description": "The slot or device used for the IBM i load source, which contains the Licensed Internal Code and the configuration data for the logical partition."
       },
       "ibmiAltLoadSource": {
-        "description": "Specifies the device the system will use when a D-mode initial program load (IPL) is performed."
+        "description": "The slot or device used for the IBM i alternate restart device, which is the device used to install the logical partition."
       },
       "ibmiConsole": {
-        "description": "Specifies the first workstation that the system will activate in the logical partition."
+        "description": "The slot or device used for the IBM i console, which is the dedicated IBM i Operations Console for the logical partition."
       },
       "ibmiItems": {
         "setting": {
