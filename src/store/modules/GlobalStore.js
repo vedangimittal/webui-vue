@@ -148,7 +148,10 @@ const GlobalStore = {
             JSON.stringify(getters.currentUser)
           );
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          return Promise.reject();
+        });
     },
     async getHmcManaged({ commit }) {
       return await api
@@ -196,7 +199,10 @@ const GlobalStore = {
             }
           }
         )
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          return Promise.reject();
+        });
     },
     async getBootProgress({ commit }) {
       api
