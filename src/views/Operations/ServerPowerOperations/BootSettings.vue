@@ -110,21 +110,33 @@ export default {
                 )
               );
             } else if (
-              settings.biosSettings.pvm_default_os_type == 'IBM I' &&
-              this.isAtleastPhypInStandby
+              (settings.biosSettings.pvm_default_os_type == 'IBM I' &&
+                this.isAtleastPhypInStandby) ||
+              (settings.biosSettings.pvm_default_os_type == 'Default' &&
+                this.isAtleastPhypInStandby)
             ) {
               if (this.isInPhypStandby) {
-                this.successToast(
+                this.infoToast(
                   this.$t(
                     'pageServerPowerOperations.toast.successSaveIBMiStandby'
                   )
-                );
+                ),
+                  this.successToast(
+                    this.$t(
+                      'pageServerPowerOperations.toast.successSaveSettings'
+                    )
+                  );
               } else {
-                this.successToast(
+                this.infoToast(
                   this.$t(
-                    'pageServerPowerOperations.toast.successSaveLinuxKvmSettings'
+                    'pageServerPowerOperations.toast.successSaveIbmiOsRunningInfo'
                   )
-                );
+                ),
+                  this.successToast(
+                    this.$t(
+                      'pageServerPowerOperations.toast.successSaveSettings'
+                    )
+                  );
               }
             } else {
               this.successToast(message);

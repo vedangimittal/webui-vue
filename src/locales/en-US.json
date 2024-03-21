@@ -1767,7 +1767,8 @@
       "errorSaveSettings": "Error saving settings.",
       "successSaveSettings": "Successfully saved settings.",
       "successSaveLinuxKvmSettings": "Successfully saved settings. Changes made will take effect on next reboot.",
-      "successSaveIBMiStandby": "Please press the `Continue to OS running` link to proceed."
+      "successSaveIBMiStandby": "If changes made in IBM i load source, IBM i alternate restart device, or IBM i console, please press the `Continue to OS running` link to proceed.",
+      "successSaveIbmiOsRunningInfo": "Changes made in either IBM i load source, IBM i alternate restart device, or IBM i console will be applied from the next OS boot onwards."
     }
   },
   "pageServiceLoginConsoles": {
