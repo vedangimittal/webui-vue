@@ -22,7 +22,7 @@
                 selectedDumpType === 'retryPartition'
               "
             >
-              {{ $t(`pageIbmiServiceFunctions.alert.osRunning`) }}
+              {{ $t(`pageIbmiServiceFunctions.alert.osRunningPartitionDump`) }}
             </span>
             <span v-else>
               {{ $t(`pageDumps.alert.refreshMessage`) }}
