@@ -7,7 +7,11 @@
           <b-col>
             <alert variant="info" class="mb-4">
               <span>
-                {{ $t('pageIbmiServiceFunctions.alert.osRunning') }}
+                {{
+                  $t(
+                    'pageIbmiServiceFunctions.alert.osRunningIbmiServiceFunctions'
+                  )
+                }}
               </span>
             </alert>
           </b-col>
