@@ -355,7 +355,6 @@ const CertificatesStore = {
         keyPairAlgorithm,
         keyBitLength,
         keyCurveId,
-        challengePassword,
         contactPerson,
         emailAddress,
         alternateName,
@@ -374,7 +373,6 @@ const CertificatesStore = {
       data.AlternativeNames = alternateName;
       if (keyCurveId) data.KeyCurveId = keyCurveId;
       if (keyBitLength) data.KeyBitLength = keyBitLength;
-      if (challengePassword) data.ChallengePassword = challengePassword;
       if (contactPerson) data.ContactPerson = contactPerson;
       if (emailAddress) data.Email = emailAddress;
       return await api
