@@ -21,5 +21,6 @@ export default {
 .notice {
   overflow-x: hidden;
   white-space: break-spaces;
+  text-align: justify;
 }
 </style>
