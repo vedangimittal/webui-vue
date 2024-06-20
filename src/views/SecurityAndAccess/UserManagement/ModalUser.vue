@@ -72,7 +72,7 @@
                 <br />
                 {{
                   $t(
-                    'pageUserManagement.modal.noSpecialCharactersExceptUnderscore'
+                    'pageUserManagement.modal.noSpecialCharactersExceptUnderscore',
                   )
                 }}
               </b-form-text>
@@ -294,7 +294,7 @@ export default {
         (privilege) =>
           privilege !== 'OemIBMServiceAgent' &&
           privilege !== 'ServiceAgent' &&
-          privilege !== 'Operator'
+          privilege !== 'Operator',
       );
     },
   },

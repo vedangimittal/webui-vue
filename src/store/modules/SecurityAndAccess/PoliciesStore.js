@@ -40,7 +40,7 @@ const PoliciesStore = {
       (state.tpmPolicyEnabled = tpmPolicyEnabled),
     setUsbFirmwareUpdatePolicyEnabled: (
       state,
-      usbFirmwareUpdatePolicyEnabled
+      usbFirmwareUpdatePolicyEnabled,
     ) =>
       (state.usbFirmwareUpdatePolicyEnabled = usbFirmwareUpdatePolicyEnabled),
     setHostUsbEnabled: (state, hostUsbEnabled) =>
@@ -64,7 +64,7 @@ const PoliciesStore = {
         .then((response) => {
           commit(
             'setUsbFirmwareUpdatePolicyEnabled',
-            response.data.Oem.IBM.USBCodeUpdateEnabled
+            response.data.Oem.IBM.USBCodeUpdateEnabled,
           );
         })
         .catch((error) => console.log(error));
@@ -75,7 +75,7 @@ const PoliciesStore = {
         .then((response) => {
           commit(
             'setAcfUploadEnablement',
-            response?.data?.Oem?.IBM?.ACF?.AllowUnauthACFUpload
+            response?.data?.Oem?.IBM?.ACF?.AllowUnauthACFUpload,
           );
         })
         .catch((error) => console.log(error));
@@ -88,11 +88,11 @@ const PoliciesStore = {
           commit('setVtpmEnabled', response.data.Attributes.pvm_vtpm);
           commit(
             'setSvleEnabled',
-            response.data.Attributes.hb_secure_ver_lockin_enabled
+            response.data.Attributes.hb_secure_ver_lockin_enabled,
           );
           commit(
             'setHostUsbEnabled',
-            response.data.Attributes.hb_host_usb_enablement
+            response.data.Attributes.hb_host_usb_enablement,
           );
         })
         .catch((error) => console.log(error));
@@ -128,7 +128,7 @@ const PoliciesStore = {
           throw new Error(
             i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
               policy: i18n.t('pagePolicies.hostTpm'),
-            })
+            }),
           );
         });
     },
@@ -154,13 +154,13 @@ const PoliciesStore = {
           throw new Error(
             i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
               policy: i18n.t('pagePolicies.usbFirmwareUpdatePolicy'),
-            })
+            }),
           );
         });
     },
     async saveUnauthenticatedACFUploadEnablement(
       { commit },
-      updatedAcfUploadEnablement
+      updatedAcfUploadEnablement,
     ) {
       commit('setAcfUploadEnablement', updatedAcfUploadEnablement);
       const oem = {
@@ -185,7 +185,7 @@ const PoliciesStore = {
           throw new Error(
             i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
               policy: i18n.t('pagePolicies.acfUploadEnablement'),
-            })
+            }),
           );
         });
     },
@@ -218,7 +218,7 @@ const PoliciesStore = {
           throw new Error(
             i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
               policy: i18n.t('pagePolicies.ipmi'),
-            })
+            }),
           );
         });
     },
@@ -244,7 +244,7 @@ const PoliciesStore = {
           throw new Error(
             i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
               policy: i18n.t('pagePolicies.ssh'),
-            })
+            }),
           );
         });
     },
@@ -267,7 +267,7 @@ const PoliciesStore = {
           throw new Error(
             i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
               policy: i18n.t('pagePolicies.rtad'),
-            })
+            }),
           );
         });
     },
@@ -290,7 +290,7 @@ const PoliciesStore = {
           throw new Error(
             i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
               policy: i18n.t('pagePolicies.vtpm'),
-            })
+            }),
           );
         });
     },
@@ -313,7 +313,7 @@ const PoliciesStore = {
           throw new Error(
             i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
               policy: i18n.t('pagePolicies.secureVersion'),
-            })
+            }),
           );
         });
     },
@@ -336,7 +336,7 @@ const PoliciesStore = {
           throw new Error(
             i18n.t('pagePolicies.toast.errorNetworkPolicyUpdate', {
               policy: i18n.t('pagePolicies.hostUsb'),
-            })
+            }),
           );
         });
     },

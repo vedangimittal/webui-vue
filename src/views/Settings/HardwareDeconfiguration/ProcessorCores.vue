@@ -177,7 +177,7 @@ export default {
           sortable: true,
           formatter: this.dataFormatter,
           label: this.$t(
-            'pageDeconfigurationHardware.table.deconfigurationType'
+            'pageDeconfigurationHardware.table.deconfigurationType',
           ),
         },
         {
@@ -191,7 +191,7 @@ export default {
         {
           key: 'deconfigurationType',
           label: this.$t(
-            'pageDeconfigurationHardware.table.deconfigurationType'
+            'pageDeconfigurationHardware.table.deconfigurationType',
           ),
           values: [
             this.$t('pageDeconfigurationHardware.table.filter.byAssociation'),

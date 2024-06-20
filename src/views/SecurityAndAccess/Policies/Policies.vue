@@ -263,9 +263,8 @@ export default {
   },
   data() {
     return {
-      unauthenticatedACFUploadEnablementState: this.$store.getters[
-        'policies/acfUploadEnablement'
-      ],
+      unauthenticatedACFUploadEnablementState:
+        this.$store.getters['policies/acfUploadEnablement'],
       modifySSHPolicyDisabled:
         process.env.VUE_APP_MODIFY_SSH_POLICY_DISABLED === 'true',
     };
@@ -358,9 +357,8 @@ export default {
       this.$store.dispatch('userManagement/getUsers'),
       this.checkForUserData(),
     ]).finally(() => {
-      this.unauthenticatedACFUploadEnablementState = this.$store.getters[
-        'policies/acfUploadEnablement'
-      ];
+      this.unauthenticatedACFUploadEnablementState =
+        this.$store.getters['policies/acfUploadEnablement'];
       setTimeout(() => {
         this.endLoader();
       }, 30000);
@@ -432,7 +430,7 @@ export default {
               title: this.$tc('pagePolicies.acfUploadEnablement'),
               okTitle: this.$tc('global.action.confirm'),
               cancelTitle: this.$t('global.action.cancel'),
-            }
+            },
           )
           .then((value) => {
             this.enableUpload(value, state);

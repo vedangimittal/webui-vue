@@ -179,7 +179,7 @@
                               item.remotePortLocation.length > 0 &&
                                 item.remotePortLocation[i]
                                 ? item.remotePortLocation[i].locationNumber
-                                : '--'
+                                : '--',
                             )
                           }}
                         </div>
@@ -458,13 +458,13 @@ export default {
         .dispatch('pcieTopology/savePcie')
         .then(() =>
           this.successToast(
-            this.$t('pagePcieTopology.toast.successSavePcieTopology')
-          )
+            this.$t('pagePcieTopology.toast.successSavePcieTopology'),
+          ),
         )
         .catch(() =>
           this.errorToast(
-            this.$t('pagePcieTopology.toast.errorSavePcieTopology')
-          )
+            this.$t('pagePcieTopology.toast.errorSavePcieTopology'),
+          ),
         );
     },
     onFilterChange({ activeFilters }) {

@@ -115,7 +115,7 @@ export default {
       const token = this.$store.getters['authentication/token'];
       const host = `${window.location.origin.replace(
         'https://',
-        ''
+        '',
       )}${window.location.pathname.replace(/\/$/, '')}`;
       this.ws = new WebSocket(`wss://${host}/${selectedConsole}`, [token]);
 
@@ -158,7 +158,7 @@ export default {
           console.log(
             `websocket ${selectedConsole}/ closed.
             code: ${event.code}
-            reason: ${event.reason}`
+            reason: ${event.reason}`,
           );
         };
         this.ws.onmessage = () => {
@@ -175,7 +175,7 @@ export default {
       window.open(
         '#/console/service-login-consoles',
         '_blank',
-        'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=600,height=550'
+        'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=600,height=550',
       );
     },
   },

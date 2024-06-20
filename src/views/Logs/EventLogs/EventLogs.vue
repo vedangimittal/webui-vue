@@ -165,10 +165,10 @@
                         item.type === 'Event'
                           ? $t('pageEventLogs.table.typeValues.event')
                           : item.type === 'SEL'
-                          ? $t('pageEventLogs.table.typeValues.sel')
-                          : item.type === 'Oem'
-                          ? $t('pageEventLogs.table.typeValues.oem')
-                          : '--'
+                            ? $t('pageEventLogs.table.typeValues.sel')
+                            : item.type === 'Oem'
+                              ? $t('pageEventLogs.table.typeValues.oem')
+                              : '--'
                       }}
                     </dd>
                   </dl>
@@ -195,8 +195,8 @@
               value === 'OK'
                 ? $t('pageEventLogs.table.severityValues.ok')
                 : value === 'Critical'
-                ? $t('pageEventLogs.table.severityValues.critical')
-                : $t('pageEventLogs.table.severityValues.warning')
+                  ? $t('pageEventLogs.table.severityValues.critical')
+                  : $t('pageEventLogs.table.severityValues.warning')
             }}
           </template>
           <!-- Date column -->
@@ -462,13 +462,13 @@ export default {
       return this.getFilteredTableDataByDate(
         this.allLogs,
         this.filterStartDate,
-        this.filterEndDate
+        this.filterEndDate,
       );
     },
     filteredLogs() {
       return this.getFilteredTableData(
         this.filteredLogsByDate,
-        this.activeFilters
+        this.activeFilters,
       );
     },
   },
@@ -497,7 +497,7 @@ export default {
       var element = document.createElement('a');
       element.setAttribute(
         'href',
-        'data:text/plain;charset=utf-8,' + encodeURIComponent(pelJsonInfo)
+        'data:text/plain;charset=utf-8,' + encodeURIComponent(pelJsonInfo),
       );
       element.setAttribute('download', fileName);
       element.style.display = 'none';
@@ -613,16 +613,16 @@ export default {
           .msgBoxConfirm(
             this.$tc(
               'pageEventLogs.modal.deleteMessage',
-              this.selectedRows.length
+              this.selectedRows.length,
             ),
             {
               title: this.$tc(
                 'pageEventLogs.modal.deleteTitle',
-                this.selectedRows.length
+                this.selectedRows.length,
               ),
               okTitle: this.$t('global.action.delete'),
               cancelTitle: this.$t('global.action.cancel'),
-            }
+            },
           )
           .then((deleteConfirmed) => {
             if (deleteConfirmed) {
@@ -705,7 +705,7 @@ export default {
           await this.$store
             .dispatch(
               'eventLog/downloadLogData',
-              this.selectedRows[counter - 1].uri
+              this.selectedRows[counter - 1].uri,
             )
             .then((returned) => {
               pelJsonInfo.push(returned);

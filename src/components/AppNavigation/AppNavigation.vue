@@ -1,37 +1,37 @@
+<!-- Work Requird -->
 <template>
-  <div
-    v-if="(modelType !== '--' && hmcMangedInfo !== null) || loadingCompleted"
-  >
+  <div>
     <div class="nav-container" :class="{ open: isNavigationOpen }">
-      <nav ref="nav" :aria-label="$t('appNavigation.primaryNavigation')">
-        <b-nav vertical class="mb-4">
+      <nav ref="nav" :aria-label="t('appNavigation.primaryNavigation')">
+        <BNav vertical class="mb-4">
           <template v-for="(navItem, index) in navigationItems">
             <!-- Navigation items with no children -->
-            <b-nav-item
+            <BNavItem
               v-if="!navItem.children"
               :key="index"
               :to="navItem.route"
               :data-test-id="`nav-item-${navItem.id}`"
+              class="nav-nochild"
             >
               <component :is="navItem.icon" />
               {{ navItem.label }}
-            </b-nav-item>
+            </BNavItem>
 
             <!-- Navigation items with children -->
-            <li v-else :key="index" class="nav-item">
-              <b-button
+            <li v-else :key="`${navItem.id}`" class="nav-item">
+              <BButton
                 v-b-toggle="`${navItem.id}`"
                 variant="link"
                 :data-test-id="`nav-button-${navItem.id}`"
               >
                 <component :is="navItem.icon" />
                 {{ navItem.label }}
-                <icon-expand class="icon-expand" />
-              </b-button>
-              <b-collapse :id="navItem.id" tag="ul" class="nav-item__nav">
-                <li class="nav-item">
+                <icon-chevron-up class="icon-expand" />
+              </BButton>
+              <BCollapse :id="navItem.id" class="nav-item__nav">
+                <li class="">
                   <router-link
-                    v-for="(subNavItem, i) of navItem.children"
+                    v-for="(subNavItem, i) of filteredNavItem(navItem.children)"
                     :key="i"
                     :to="subNavItem.route"
                     :data-test-id="`nav-item-${subNavItem.id}`"
@@ -40,10 +40,10 @@
                     {{ subNavItem.label }}
                   </router-link>
                 </li>
-              </b-collapse>
+              </BCollapse>
             </li>
           </template>
-        </b-nav>
+        </BNav>
       </nav>
     </div>
     <transition name="fade">
@@ -57,58 +57,50 @@
   </div>
 </template>
 
-<script>
-//Do not change Mixin import.
-//Exact match alias set to support
-//dotenv customizations.
-import AppNavigationMixin from './AppNavigationMixin';
+<script setup>
+import { ref, watch } from 'vue';
+import { AppNavigationData } from './AppNavigationData';
+import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { onMounted } from 'vue';
+import { GlobalStore } from '@/store';
+import IconChevronUp from '@carbon/icons-vue/es/chevron--up/16';
+import eventBus from '@/eventBus';
 
-export default {
-  name: 'AppNavigation',
-  mixins: [AppNavigationMixin],
-  data() {
-    return {
-      isNavigationOpen: false,
-      loadingCompleted: false,
-    };
-  },
-  computed: {
-    modelType() {
-      return this.$store?.getters['global/modelType'];
-    },
-    hmcMangedInfo() {
-      return this.$store?.getters['global/hmcManaged'];
-    },
-    currentUser() {
-      return this.$store?.getters['global/currentUser'];
-    },
-  },
-  watch: {
-    $route: function () {
-      this.isNavigationOpen = false;
-    },
-    isNavigationOpen: function (isNavigationOpen) {
-      this.$root.$emit('change-is-navigation-open', isNavigationOpen);
-    },
-  },
-  mounted() {
-    this.$root.$on('loading-bar-status', (value) => {
-      this.loadingCompleted = value;
+const globalStore = GlobalStore();
+const { navigationItems } = AppNavigationData();
+const { t } = useI18n();
+let isNavigationOpen = ref(false);
+const route = useRoute();
+let currentUserRole = ref(null);
+onMounted(() => {
+  currentUserRole.value = globalStore.userPrivilege;
+  eventBus.on('toggle-navigation', toggleIsOpen);
+});
+// provide('isNavigationOpen', isNavigationOpen);
+watch(route, () => {
+  isNavigationOpen.value = false;
+});
+watch(isNavigationOpen, () => {
+  eventBus.emit('change-is-navigation-open', () => {
+    isNavigationOpen;
+  });
+});
+const toggleIsOpen = () => {
+  isNavigationOpen.value = !isNavigationOpen.value;
+  eventBus.emit('change-is-navigation-open', () => {
+    isNavigationOpen.value;
+  });
+};
+// provide('toggle-navigation', toggleIsOpen);
+
+const filteredNavItem = (navItem) => {
+  if (currentUserRole.value) {
+    return navItem.filter(({ exclusiveToRoles }) => {
+      if (!exclusiveToRoles?.length) return true;
+      return exclusiveToRoles.includes(currentUserRole);
     });
-    this.checkForUserData(),
-      this.$root.$on('toggle-navigation', () => this.toggleIsOpen());
-  },
-  methods: {
-    checkForUserData() {
-      if (!this.currentUser) {
-        this.$store?.dispatch('userManagement/getUsers');
-        this.$store?.dispatch('global/getCurrentUser');
-      }
-    },
-    toggleIsOpen() {
-      this.isNavigationOpen = !this.isNavigationOpen;
-    },
-  },
+  } else return navItem;
 };
 </script>
 
@@ -125,10 +117,10 @@ svg {
 }
 
 .nav {
-  padding-top: $spacer / 4;
-  @include media-breakpoint-up($responsive-layout-bp) {
-    padding-top: $spacer;
-  }
+  padding-top: 4px;
+  // @include media-breakpoint-up($responsive-layout-bp) {
+  padding-top: $spacer;
+  // }
 }
 
 .nav-item__nav {
@@ -149,7 +141,9 @@ svg {
     }
   }
 }
-
+.pad-left {
+  padding-left: 0;
+}
 .btn-link {
   display: inline-block;
   width: 100%;
@@ -166,7 +160,7 @@ svg {
 
 .icon-expand {
   float: right;
-  margin-top: $spacer / 4;
+  margin-top: math.div($spacer, 4);
 }
 
 .btn-link,
@@ -175,30 +169,48 @@ svg {
   font-weight: $headings-font-weight;
   padding-left: $spacer; // defining consistent padding for links and buttons
   padding-right: $spacer;
-  color: theme-color('secondary');
+  color: #3f3f3f;
 
   &:hover {
-    background-color: theme-color-level(dark, -10.5);
-    color: theme-color('dark');
+    background-color: #dadada;
+    color: #161616;
   }
 
   &:focus {
-    background-color: theme-color-level(light, 0);
-    box-shadow: inset 0 0 0 2px theme-color('primary');
-    color: theme-color('dark');
+    background-color: #f4f4f4;
+    box-shadow: inset 0 0 0 2px #0068b5;
+    color: #161616;
     outline: 0;
   }
 
   &:active {
-    background-color: theme-color('secondary');
+    background-color: #3f3f3f;
     color: $white;
+  }
+}
+.nav-nochild {
+  color: #3f3f3f !important;
+  &:hover {
+    background-color: #dadada;
+    color: #161616;
+  }
+
+  &:focus {
+    background-color: #f4f4f4;
+    box-shadow: inset 0 0 0 2px #0068b5;
+    color: #161616;
+    outline: 0;
+  }
+  &:active {
+    background-color: #3f3f3f !important;
+    color: $white !important;
   }
 }
 
 .nav-link--current {
   font-weight: $headings-font-weight;
-  background-color: theme-color('secondary');
-  color: theme-color('light');
+  background-color: #3f3f3f;
+  color: #f4f4f4;
   cursor: default;
   box-shadow: none;
 
@@ -209,27 +221,50 @@ svg {
     bottom: 0;
     left: 0;
     width: 4px;
-    background-color: theme-color('primary');
+    background-color: #0068b5;
   }
 
   &:hover,
   &:focus {
-    background-color: theme-color('secondary');
-    color: theme-color('light');
+    background-color: #3f3f3f;
+    color: #f4f4f4;
+  }
+}
+.nav-items--current {
+  font-weight: $headings-font-weight;
+  background-color: #3f3f3f;
+  color: #f4f4f4;
+  cursor: default;
+  box-shadow: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+    background-color: #0068b5;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: #3f3f3f;
+    color: #f4f4f4;
   }
 }
 
 .nav-container {
   position: fixed;
-  width: $navigation-width;
-  top: $header-height;
+  width: 300px;
+  top: 48px;
   bottom: 0;
   left: 0;
   z-index: $zindex-fixed;
   overflow-y: auto;
-  background-color: theme-color('light');
-  transform: translateX(-$navigation-width);
-  transition: transform $exit-easing--productive $duration--moderate-02;
+  background-color: #f4f4f4;
+  transform: translateX(-300px);
+  transition: transform cubic-bezier(0.2, 0, 1, 0.9) 240ms;
   border-right: 1px solid theme-color-level('light', 2.85);
 
   @include media-breakpoint-down(md) {
@@ -239,18 +274,18 @@ svg {
   &.open,
   &:focus-within {
     transform: translateX(0);
-    transition-timing-function: $entrance-easing--productive;
+    transition-timing-function: cubic-bezier(0, 0, 0.38, 0.9);
   }
 
   @include media-breakpoint-up($responsive-layout-bp) {
-    transition-duration: $duration--fast-01;
+    transition-duration: 70ms;
     transform: translateX(0);
   }
 }
 
 .nav-overlay {
   position: fixed;
-  top: $header-height;
+  top: 48px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -259,14 +294,13 @@ svg {
   opacity: 0.5;
 
   &.fade-enter-active {
-    transition: opacity $duration--moderate-02 $entrance-easing--productive;
+    transition: opacity 240ms cubic-bezier(0, 0, 0.38, 0.9);
   }
 
   &.fade-leave-active {
-    transition: opacity $duration--fast-02 $exit-easing--productive;
+    transition: opacity 110ms cubic-bezier(0.2, 0, 1, 0.9);
   }
 
-  &.fade-enter, // Remove this vue2 based only class when switching to vue3
   &.fade-enter-from, // This is vue3 based only class modified from 'fade-enter'
   &.fade-leave-to {
     opacity: 0;

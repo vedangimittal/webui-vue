@@ -139,7 +139,7 @@ export default {
               value: 'delete',
               enabled: true,
               title: this.$t(
-                'pageNetwork.table.deleteIpv6StaticDefaultGateway'
+                'pageNetwork.table.deleteIpv6StaticDefaultGateway',
               ),
             },
           ],
@@ -178,14 +178,14 @@ export default {
             okTitle: this.$t('global.action.delete'),
             okVariant: 'danger',
             cancelTitle: this.$t('global.action.cancel'),
-          }
+          },
         )
         .then((deleteConfirmed) => {
           if (deleteConfirmed) {
             this.$store
               .dispatch(
                 'network/deleteIpv6StaticDefaultGatewayAddress',
-                newIpv6Array
+                newIpv6Array,
               )
               .then((message) => {
                 this.successToast(message);

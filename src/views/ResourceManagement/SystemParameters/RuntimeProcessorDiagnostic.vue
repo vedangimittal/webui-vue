@@ -298,7 +298,7 @@ export default {
         this.$v.$touch();
         this.$store.commit(
           'systemParameters/setRpdScheduledRunDuration',
-          value
+          value,
         );
       },
     },
@@ -349,8 +349,8 @@ export default {
           if (value && this.isServerOff) {
             this.successToast(
               this.$t(
-                'pageSystemParameters.toast.successStartingDiagnosticTestRunIfPoweredOff'
-              )
+                'pageSystemParameters.toast.successStartingDiagnosticTestRunIfPoweredOff',
+              ),
             );
           } else {
             this.successToast(message);

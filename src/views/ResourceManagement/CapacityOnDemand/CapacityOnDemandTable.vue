@@ -96,7 +96,7 @@
             <div v-else-if="value == 'Virtualization Engine Technology'">
               {{
                 $t(
-                  'pageCapacityOnDemand.setting.virtualizationEngineTechnology'
+                  'pageCapacityOnDemand.setting.virtualizationEngineTechnology',
                 )
               }}
             </div>

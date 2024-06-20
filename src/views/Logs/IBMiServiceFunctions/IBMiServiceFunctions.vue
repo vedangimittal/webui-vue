@@ -9,7 +9,7 @@
               <span>
                 {{
                   $t(
-                    'pageIbmiServiceFunctions.alert.osRunningIbmiServiceFunctions'
+                    'pageIbmiServiceFunctions.alert.osRunningIbmiServiceFunctions',
                   )
                 }}
               </span>
@@ -27,7 +27,7 @@
               <dd id="activateDST-description">
                 {{
                   $t(
-                    'pageIbmiServiceFunctions.activateDedicatedServiceToolDesc'
+                    'pageIbmiServiceFunctions.activateDedicatedServiceToolDesc',
                   )
                 }}
               </dd>
@@ -109,7 +109,7 @@
               <dd id="concurrentMaintenancePowerOff-description">
                 {{
                   $t(
-                    'pageIbmiServiceFunctions.concurrentMaintenancePowerOffDesc'
+                    'pageIbmiServiceFunctions.concurrentMaintenancePowerOffDesc',
                   )
                 }}
               </dd>
@@ -134,7 +134,7 @@
               <dd id="concurrentMaintenancePowerOn-description">
                 {{
                   $t(
-                    'pageIbmiServiceFunctions.concurrentMaintenancePowerOnDesc'
+                    'pageIbmiServiceFunctions.concurrentMaintenancePowerOnDesc',
                   )
                 }}
               </dd>

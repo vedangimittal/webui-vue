@@ -297,7 +297,7 @@ export default {
     this.startLoader();
     const bootSettingsPromise = new Promise((resolve) => {
       this.$root.$on('server-power-operations-boot-settings-complete', () =>
-        resolve()
+        resolve(),
       );
     });
     Promise.all([
@@ -348,7 +348,7 @@ export default {
         this.infoToast(this.$t('pageServerPowerOperations.userRefresh'));
       } else {
         this.errorToast(
-          this.$t('pageServerPowerOperations.toast.errorPowerOn')
+          this.$t('pageServerPowerOperations.toast.errorPowerOn'),
         );
       }
     },
@@ -375,7 +375,7 @@ export default {
               if (confirmed) {
                 this.$store.dispatch('controls/serverSoftReboot');
                 this.infoToast(
-                  this.$t('pageServerPowerOperations.userRefresh')
+                  this.$t('pageServerPowerOperations.userRefresh'),
                 );
               }
             });
@@ -386,7 +386,7 @@ export default {
               if (confirmed) {
                 this.$store.dispatch('controls/serverHardReboot');
                 this.infoToast(
-                  this.$t('pageServerPowerOperations.userRefresh')
+                  this.$t('pageServerPowerOperations.userRefresh'),
                 );
               }
             });

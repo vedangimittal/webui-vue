@@ -160,9 +160,8 @@ export default {
   created() {
     this.startLoader();
     this.$store.dispatch('systemParameters/getFrequencyCap').then(() => {
-      this.frequencyValue = this.$store.getters[
-        'systemParameters/frequencyRequest'
-      ];
+      this.frequencyValue =
+        this.$store.getters['systemParameters/frequencyRequest'];
       this.endLoader();
     });
   },
@@ -193,7 +192,7 @@ export default {
       this.$store
         .dispatch(
           'systemParameters/newFrequencyCapRequest',
-          this.frequencyValue
+          this.frequencyValue,
         )
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message));

@@ -17,14 +17,14 @@
         <h3>
           {{
             $t(
-              'pageServerPowerOperations.modal.networkSettings.settingsHeading'
+              'pageServerPowerOperations.modal.networkSettings.settingsHeading',
             )
           }}
         </h3>
         <span>
           {{
             $t(
-              'pageServerPowerOperations.modal.networkSettings.settingsDescription'
+              'pageServerPowerOperations.modal.networkSettings.settingsDescription',
             )
           }}
         </span>
@@ -35,7 +35,7 @@
               <b-form-group
                 :label="
                   $t(
-                    'pageServerPowerOperations.modal.networkSettings.networkTypeHeading'
+                    'pageServerPowerOperations.modal.networkSettings.networkTypeHeading',
                   )
                 "
                 class="mb-2"
@@ -58,7 +58,7 @@
                 "
                 :label="
                   $t(
-                    'pageServerPowerOperations.modal.networkSettings.ipAddressProtocolHeading'
+                    'pageServerPowerOperations.modal.networkSettings.ipAddressProtocolHeading',
                   )
                 "
                 class="mb-2"
@@ -107,10 +107,10 @@
                     :label="
                       server.validations.isRequired
                         ? $t(
-                            `pageServerPowerOperations.modal.networkSettings.serverSettings.${server.property}`
+                            `pageServerPowerOperations.modal.networkSettings.serverSettings.${server.property}`,
                           ) + ' *'
                         : $t(
-                            `pageServerPowerOperations.modal.networkSettings.serverSettings.${server.property}`
+                            `pageServerPowerOperations.modal.networkSettings.serverSettings.${server.property}`,
                           )
                     "
                     class="mb-2 ml-4"
@@ -141,7 +141,7 @@
                   >
                     {{
                       $t(
-                        'pageServerPowerOperations.modal.networkSettings.serverSettings.restoreDefault'
+                        'pageServerPowerOperations.modal.networkSettings.serverSettings.restoreDefault',
                       )
                     }}
                   </b-button>
@@ -164,7 +164,7 @@
               >
                 {{
                   $t(
-                    'pageServerPowerOperations.modal.networkSettings.partition'
+                    'pageServerPowerOperations.modal.networkSettings.partition',
                   )
                 }}:
               </h5>
@@ -183,10 +183,10 @@
                     :label="
                       partition.validations.isRequired
                         ? $t(
-                            `pageServerPowerOperations.modal.networkSettings.partitionSettings.${partition.property}`
+                            `pageServerPowerOperations.modal.networkSettings.partitionSettings.${partition.property}`,
                           ) + ' *'
                         : $t(
-                            `pageServerPowerOperations.modal.networkSettings.partitionSettings.${partition.property}`
+                            `pageServerPowerOperations.modal.networkSettings.partitionSettings.${partition.property}`,
                           )
                     "
                     class="mb-2 ml-4"
@@ -227,7 +227,7 @@
               >
                 {{
                   $t(
-                    'pageServerPowerOperations.modal.networkSettings.advanced'
+                    'pageServerPowerOperations.modal.networkSettings.advanced',
                   )
                 }}:
               </h5>
@@ -245,7 +245,7 @@
                     :key="advanced.property + 'group'"
                     :label="
                       $t(
-                        `pageServerPowerOperations.modal.networkSettings.advancedSettings.${advanced.property}`
+                        `pageServerPowerOperations.modal.networkSettings.advancedSettings.${advanced.property}`,
                       )
                     "
                     class="mb-2 ml-4"
@@ -354,7 +354,7 @@ export default {
               required,
               imageDirectory: helpers.regex(
                 'imageDir',
-                REGEX_MAPPINGS.imageDirectory
+                REGEX_MAPPINGS.imageDirectory,
               ),
               maxLength: maxLength(this.nfsImageDirMaxLength),
             },
@@ -386,7 +386,7 @@ export default {
               required,
               imageDirectory: helpers.regex(
                 'imageDir',
-                REGEX_MAPPINGS.imageDirectory
+                REGEX_MAPPINGS.imageDirectory,
               ),
               maxLength: maxLength(this.nfsImageDirMaxLength),
             },
@@ -503,14 +503,12 @@ export default {
             this.selectedIpProtocol.server.length > 0
           ) {
             let initiatorName = this.selectedIpProtocol.server.find(
-              (element) => element.property === 'initiatorName'
+              (element) => element.property === 'initiatorName',
             );
-            initiatorName.value = this.attributesList[
-              'pvm_ibmi_iscsi_initiator_name'
-            ];
-            this.properties.pvm_ibmi_iscsi_initiator_name = this.attributesList[
-              'pvm_ibmi_iscsi_initiator_name'
-            ];
+            initiatorName.value =
+              this.attributesList['pvm_ibmi_iscsi_initiator_name'];
+            this.properties.pvm_ibmi_iscsi_initiator_name =
+              this.attributesList['pvm_ibmi_iscsi_initiator_name'];
           }
         } else {
           this.selectedNetwork = this.networkObject.disabled;
@@ -522,7 +520,7 @@ export default {
           this.selectedIpProtocol.advanced.length > 0
         ) {
           let maxFrame = this.selectedIpProtocol.advanced.find(
-            (element) => element.property === 'maxFrameSize'
+            (element) => element.property === 'maxFrameSize',
           );
           maxFrame.value = this.attributesList['pvm_ibmi_max_frame_size'];
         }
@@ -569,56 +567,50 @@ export default {
       if (this.attributesList['pvm_ibmi_network_install_type'] === 'NFS') {
         if (this.attributesList['pvm_ibmi_ipaddress_protocol'] === 'IPv4') {
           form = {
-            pvm_ibmi_network_install_type: this.attributesList[
-              'pvm_ibmi_network_install_type'
-            ],
-            pvm_ibmi_ipaddress_protocol: this.attributesList[
-              'pvm_ibmi_ipaddress_protocol'
-            ],
-            pvm_ibmi_server_ipaddress: this.properties
-              .pvm_ibmi_server_ipaddress,
-            pvm_ibmi_nfs_image_directory: this.properties
-              .pvm_ibmi_nfs_image_directory,
+            pvm_ibmi_network_install_type:
+              this.attributesList['pvm_ibmi_network_install_type'],
+            pvm_ibmi_ipaddress_protocol:
+              this.attributesList['pvm_ibmi_ipaddress_protocol'],
+            pvm_ibmi_server_ipaddress:
+              this.properties.pvm_ibmi_server_ipaddress,
+            pvm_ibmi_nfs_image_directory:
+              this.properties.pvm_ibmi_nfs_image_directory,
             pvm_ibmi_local_ipaddress: this.properties.pvm_ibmi_local_ipaddress,
             pvm_ibmi_subnet_mask: this.properties.pvm_ibmi_subnet_mask,
-            pvm_ibmi_gateway_ipaddress: this.properties
-              .pvm_ibmi_gateway_ipaddress,
-            pvm_ibmi_max_frame_size: this.attributesList[
-              'pvm_ibmi_max_frame_size'
-            ],
+            pvm_ibmi_gateway_ipaddress:
+              this.properties.pvm_ibmi_gateway_ipaddress,
+            pvm_ibmi_max_frame_size:
+              this.attributesList['pvm_ibmi_max_frame_size'],
           };
           if (this.properties.pvm_ibmi_vlan_tag_id !== '') {
             form = {
               ...form,
               pvm_ibmi_vlan_tag_id: Number(
-                this.properties.pvm_ibmi_vlan_tag_id
+                this.properties.pvm_ibmi_vlan_tag_id,
               ),
             };
           }
         } else {
           form = {
-            pvm_ibmi_network_install_type: this.attributesList[
-              'pvm_ibmi_network_install_type'
-            ],
-            pvm_ibmi_ipaddress_protocol: this.attributesList[
-              'pvm_ibmi_ipaddress_protocol'
-            ],
-            pvm_ibmi_server_ipaddress: this.properties
-              .pvm_ibmi_server_ipaddress,
-            pvm_ibmi_nfs_image_directory: this.properties
-              .pvm_ibmi_nfs_image_directory,
+            pvm_ibmi_network_install_type:
+              this.attributesList['pvm_ibmi_network_install_type'],
+            pvm_ibmi_ipaddress_protocol:
+              this.attributesList['pvm_ibmi_ipaddress_protocol'],
+            pvm_ibmi_server_ipaddress:
+              this.properties.pvm_ibmi_server_ipaddress,
+            pvm_ibmi_nfs_image_directory:
+              this.properties.pvm_ibmi_nfs_image_directory,
             pvm_ibmi_local_ipaddress: this.properties.pvm_ibmi_local_ipaddress,
-            pvm_ibmi_gateway_ipaddress: this.properties
-              .pvm_ibmi_gateway_ipaddress,
-            pvm_ibmi_max_frame_size: this.attributesList[
-              'pvm_ibmi_max_frame_size'
-            ],
+            pvm_ibmi_gateway_ipaddress:
+              this.properties.pvm_ibmi_gateway_ipaddress,
+            pvm_ibmi_max_frame_size:
+              this.attributesList['pvm_ibmi_max_frame_size'],
           };
           if (this.properties.pvm_ibmi_vlan_tag_id !== '') {
             form = {
               ...form,
               pvm_ibmi_vlan_tag_id: Number(
-                this.properties.pvm_ibmi_vlan_tag_id
+                this.properties.pvm_ibmi_vlan_tag_id,
               ),
             };
           }
@@ -627,24 +619,21 @@ export default {
         this.attributesList['pvm_ibmi_network_install_type'] === 'iSCSI'
       ) {
         form = {
-          pvm_ibmi_network_install_type: this.attributesList[
-            'pvm_ibmi_network_install_type'
-          ],
-          pvm_ibmi_ipaddress_protocol: this.attributesList[
-            'pvm_ibmi_ipaddress_protocol'
-          ],
+          pvm_ibmi_network_install_type:
+            this.attributesList['pvm_ibmi_network_install_type'],
+          pvm_ibmi_ipaddress_protocol:
+            this.attributesList['pvm_ibmi_ipaddress_protocol'],
           pvm_ibmi_server_ipaddress: this.properties.pvm_ibmi_server_ipaddress,
           pvm_ibmi_local_ipaddress: this.properties.pvm_ibmi_local_ipaddress,
           pvm_ibmi_subnet_mask: this.properties.pvm_ibmi_subnet_mask,
-          pvm_ibmi_gateway_ipaddress: this.properties
-            .pvm_ibmi_gateway_ipaddress,
-          pvm_ibmi_iscsi_target_name: this.properties
-            .pvm_ibmi_iscsi_target_name,
-          pvm_ibmi_iscsi_initiator_name: this.properties
-            .pvm_ibmi_iscsi_initiator_name,
-          pvm_ibmi_max_frame_size: this.attributesList[
-            'pvm_ibmi_max_frame_size'
-          ],
+          pvm_ibmi_gateway_ipaddress:
+            this.properties.pvm_ibmi_gateway_ipaddress,
+          pvm_ibmi_iscsi_target_name:
+            this.properties.pvm_ibmi_iscsi_target_name,
+          pvm_ibmi_iscsi_initiator_name:
+            this.properties.pvm_ibmi_iscsi_initiator_name,
+          pvm_ibmi_max_frame_size:
+            this.attributesList['pvm_ibmi_max_frame_size'],
         };
         chapData = {
           chapName: this.properties.chapName,
@@ -660,15 +649,14 @@ export default {
           form = {
             ...form,
             pvm_ibmi_iscsi_target_port: Number(
-              this.properties.pvm_ibmi_iscsi_target_port
+              this.properties.pvm_ibmi_iscsi_target_port,
             ),
           };
         }
       } else {
         form = {
-          pvm_ibmi_network_install_type: this.attributesList[
-            'pvm_ibmi_network_install_type'
-          ],
+          pvm_ibmi_network_install_type:
+            this.attributesList['pvm_ibmi_network_install_type'],
         };
       }
       //Set IBM i partition boot mode to 'D_mode'
@@ -721,24 +709,24 @@ export default {
       } else if (this.isInvalid(validationAttribute, 'ipAddress')) {
         if (validationAttribute.$params.ipAddress.type === 'ipv6') {
           return this.$t(
-            'pageServerPowerOperations.modal.networkSettings.validators.invalidIpv6'
+            'pageServerPowerOperations.modal.networkSettings.validators.invalidIpv6',
           );
         }
         return this.$t(
-          'pageServerPowerOperations.modal.networkSettings.validators.invalidIpv4'
+          'pageServerPowerOperations.modal.networkSettings.validators.invalidIpv4',
         );
       } else if (this.isInvalid(validationAttribute, 'imageDirectory'))
         return this.$t(
-          'pageServerPowerOperations.modal.networkSettings.validators.invalidImageDirectory'
+          'pageServerPowerOperations.modal.networkSettings.validators.invalidImageDirectory',
         );
       else if (this.isInvalid(validationAttribute, 'requiredIf')) {
         if (attribute === 'chapName') {
           return this.$t(
-            'pageServerPowerOperations.modal.networkSettings.validators.chapNameRequired'
+            'pageServerPowerOperations.modal.networkSettings.validators.chapNameRequired',
           );
         }
         return this.$t(
-          'pageServerPowerOperations.modal.networkSettings.validators.chapSecretRequired'
+          'pageServerPowerOperations.modal.networkSettings.validators.chapSecretRequired',
         );
       } else if (
         this.isInvalid(validationAttribute, 'minLength') ||
@@ -749,10 +737,10 @@ export default {
             'pageServerPowerOperations.modal.networkSettings.validators.invalidFieldLength',
             {
               field: this.$t(
-                'pageServerPowerOperations.modal.networkSettings.serverSettings.chapName'
+                'pageServerPowerOperations.modal.networkSettings.serverSettings.chapName',
               ),
               max: 32,
-            }
+            },
           );
         } else if (attribute === 'chapSecret') {
           return this.$t(
@@ -760,37 +748,37 @@ export default {
             {
               min: 12,
               max: 32,
-            }
+            },
           );
         } else if (attribute === 'pvm_ibmi_iscsi_target_name') {
           return this.$t(
             'pageServerPowerOperations.modal.networkSettings.validators.invalidFieldLength',
             {
               field: this.$t(
-                'pageServerPowerOperations.modal.networkSettings.serverSettings.targetName'
+                'pageServerPowerOperations.modal.networkSettings.serverSettings.targetName',
               ),
               max: this.targetNameMaxLength,
-            }
+            },
           );
         } else if (attribute === 'pvm_ibmi_iscsi_initiator_name') {
           return this.$t(
             'pageServerPowerOperations.modal.networkSettings.validators.invalidFieldLength',
             {
               field: this.$t(
-                'pageServerPowerOperations.modal.networkSettings.serverSettings.initiatorName'
+                'pageServerPowerOperations.modal.networkSettings.serverSettings.initiatorName',
               ),
               max: this.initiatorNameMaxLength,
-            }
+            },
           );
         } else if (attribute === 'pvm_ibmi_nfs_image_directory') {
           return this.$t(
             'pageServerPowerOperations.modal.networkSettings.validators.invalidFieldLength',
             {
               field: this.$t(
-                'pageServerPowerOperations.modal.networkSettings.serverSettings.imageDirectoryPath'
+                'pageServerPowerOperations.modal.networkSettings.serverSettings.imageDirectoryPath',
               ),
               max: this.nfsImageDirMaxLength,
-            }
+            },
           );
         }
       } else if (this.isInvalid(validationAttribute, 'between')) {
@@ -800,7 +788,7 @@ export default {
             {
               min: 1,
               max: this.vlanTagIdUpperBound,
-            }
+            },
           );
         else if (attribute === 'pvm_ibmi_iscsi_target_port');
         return this.$t(
@@ -808,7 +796,7 @@ export default {
           {
             min: 1,
             max: this.targetPortUpperBound,
-          }
+          },
         );
       }
     },

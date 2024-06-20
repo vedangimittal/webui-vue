@@ -79,7 +79,7 @@ const LicenseStore = {
         .catch((error) => {
           console.log('Licenses', error);
           throw new Error(
-            i18n.t('pageCapacityOnDemand.activation.toast.error')
+            i18n.t('pageCapacityOnDemand.activation.toast.error'),
           );
         });
     },

@@ -72,12 +72,12 @@ const systemParametersStore = {
     async getAggressivePrefetch({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const aggressivePrefetch = RegistryEntries.Attributes.filter(
             (Attribute) =>
-              Attribute.AttributeName == 'hb_proc_favor_aggressive_prefetch'
+              Attribute.AttributeName == 'hb_proc_favor_aggressive_prefetch',
           );
           let aggressivePrefetchValue = aggressivePrefetch[0].CurrentValue;
           let modeValue = aggressivePrefetchValue == 'Enabled' ? true : false;
@@ -88,11 +88,11 @@ const systemParametersStore = {
     async getRpdPolicy({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const rpdPolicy = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'pvm_rpd_policy'
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_policy',
           );
           let rpdPolicyValue = rpdPolicy[0].CurrentValue;
           commit('setRpdPolicy', rpdPolicyValue);
@@ -103,11 +103,11 @@ const systemParametersStore = {
     async getRpdPolicyCurrent({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const rpdPolicyCurr = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'pvm_rpd_feature_current'
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_feature_current',
           );
           let rpdPolicyCurrValue = rpdPolicyCurr[0].CurrentValue;
           commit('setRpdPolicyCurrent', rpdPolicyCurrValue);
@@ -117,11 +117,11 @@ const systemParametersStore = {
     async getRpdFeature({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const rpdFeature = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'pvm_rpd_feature'
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_feature',
           );
           let rpdFeatureValue = rpdFeature[0].CurrentValue;
           commit('setRpdFeature', rpdFeatureValue);
@@ -131,11 +131,11 @@ const systemParametersStore = {
     async getImmediateTestRequested({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const immediateTestRequested = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'pvm_rpd_immediate_test'
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_immediate_test',
           );
           let immediateTestRequestedValue =
             immediateTestRequested[0].CurrentValue;
@@ -148,11 +148,11 @@ const systemParametersStore = {
     async getGuardOnError({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const immediateTestRequested = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'pvm_rpd_guard_policy'
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_guard_policy',
           );
           let immediateTestRequestedValue =
             immediateTestRequested[0].CurrentValue;
@@ -165,14 +165,14 @@ const systemParametersStore = {
     async getRpdPolicyOptions({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const rpdPolicy = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'pvm_rpd_policy'
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_policy',
           );
           let rpdPolicyOptions = rpdPolicy[0].Value.map(
-            ({ ValueName }) => ValueName
+            ({ ValueName }) => ValueName,
           );
           commit('setRpdPolicyOptions', rpdPolicyOptions);
         })
@@ -181,14 +181,14 @@ const systemParametersStore = {
     async getRpdFeatureOptions({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const rpdPolicy = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'pvm_rpd_feature'
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_feature',
           );
           let rpdFeatureOptions = rpdPolicy[0].Value.map(
-            ({ ValueName }) => ValueName
+            ({ ValueName }) => ValueName,
           );
           commit('setRpdFeatureOptions', rpdFeatureOptions);
         })
@@ -197,11 +197,11 @@ const systemParametersStore = {
     async getRpdScheduledRun({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const rpdScheduledRun = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'pvm_rpd_scheduled_tod'
+            (Attribute) => Attribute.AttributeName == 'pvm_rpd_scheduled_tod',
           );
           let RpdScheduledRunValue = rpdScheduledRun[0].CurrentValue;
           const hours = Math.floor(RpdScheduledRunValue / 3600);
@@ -215,12 +215,12 @@ const systemParametersStore = {
     async getRpdScheduledRunDuration({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const rpdScheduledRunDuration = RegistryEntries.Attributes.filter(
             (Attribute) =>
-              Attribute.AttributeName == 'pvm_rpd_scheduled_duration'
+              Attribute.AttributeName == 'pvm_rpd_scheduled_duration',
           );
           let rpdScheduledRunValue = rpdScheduledRunDuration[0].CurrentValue;
           commit('setRpdScheduledRunDuration', rpdScheduledRunValue);
@@ -236,18 +236,18 @@ const systemParametersStore = {
       return api
         .patch(
           '/redfish/v1/Systems/system/Bios/Settings',
-          updatedAggressivePrefetchValue
+          updatedAggressivePrefetchValue,
         )
         .then(() => {
           return i18n.t(
-            'pageSystemParameters.toast.successSavingAggressivePrefetch'
+            'pageSystemParameters.toast.successSavingAggressivePrefetch',
           );
         })
         .catch((error) => {
           console.log(error);
           commit('setAggressivePrefetch', !updatedAggressivePrefetch);
           throw new Error(
-            i18n.t('pageSystemParameters.toast.errorSavingAggressivePrefetch')
+            i18n.t('pageSystemParameters.toast.errorSavingAggressivePrefetch'),
           );
         });
     },
@@ -258,12 +258,12 @@ const systemParametersStore = {
       return await api
         .patch(
           '/redfish/v1/Systems/system/Bios/Settings',
-          updatedRpdPolicyValue
+          updatedRpdPolicyValue,
         )
         .then(() => {
           commit(
             'setRpdPolicy',
-            updatedRpdPolicyValue.Attributes.pvm_rpd_policy
+            updatedRpdPolicyValue.Attributes.pvm_rpd_policy,
           );
           dispatch('getRpdPolicy');
           return i18n.t('pageSystemParameters.toast.successSavingRpdPolicy');
@@ -271,7 +271,7 @@ const systemParametersStore = {
         .catch((error) => {
           console.log('error', error);
           throw new Error(
-            i18n.t('pageSystemParameters.toast.errorSavingRpdPolicy')
+            i18n.t('pageSystemParameters.toast.errorSavingRpdPolicy'),
           );
         });
     },
@@ -282,19 +282,19 @@ const systemParametersStore = {
       return await api
         .patch(
           '/redfish/v1/Systems/system/Bios/Settings',
-          updatedRpdFeatureValue
+          updatedRpdFeatureValue,
         )
         .then(() => {
           commit(
             'setRpdFeature',
-            updatedRpdFeatureValue.Attributes.pvm_rpd_feature
+            updatedRpdFeatureValue.Attributes.pvm_rpd_feature,
           );
           return i18n.t('pageSystemParameters.toast.successSavingRpdFeature');
         })
         .catch((error) => {
           console.log('error', error);
           throw new Error(
-            i18n.t('pageSystemParameters.toast.errorSavingRpdFeature')
+            i18n.t('pageSystemParameters.toast.errorSavingRpdFeature'),
           );
         });
     },
@@ -310,16 +310,16 @@ const systemParametersStore = {
       return api
         .patch(
           '/redfish/v1/Systems/system/Bios/Settings',
-          updatedImmediateTestRequestedValue
+          updatedImmediateTestRequestedValue,
         )
         .then(() => {
           if (value === 'Enabled') {
             return i18n.t(
-              'pageSystemParameters.toast.successStartingDiagnosticTestRun'
+              'pageSystemParameters.toast.successStartingDiagnosticTestRun',
             );
           } else {
             return i18n.t(
-              'pageSystemParameters.toast.successStoppingDiagnosticTestRun'
+              'pageSystemParameters.toast.successStoppingDiagnosticTestRun',
             );
           }
         })
@@ -329,15 +329,15 @@ const systemParametersStore = {
             commit('setImmediateTestRequested', false);
             throw new Error(
               i18n.t(
-                'pageSystemParameters.toast.errorStartingDiagnosticTestRun'
-              )
+                'pageSystemParameters.toast.errorStartingDiagnosticTestRun',
+              ),
             );
           } else {
             commit('setImmediateTestRequested', true);
             throw new Error(
               i18n.t(
-                'pageSystemParameters.toast.errorStoppingDiagnosticTestRun'
-              )
+                'pageSystemParameters.toast.errorStoppingDiagnosticTestRun',
+              ),
             );
           }
         });
@@ -351,7 +351,7 @@ const systemParametersStore = {
       return api
         .patch(
           '/redfish/v1/Systems/system/Bios/Settings',
-          updatedImmediateTestRequestedValue
+          updatedImmediateTestRequestedValue,
         )
         .then(() => {
           return i18n.t('pageSystemParameters.toast.successSavingGuardOnError');
@@ -360,7 +360,7 @@ const systemParametersStore = {
           console.log(error);
           commit('setGuardOnError', !updatedImmediateTestRequested);
           throw new Error(
-            i18n.t('pageSystemParameters.toast.errorSavingGuardOnError')
+            i18n.t('pageSystemParameters.toast.errorSavingGuardOnError'),
           );
         });
     },
@@ -374,7 +374,7 @@ const systemParametersStore = {
       return await api
         .patch(
           '/redfish/v1/Systems/system/Bios/Settings',
-          updatedIoEnlargedCapacity
+          updatedIoEnlargedCapacity,
         )
         .then(() => {
           commit('setRpdScheduledRun', payload.startTime);
@@ -383,18 +383,19 @@ const systemParametersStore = {
         .catch((error) => {
           console.log('error', error);
           throw new Error(
-            i18n.t('pageSystemParameters.toast.errorSavingRpdRun')
+            i18n.t('pageSystemParameters.toast.errorSavingRpdRun'),
           );
         });
     },
     async getLateralCastOutMode({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const lateralCastOutMode = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'hb_lateral_cast_out_mode'
+            (Attribute) =>
+              Attribute.AttributeName == 'hb_lateral_cast_out_mode',
           );
           let lateralCastOutModeValue = lateralCastOutMode[0].CurrentValue;
           let modeValue = lateralCastOutModeValue == 'Enabled' ? true : false;
@@ -411,18 +412,18 @@ const systemParametersStore = {
       return api
         .patch(
           '/redfish/v1/Systems/system/Bios/Settings',
-          updatedLateralCastOutMode
+          updatedLateralCastOutMode,
         )
         .then(() => {
           return i18n.t(
-            'pageSystemParameters.toast.successSavingLateralCastOut'
+            'pageSystemParameters.toast.successSavingLateralCastOut',
           );
         })
         .catch((error) => {
           console.log(error);
           commit('setLateralCastOutMode', !lateralCastOutModeValue);
           throw new Error(
-            i18n.t('pageSystemParameters.toast.errorSavingLateralCastOut')
+            i18n.t('pageSystemParameters.toast.errorSavingLateralCastOut'),
           );
         });
     },
@@ -474,7 +475,7 @@ const systemParametersStore = {
           }
           console.log(error);
           throw new Error(
-            i18n.t('pageSystemParameters.toast.errorSavingFrequencyCap')
+            i18n.t('pageSystemParameters.toast.errorSavingFrequencyCap'),
           );
         });
     },

@@ -221,7 +221,7 @@ export default {
             okTitle: this.$t('global.action.delete'),
             okVariant: 'danger',
             cancelTitle: this.$t('global.action.cancel'),
-          }
+          },
         )
         .then((deleteConfirmed) => {
           if (deleteConfirmed) {
@@ -258,7 +258,7 @@ export default {
               : this.$t('global.action.disable'),
             okVariant: 'danger',
             cancelTitle: this.$t('global.action.cancel'),
-          }
+          },
         )
         .then((dhcpEnableConfirmed) => {
           if (dhcpEnableConfirmed) {

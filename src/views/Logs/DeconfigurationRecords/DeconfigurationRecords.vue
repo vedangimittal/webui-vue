@@ -86,7 +86,7 @@
                         class="info-icon"
                         :title="
                           $t(
-                            'pageDeconfigurationRecords.table.srcDetailsToolTip'
+                            'pageDeconfigurationRecords.table.srcDetailsToolTip',
                           )
                         "
                       >
@@ -148,10 +148,10 @@
               value === 'Critical'
                 ? $t('pageDeconfigurationRecords.severityValues.fatal')
                 : value === 'Warning'
-                ? $t('pageDeconfigurationRecords.severityValues.predictive')
-                : value === 'OK'
-                ? $t('pageDeconfigurationRecords.severityValues.manual')
-                : '--'
+                  ? $t('pageDeconfigurationRecords.severityValues.predictive')
+                  : value === 'OK'
+                    ? $t('pageDeconfigurationRecords.severityValues.manual')
+                    : '--'
             }}
           </template>
           <!-- Status column -->
@@ -355,14 +355,14 @@ export default {
             okTitle: this.$t('global.action.delete'),
             okVariant: 'danger',
             cancelTitle: this.$t('global.action.cancel'),
-          }
+          },
         )
         .then((deleteConfirmed) => {
           if (deleteConfirmed) {
             this.$store
               .dispatch(
                 'deconfigurationRecords/clearAllEntries',
-                this.allEntries
+                this.allEntries,
               )
               .then((message) => this.successToast(message))
               .catch(({ message }) => this.errorToast(message));
@@ -430,7 +430,7 @@ export default {
               title: this.$tc('pageDeconfigurationRecords.modal.deleteTitle'),
               okTitle: this.$t('global.action.delete'),
               cancelTitle: this.$t('global.action.cancel'),
-            }
+            },
           )
           .then((deleteConfirmed) => {
             if (deleteConfirmed) this.deleteRecords([uri]);

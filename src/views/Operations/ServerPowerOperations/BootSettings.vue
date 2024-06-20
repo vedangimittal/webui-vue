@@ -50,9 +50,8 @@ export default {
       isLinuxKvmValid: true,
       form: {
         attributes: this.$store.getters['serverBootSettings/biosAttributes'],
-        attributeValues: this.$store.getters[
-          'serverBootSettings/attributeValues'
-        ],
+        attributeValues:
+          this.$store.getters['serverBootSettings/attributeValues'],
       },
     };
   },
@@ -83,7 +82,7 @@ export default {
       this.$store.dispatch('serverBootSettings/getBiosAttributes'),
       this.$store.dispatch('serverBootSettings/getAttributeValues'),
     ]).finally(
-      this.$root.$emit('server-power-operations-boot-settings-complete')
+      this.$root.$emit('server-power-operations-boot-settings-complete'),
     );
   },
   methods: {
@@ -106,8 +105,8 @@ export default {
             if (settings.biosSettings.pvm_default_os_type == 'Linux KVM') {
               this.successToast(
                 this.$t(
-                  'pageServerPowerOperations.toast.successSaveLinuxKvmSettings'
-                )
+                  'pageServerPowerOperations.toast.successSaveLinuxKvmSettings',
+                ),
               );
             } else if (
               (settings.biosSettings.pvm_default_os_type == 'IBM I' &&
@@ -118,24 +117,24 @@ export default {
               if (this.isInPhypStandby) {
                 this.infoToast(
                   this.$t(
-                    'pageServerPowerOperations.toast.successSaveIBMiStandby'
-                  )
+                    'pageServerPowerOperations.toast.successSaveIBMiStandby',
+                  ),
                 ),
                   this.successToast(
                     this.$t(
-                      'pageServerPowerOperations.toast.successSaveSettings'
-                    )
+                      'pageServerPowerOperations.toast.successSaveSettings',
+                    ),
                   );
               } else {
                 this.infoToast(
                   this.$t(
-                    'pageServerPowerOperations.toast.successSaveIbmiOsRunningInfo'
-                  )
+                    'pageServerPowerOperations.toast.successSaveIbmiOsRunningInfo',
+                  ),
                 ),
                   this.successToast(
                     this.$t(
-                      'pageServerPowerOperations.toast.successSaveSettings'
-                    )
+                      'pageServerPowerOperations.toast.successSaveSettings',
+                    ),
                   );
               }
             } else {

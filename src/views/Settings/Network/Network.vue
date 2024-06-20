@@ -85,7 +85,7 @@ import TableIpv6 from './TableIpv6.vue';
 import TableIpv6StaticDefaultGateway from './TableIpv6StaticDefaultGateway.vue';
 
 export default {
-  name: 'Network',
+  name: 'NetworkPage',
   components: {
     ModalHostname,
     ModalIpv4,
@@ -155,24 +155,25 @@ export default {
   },
   methods: {
     getModalInfo() {
-      this.defaultGateway = this.$store.getters['network/networkSettings'][
-        this.tabIndex
-      ].defaultGateway;
+      this.defaultGateway =
+        this.$store.getters['network/networkSettings'][
+          this.tabIndex
+        ].defaultGateway;
 
-      this.currentHostname = this.$store.getters['network/networkSettings'][
-        this.tabIndex
-      ].hostname;
+      this.currentHostname =
+        this.$store.getters['network/networkSettings'][this.tabIndex].hostname;
 
-      this.currentMacAddress = this.$store.getters['network/networkSettings'][
-        this.tabIndex
-      ].macAddress;
+      this.currentMacAddress =
+        this.$store.getters['network/networkSettings'][
+          this.tabIndex
+        ].macAddress;
     },
     getTabIndex(selectedIndex) {
       this.tabIndex = selectedIndex;
       this.$store.dispatch('network/setSelectedTabIndex', this.tabIndex);
       this.$store.dispatch(
         'network/setSelectedTabId',
-        this.network[this.tabIndex].id
+        this.network[this.tabIndex].id,
       );
       this.getModalInfo();
     },

@@ -60,12 +60,12 @@
           isIoExpansionChassis && isPoweredOff
             ? $t('global.status.unavailable')
             : value === 'OK'
-            ? $t('global.status.ok')
-            : value === 'Warning'
-            ? $t('global.status.warning')
-            : value === 'Critical'
-            ? $t('global.status.critical')
-            : '--'
+              ? $t('global.status.ok')
+              : value === 'Warning'
+                ? $t('global.status.warning')
+                : value === 'Critical'
+                  ? $t('global.status.critical')
+                  : '--'
         }}
       </template>
       <!-- Status -->
@@ -74,30 +74,30 @@
           isIoExpansionChassis && isPoweredOff
             ? $t('global.status.unavailable')
             : row.item.status === 'Present'
-            ? $t('global.status.present')
-            : row.item.status === 'Absent'
-            ? $t('global.status.absent')
-            : row.item.status === 'Deferring'
-            ? $t('global.status.deferring')
-            : row.item.status === 'Disabled'
-            ? $t('global.status.disabled')
-            : row.item.status === 'InTest'
-            ? $t('global.status.inTest')
-            : row.item.status === 'Qualified'
-            ? $t('global.status.qualified')
-            : row.item.status === 'Quiesced'
-            ? $t('global.status.quiesced')
-            : row.item.status === 'StandbyOffline'
-            ? $t('global.status.standbyOffline')
-            : row.item.status === 'StandbySpare'
-            ? $t('global.status.standbySpare')
-            : row.item.status === 'Starting'
-            ? $t('global.status.starting')
-            : row.item.status === 'UnavailableOffline'
-            ? $t('global.status.unavailableOffline')
-            : row.item.status === 'Updating'
-            ? $t('global.status.updating')
-            : row.item.status
+              ? $t('global.status.present')
+              : row.item.status === 'Absent'
+                ? $t('global.status.absent')
+                : row.item.status === 'Deferring'
+                  ? $t('global.status.deferring')
+                  : row.item.status === 'Disabled'
+                    ? $t('global.status.disabled')
+                    : row.item.status === 'InTest'
+                      ? $t('global.status.inTest')
+                      : row.item.status === 'Qualified'
+                        ? $t('global.status.qualified')
+                        : row.item.status === 'Quiesced'
+                          ? $t('global.status.quiesced')
+                          : row.item.status === 'StandbyOffline'
+                            ? $t('global.status.standbyOffline')
+                            : row.item.status === 'StandbySpare'
+                              ? $t('global.status.standbySpare')
+                              : row.item.status === 'Starting'
+                                ? $t('global.status.starting')
+                                : row.item.status === 'UnavailableOffline'
+                                  ? $t('global.status.unavailableOffline')
+                                  : row.item.status === 'Updating'
+                                    ? $t('global.status.updating')
+                                    : row.item.status
         }}
         <info-tooltip :title="getStatusTooltip(row.item.status)" />
       </template>
@@ -320,7 +320,7 @@ export default {
           return this.$t('pageInventory.enumDescriptionIndicator.quiesced');
         case 'StandbyOffline':
           return this.$t(
-            'pageInventory.enumDescriptionIndicator.standbyOffline'
+            'pageInventory.enumDescriptionIndicator.standbyOffline',
           );
         case 'StandbySpare':
           return this.$t('pageInventory.enumDescriptionIndicator.standbySpare');
@@ -328,7 +328,7 @@ export default {
           return this.$t('pageInventory.enumDescriptionIndicator.starting');
         case 'UnavailableOffline':
           return this.$t(
-            'pageInventory.enumDescriptionIndicator.unavailableOffline'
+            'pageInventory.enumDescriptionIndicator.unavailableOffline',
           );
         case 'Updating':
           return this.$t('pageInventory.enumDescriptionIndicator.updating');

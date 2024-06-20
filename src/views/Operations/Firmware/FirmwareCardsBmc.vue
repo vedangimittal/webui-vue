@@ -151,7 +151,7 @@ export default {
           {
             title: this.$t('pageFirmware.toast.switchToRunning.step1'),
             timestamp: true,
-          }
+          },
         );
         this.$store
           .dispatch('firmware/switchBmcFirmwareAndReboot')
@@ -169,7 +169,7 @@ export default {
           {
             title: this.$t('pageFirmware.toast.switchToRunning.step2'),
             timestamp: true,
-          }
+          },
         );
         const timer = (checkCounter = 0) => {
           checkCounter++;
@@ -180,7 +180,7 @@ export default {
           if (checkCounter > 10) {
             this.endLoader();
             return this.errorToast(
-              this.$t('pageFirmware.toast.errorSwitchImages')
+              this.$t('pageFirmware.toast.errorSwitchImages'),
             );
           }
 
@@ -207,7 +207,7 @@ export default {
               title: this.$t('pageFirmware.toast.switchToRunning.step3'),
               refreshAction: true,
               timestamp: true,
-            }
+            },
           );
         }, 120000); // 2 minutes
       };

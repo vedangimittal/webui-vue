@@ -305,7 +305,7 @@ const PcieTopologyStore = {
                   await api
                     .get(
                       chassisMembers[index]?.PCIeSlots?.Slots[j]?.Links?.Oem
-                        ?.IBM?.AssociatedAssembly['@odata.id']
+                        ?.IBM?.AssociatedAssembly['@odata.id'],
                     )
                     .then(async (assemblyResponse) => {
                       singleSlotData['associatedAssembly'] =
@@ -321,7 +321,7 @@ const PcieTopologyStore = {
                 }
               }
               chassisData.detailedInfo.pcieSlots['eachSlot'].push(
-                singleSlotData
+                singleSlotData,
               );
               if (j < pcieSlotsLength) {
                 j++;
@@ -436,7 +436,7 @@ const PcieTopologyStore = {
                   .get(
                     cableMembers[index]?.Links?.DownstreamResources[0][
                       '@odata.id'
-                    ]
+                    ],
                   )
                   .then(async (downstreamResources) => {
                     const downstreamUri = downstreamResources.data['@odata.id'];
@@ -520,7 +520,7 @@ const PcieTopologyStore = {
                           ]
                         ) {
                           cablesData.detailedInfo.upstreamPorts.push(
-                            singlePort
+                            singlePort,
                           );
                           cablesData.detailedInfo['grandParentInfo'] = {};
                           cablesData.detailedInfo.grandParentInfo.data =
@@ -545,11 +545,12 @@ const PcieTopologyStore = {
                                       '@odata.id'
                                     ]
                                 ) {
-                                  const slotParent = oneSlot.pcieDevice?.Links?.Oem?.IBM?.PCIeSlot[
-                                    '@odata.id'
-                                  ]
-                                    .split('/PCIeSlots')
-                                    .shift();
+                                  const slotParent =
+                                    oneSlot.pcieDevice?.Links?.Oem?.IBM?.PCIeSlot[
+                                      '@odata.id'
+                                    ]
+                                      .split('/PCIeSlots')
+                                      .shift();
                                   for (let l = 0; l < chassisInfo.length; l++) {
                                     const oneChassis = chassisInfo[l];
                                     if (
@@ -597,7 +598,7 @@ const PcieTopologyStore = {
                           cablesData.detailedInfo.grandParentInfo.expanderDevice =
                             uspRes.data;
                           cablesData.detailedInfo.upstreamPorts.push(
-                            uspPorts[p]
+                            uspPorts[p],
                           );
                           if (
                             uspRes.data.Links?.PCIeDevices &&
@@ -610,7 +611,8 @@ const PcieTopologyStore = {
                                 pcieMember['@odata.id'] ===
                                   uspRes.data.Links?.PCIeDevices[0]['@odata.id']
                               ) {
-                                cablesData.detailedInfo.grandParentInfo.pcieDevice = pcieMember;
+                                cablesData.detailedInfo.grandParentInfo.pcieDevice =
+                                  pcieMember;
                                 isPcieDevice = true;
                                 chassisMembers.map((chas) => {
                                   let slotSet = false;
@@ -648,7 +650,7 @@ const PcieTopologyStore = {
               ) {
                 await api
                   .get(
-                    cableMembers[index]?.Links?.UpstreamPorts[0]['@odata.id']
+                    cableMembers[index]?.Links?.UpstreamPorts[0]['@odata.id'],
                   )
                   .then((coresponse) => {
                     correspondingUSP = coresponse.data;
@@ -839,7 +841,7 @@ const PcieTopologyStore = {
                         }
                       }
                     }
-                  }
+                  },
                 );
               }
               if (cable.detailedInfo.downstreamChassis.length > 0) {
@@ -930,7 +932,7 @@ const PcieTopologyStore = {
                                     ) {
                                       return true;
                                     }
-                                  }
+                                  },
                                 );
                                 if (duplicate === undefined) {
                                   row.ioSlotLocation.push({
@@ -939,14 +941,13 @@ const PcieTopologyStore = {
                                     locationNumber:
                                       slot2?.data.Location?.PartLocation
                                         ?.ServiceLabel,
-                                    uri:
-                                      cable.detailedInfo.downstreamResources[0]
-                                        .pcieSlotsUri,
+                                    uri: cable.detailedInfo
+                                      .downstreamResources[0].pcieSlotsUri,
                                   });
                                 }
                               }
                             }
-                          }
+                          },
                         );
                       } else if (
                         cable.detailedInfo.downstreamChassis.length > 0
@@ -976,7 +977,7 @@ const PcieTopologyStore = {
                                         ) {
                                           return true;
                                         }
-                                      }
+                                      },
                                     );
                                     if (duplicate === undefined) {
                                       row.ioSlotLocation.push({
@@ -985,16 +986,15 @@ const PcieTopologyStore = {
                                         locationNumber:
                                           dsSlot?.data?.Location?.PartLocation
                                             ?.ServiceLabel,
-                                        uri:
-                                          cable.detailedInfo
-                                            .downstreamChassis[0].pcieSlotsUri,
+                                        uri: cable.detailedInfo
+                                          .downstreamChassis[0].pcieSlotsUri,
                                       });
                                     }
                                   }
-                                }
+                                },
                               );
                             }
-                          }
+                          },
                         );
 
                         if (
@@ -1011,7 +1011,7 @@ const PcieTopologyStore = {
                               ) {
                                 return true;
                               }
-                            }
+                            },
                           );
                           if (duplicate === undefined) {
                             row.remotePortLocation.push({
@@ -1021,10 +1021,9 @@ const PcieTopologyStore = {
                               locationNumber:
                                 cable.detailedInfo.downstreamPorts[0].data
                                   ?.Location?.PartLocation?.ServiceLabel,
-                              uri:
-                                cable.detailedInfo.downstreamPorts[0].data[
-                                  '@odata.id'
-                                ],
+                              uri: cable.detailedInfo.downstreamPorts[0].data[
+                                '@odata.id'
+                              ],
                             });
                           }
                           row.tempLocalPortLocation.push({
@@ -1034,10 +1033,9 @@ const PcieTopologyStore = {
                             locationNumber:
                               cable.detailedInfo.downstreamPorts[0].corUSP
                                 ?.Location?.PartLocation?.ServiceLabel,
-                            uri:
-                              cable.detailedInfo.downstreamPorts[0].corUSP[
-                                '@odata.id'
-                              ],
+                            uri: cable.detailedInfo.downstreamPorts[0].corUSP[
+                              '@odata.id'
+                            ],
                           });
                         }
                         if (cable.data.PartNumber) {
@@ -1115,11 +1113,11 @@ const PcieTopologyStore = {
                                       }
                                     });
                                   }
-                                }
+                                },
                               );
                             }
                           }
-                        }
+                        },
                       );
                     }
                   });
@@ -1156,7 +1154,7 @@ const PcieTopologyStore = {
                   } else {
                     req.push({});
                   }
-                })
+                }),
               );
             });
             await api.patch(uri, { Slots: req });
@@ -1169,16 +1167,16 @@ const PcieTopologyStore = {
               console.log('error', error);
               if (requestBody.value.led) {
                 throw new Error(
-                  i18n.t('pagePcieTopology.toast.errorEnableIdentifyLed')
+                  i18n.t('pagePcieTopology.toast.errorEnableIdentifyLed'),
                 );
               } else {
                 throw new Error(
-                  i18n.t('pagePcieTopology.toast.errorDisableIdentifyLed')
+                  i18n.t('pagePcieTopology.toast.errorDisableIdentifyLed'),
                 );
               }
             });
           }
-        })
+        }),
       );
     },
     async getAllLedValues(_, selectedObj) {
@@ -1209,7 +1207,7 @@ const PcieTopologyStore = {
                     uri: data['@odata.id'],
                   });
                 });
-              })
+              }),
             );
           }
           if (selectedObj.remotePortLocation.length > 0) {
@@ -1222,7 +1220,7 @@ const PcieTopologyStore = {
                     uri: data['@odata.id'],
                   });
                 });
-              })
+              }),
             );
           }
           if (selectedObj.ioSlots.length > 0) {
@@ -1242,13 +1240,13 @@ const PcieTopologyStore = {
                           uri: ioSlot.uri,
                         });
                       }
-                    })
+                    }),
                   );
                 });
-              })
+              }),
             );
           }
-        })
+        }),
       );
       return returningObj;
     },

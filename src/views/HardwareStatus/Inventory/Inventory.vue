@@ -361,7 +361,7 @@ export default {
       });
       const powerSuppliesTablePromise = new Promise((resolve) => {
         this.$root.$on('hardware-status-power-supplies-complete', () =>
-          resolve()
+          resolve(),
         );
       });
       const processorsTablePromise = new Promise((resolve) => {
@@ -381,7 +381,7 @@ export default {
       });
       const fabricAdaptersTablePromise = new Promise((resolve) => {
         this.$root.$on('hardware-status-fabric-adapters-complete', () =>
-          resolve()
+          resolve(),
         );
       });
       if (this.currentTab === 0 && value === 'created') {

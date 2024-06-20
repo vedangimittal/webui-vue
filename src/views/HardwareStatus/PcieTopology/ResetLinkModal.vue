@@ -93,14 +93,14 @@ export default {
           this.successToast(
             this.$t('pagePcieTopology.toast.successReset', {
               id: this.resetType,
-            })
+            }),
           );
         })
         .catch(() => {
           this.errorToast(
             this.$t('pagePcieTopology.toast.errorReset', {
               id: this.resetType,
-            })
+            }),
           );
         });
       this.$nextTick(() => this.$refs.modal.hide());

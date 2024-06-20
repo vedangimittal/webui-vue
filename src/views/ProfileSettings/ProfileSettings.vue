@@ -247,7 +247,7 @@ export default {
       localStorage.setItem('storedUtcDisplay', this.form.isUtcDisplay);
       this.$store.commit('global/setUtcTime', this.form.isUtcDisplay);
       this.successToast(
-        this.$t('pageProfileSettings.toast.successUpdatingTimeZone')
+        this.$t('pageProfileSettings.toast.successUpdatingTimeZone'),
       );
     },
     submitForm() {

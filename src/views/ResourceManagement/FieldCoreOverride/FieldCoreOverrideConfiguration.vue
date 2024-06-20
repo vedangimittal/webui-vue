@@ -64,9 +64,8 @@ export default {
   mixins: [VuelidateMixin, BVToastMixin],
   data() {
     return {
-      inputEnableFieldCoreOverride: this.$store.getters[
-        'fieldCoreOverride/isEnabled'
-      ],
+      inputEnableFieldCoreOverride:
+        this.$store.getters['fieldCoreOverride/isEnabled'],
       inputConfiguredCores:
         this.$store.getters['fieldCoreOverride/configuredCores'] || null,
       minValue: 1,
@@ -82,7 +81,7 @@ export default {
     maxConfiguredCores() {
       return Math.min(
         this.systems?.[0]?.processorSummaryCoreCount,
-        this.processorInfo?.PermProcs?.MaxAuthorizedDevices
+        this.processorInfo?.PermProcs?.MaxAuthorizedDevices,
       );
     },
   },
@@ -120,7 +119,7 @@ export default {
       this.$store
         .dispatch(
           'fieldCoreOverride/setFieldCoreOverride',
-          this.inputConfiguredCores
+          this.inputConfiguredCores,
         )
         .then((success) => this.successToast(success))
         .catch(({ message }) => this.errorToast(message));

@@ -346,7 +346,7 @@
         </b-btn>
         <a
           :href="`data:text/plain;charset=utf-8,${encodeURIComponent(
-            csrString
+            csrString,
           )}`"
           download="certificate.txt"
           class="btn btn-primary"

@@ -328,9 +328,8 @@ export default {
   data() {
     return {
       form: {
-        logicalMemorySizeOption: this.$store.getters[
-          'resourceMemory/logicalMemorySize'
-        ],
+        logicalMemorySizeOption:
+          this.$store.getters['resourceMemory/logicalMemorySize'],
       },
       quickLinks: [
         {

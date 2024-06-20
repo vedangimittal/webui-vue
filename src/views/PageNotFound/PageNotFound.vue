@@ -1,15 +1,9 @@
+<!-- TODO: Work Requird -->
 <template>
   <b-container fluid="xl">
-    <page-title
-      :title="$t('appPageTitle.pageNotFound')"
-      :description="$t('pagePageNotFound.description')"
-    />
+    <page-title :description="$t('pagePageNotFound.description')" />
   </b-container>
 </template>
-<script>
-import PageTitle from '@/components/Global/PageTitle';
-export default {
-  name: 'PageNotFound',
-  components: { PageTitle },
-};
+<script setup>
+import PageTitle from '@/components/Global/PageTitle.vue';
 </script>

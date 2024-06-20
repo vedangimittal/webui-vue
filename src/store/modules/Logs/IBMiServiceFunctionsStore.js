@@ -24,19 +24,21 @@ const IBMiServiceFunctionsStore = {
       return await api
         .post(
           '/redfish/v1/Systems/system/Actions/Oem/OemComputerSystem.ExecutePanelFunction',
-          { FuncNo: value }
+          {
+            FuncNo: value,
+          },
         )
         .then(() => {
           dispatch('getAvailableServiceFunctions');
           return i18n.tc(
-            'pageIbmiServiceFunctions.toast.successExecuteFunction'
+            'pageIbmiServiceFunctions.toast.successExecuteFunction',
           );
         })
         .catch((error) => {
           console.log(error);
           dispatch('getAvailableServiceFunctions');
           throw new Error(
-            i18n.tc('pageIbmiServiceFunctions.toast.errorExecuteFunction')
+            i18n.tc('pageIbmiServiceFunctions.toast.errorExecuteFunction'),
           );
         });
     },

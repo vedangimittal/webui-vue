@@ -5,19 +5,21 @@ module.exports = {
   },
   extends: ['plugin:vue/recommended', 'eslint:recommended', '@vue/prettier'],
   rules: {
+    'vue/multi-word-component-names': 'off',
     'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'prettier/prettier': [
       'error',
       {
         singleQuote: true,
+        semi: true,
+        tabWidth: 2,
+        trailingComma: 'all',
       },
     ],
     'vue/component-name-in-template-casing': ['error', 'kebab-case'],
   },
-  parserOptions: {
-    parser: 'babel-eslint',
-  },
+  ignorePatterns: ['*.timestamp-*.mjs'],
   overrides: [
     {
       files: [

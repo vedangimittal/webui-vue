@@ -244,13 +244,13 @@ export default {
       return this.getFilteredTableDataByDate(
         this.allLogs,
         this.filterStartDate,
-        this.filterEndDate
+        this.filterEndDate,
       );
     },
     filteredLogs() {
       return this.getFilteredTableData(
         this.filteredLogsByDate,
-        this.activeFilters
+        this.activeFilters,
       );
     },
   },
@@ -281,7 +281,7 @@ export default {
       var element = document.createElement('a');
       element.setAttribute(
         'href',
-        'data:text/plain;charset=utf-8,' + encodeURIComponent(decodedData)
+        'data:text/plain;charset=utf-8,' + encodeURIComponent(decodedData),
       );
       element.setAttribute('download', fileName);
       element.style.display = 'none';
@@ -297,7 +297,7 @@ export default {
         await this.$store
           .dispatch(
             'auditLogs/downloadLogData',
-            this.allLogs[0].additionalDataUri
+            this.allLogs[0].additionalDataUri,
           )
           .then((response) => {
             auditLogsData.push(response.data);
@@ -305,7 +305,7 @@ export default {
           .then(() => {
             this.downloadFile(auditLogsData);
             this.successToast(
-              i18n.t('pageAuditLogs.toast.successStartDownload')
+              i18n.t('pageAuditLogs.toast.successStartDownload'),
             );
           })
           .catch((error) => {

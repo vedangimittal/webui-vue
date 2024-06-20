@@ -249,7 +249,7 @@ export default {
               },
             ],
           };
-        }
+        },
       );
     },
     batchExportData() {
@@ -259,13 +259,13 @@ export default {
       return this.getFilteredTableDataByDate(
         this.allLogs,
         this.filterStartDate,
-        this.filterEndDate
+        this.filterEndDate,
       );
     },
     filteredLogs() {
       return this.getFilteredTableData(
         this.filteredLogsByDate,
-        this.activeFilters
+        this.activeFilters,
       );
     },
   },
@@ -289,11 +289,11 @@ export default {
               this.$set(
                 this.srcData,
                 timeStampOffset,
-                `${postCode.trim()} ${srcWords}`
-              )
+                `${postCode.trim()} ${srcWords}`,
+              ),
             )
             .catch(() =>
-              this.errorToast(i18n.t('pagePostCodeLogs.toast.errorSrcFetch'))
+              this.errorToast(i18n.t('pagePostCodeLogs.toast.errorSrcFetch')),
             );
         }
       }
@@ -314,7 +314,7 @@ export default {
       window.open(
         '#/console/post-codes',
         '_blank',
-        'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=200,height=200'
+        'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=200,height=200',
       );
     },
     onFilterChange({ activeFilters }) {

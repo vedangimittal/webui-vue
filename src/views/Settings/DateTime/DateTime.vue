@@ -340,7 +340,7 @@ export default {
     },
     bmcTime() {
       this.form.manual.date = this.$options.filters.formatDate(
-        this.$store.getters['global/bmcTime']
+        this.$store.getters['global/bmcTime'],
       );
       this.form.manual.time = this.$options.filters
         .formatTime(this.$store.getters['global/bmcTime'])
@@ -372,9 +372,6 @@ export default {
       this.form.configurationSelected = this.isNtpProtocolEnabled
         ? 'ntp'
         : 'manual';
-      this.setNtpValues();
-    },
-    setNtpValues() {
       [
         this.form.ntp.firstAddress = '',
         this.form.ntp.secondAddress = '',
@@ -418,10 +415,10 @@ export default {
         const ntpArrayFiltered = ntpArray.filter((x) => x);
 
         dateTimeForm.ntpServersArray = [...ntpArrayFiltered];
-
         [this.ntpServers[0], this.ntpServers[1], this.ntpServers[2]] = [
           ...dateTimeForm.ntpServersArray,
         ];
+
         this.setNtpValues();
       }
 
@@ -468,7 +465,7 @@ export default {
         parseInt(datesArray[1]) - 1, // User input month
         datesArray[2], // User input day
         timeArray[0], // User input hour
-        timeArray[1] // User input minute
+        timeArray[1], // User input minute
       );
       return new Date(utcDate);
     },

@@ -37,10 +37,10 @@
           value === 'OK'
             ? $t('global.status.ok')
             : value === 'Warning'
-            ? $t('global.status.warning')
-            : value === 'Critical'
-            ? $t('global.status.critical')
-            : '--'
+              ? $t('global.status.warning')
+              : value === 'Critical'
+                ? $t('global.status.critical')
+                : '--'
         }}
       </template>
       <!-- Status -->
@@ -49,28 +49,28 @@
           row.item.statusState === 'Enabled'
             ? $t('global.status.present')
             : row.item.statusState === 'Absent'
-            ? $t('global.status.absent')
-            : row.item.statusState === 'Deferring'
-            ? $t('global.status.deferring')
-            : row.item.statusState === 'Disabled'
-            ? $t('global.status.disabled')
-            : row.item.statusState === 'InTest'
-            ? $t('global.status.inTest')
-            : row.item.statusState === 'Qualified'
-            ? $t('global.status.qualified')
-            : row.item.statusState === 'Quiesced'
-            ? $t('global.status.quiesced')
-            : row.item.statusState === 'StandbyOffline'
-            ? $t('global.status.standbyOffline')
-            : row.item.statusState === 'StandbySpare'
-            ? $t('global.status.standbySpare')
-            : row.item.statusState === 'Starting'
-            ? $t('global.status.starting')
-            : row.item.statusState === 'UnavailableOffline'
-            ? $t('global.status.unavailableOffline')
-            : row.item.statusState === 'Updating'
-            ? $t('global.status.updating')
-            : row.item.statusState
+              ? $t('global.status.absent')
+              : row.item.statusState === 'Deferring'
+                ? $t('global.status.deferring')
+                : row.item.statusState === 'Disabled'
+                  ? $t('global.status.disabled')
+                  : row.item.statusState === 'InTest'
+                    ? $t('global.status.inTest')
+                    : row.item.statusState === 'Qualified'
+                      ? $t('global.status.qualified')
+                      : row.item.statusState === 'Quiesced'
+                        ? $t('global.status.quiesced')
+                        : row.item.statusState === 'StandbyOffline'
+                          ? $t('global.status.standbyOffline')
+                          : row.item.statusState === 'StandbySpare'
+                            ? $t('global.status.standbySpare')
+                            : row.item.statusState === 'Starting'
+                              ? $t('global.status.starting')
+                              : row.item.statusState === 'UnavailableOffline'
+                                ? $t('global.status.unavailableOffline')
+                                : row.item.statusState === 'Updating'
+                                  ? $t('global.status.updating')
+                                  : row.item.statusState
         }}
         <info-tooltip :title="getStatusTooltip(row.item.statusState)" />
       </template>
@@ -231,7 +231,7 @@ export default {
           return this.$t('pageInventory.enumDescriptionIndicator.quiesced');
         case 'StandbyOffline':
           return this.$t(
-            'pageInventory.enumDescriptionIndicator.standbyOffline'
+            'pageInventory.enumDescriptionIndicator.standbyOffline',
           );
         case 'StandbySpare':
           return this.$t('pageInventory.enumDescriptionIndicator.standbySpare');
@@ -239,7 +239,7 @@ export default {
           return this.$t('pageInventory.enumDescriptionIndicator.starting');
         case 'UnavailableOffline':
           return this.$t(
-            'pageInventory.enumDescriptionIndicator.unavailableOffline'
+            'pageInventory.enumDescriptionIndicator.unavailableOffline',
           );
         case 'Updating':
           return this.$t('pageInventory.enumDescriptionIndicator.updating');

@@ -66,7 +66,7 @@
                   type="number"
                   :state="
                     getValidationState(
-                      $v.idlePowerSaver.enterUtilizationPercent
+                      $v.idlePowerSaver.enterUtilizationPercent,
                     )
                   "
                 ></b-form-input>
@@ -79,10 +79,10 @@
                           {
                             min: utilizationThresholdMin,
                             max: utilizationThresholdMax,
-                          }
+                          },
                         )
                       : $t(
-                          'pagePower.utilizationPercentValidation.enterUtilization'
+                          'pagePower.utilizationPercentValidation.enterUtilization',
                         )
                   }}
                 </b-form-invalid-feedback>
@@ -143,10 +143,10 @@
                           {
                             min: utilizationThresholdMin,
                             max: utilizationThresholdMax,
-                          }
+                          },
                         )
                       : $t(
-                          'pagePower.utilizationPercentValidation.exitUtilization'
+                          'pagePower.utilizationPercentValidation.exitUtilization',
                         )
                   }}
                 </b-form-invalid-feedback>
@@ -237,14 +237,14 @@ export default {
         enterUtilizationPercent: {
           between: between(
             this.utilizationThresholdMin,
-            this.utilizationThresholdMax
+            this.utilizationThresholdMax,
           ),
           maxValue: maxValue(this.idlePowerSaver.exitUtilizationPercent),
         },
         exitUtilizationPercent: {
           between: between(
             this.utilizationThresholdMin,
-            this.utilizationThresholdMax
+            this.utilizationThresholdMax,
           ),
           minValue: minValue(this.idlePowerSaver.enterUtilizationPercent),
         },

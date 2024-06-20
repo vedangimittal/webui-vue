@@ -123,7 +123,7 @@ export default {
       this.$store
         .dispatch(
           'powerControl/setPowerPerformanceMode',
-          this.powerPerformanceMode
+          this.powerPerformanceMode,
         )
         .then((message) => this.successToast(message))
         .catch(({ message }) => this.errorToast(message));

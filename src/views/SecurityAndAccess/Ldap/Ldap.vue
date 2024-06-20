@@ -266,9 +266,8 @@ export default {
       form: {
         ldapAuthenticationEnabled: this.$store.getters['ldap/isServiceEnabled'],
         secureLdapEnabled: false,
-        activeDirectoryEnabled: this.$store.getters[
-          'ldap/isActiveDirectoryEnabled'
-        ],
+        activeDirectoryEnabled:
+          this.$store.getters['ldap/isActiveDirectoryEnabled'],
         serverUri: '',
         bindDn: '',
         bindPassword: '',
@@ -387,8 +386,8 @@ export default {
       this.form.secureLdapEnabled = !this.form.ldapAuthenticationEnabled
         ? false
         : !this.caCertificateExpiration || !this.ldapCertificateExpiration
-        ? false
-        : secureLdap;
+          ? false
+          : secureLdap;
       this.form.serverUri = serverUri;
       this.form.bindDn = bindDn;
       this.form.bindPassword = '';

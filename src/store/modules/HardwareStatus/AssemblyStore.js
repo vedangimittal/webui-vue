@@ -72,11 +72,11 @@ const AssemblyStore = {
           console.log('error', error);
           if (led.identifyLed) {
             throw new Error(
-              i18n.t('pageInventory.toast.errorEnableIdentifyLed')
+              i18n.t('pageInventory.toast.errorEnableIdentifyLed'),
             );
           } else {
             throw new Error(
-              i18n.t('pageInventory.toast.errorDisableIdentifyLed')
+              i18n.t('pageInventory.toast.errorDisableIdentifyLed'),
             );
           }
         });

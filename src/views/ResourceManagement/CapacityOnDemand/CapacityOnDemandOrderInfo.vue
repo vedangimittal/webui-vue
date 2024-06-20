@@ -138,7 +138,7 @@
               <p>
                 {{
                   $t(
-                    'pageCapacityOnDemand.orderInfo.firmwareAccessKeyExpiration'
+                    'pageCapacityOnDemand.orderInfo.firmwareAccessKeyExpiration',
                   )
                 }}
                 <span v-if="hasLicenses" class="font-weight-bold">--</span>

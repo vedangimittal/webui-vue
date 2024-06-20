@@ -166,7 +166,7 @@ export default {
           {
             title: this.$t('pageFirmware.toast.updateFirmware.step1'),
             timestamp: true,
-          }
+          },
         );
         if (this.isWorkstationSelected) {
           this.dispatchWorkstationUpload(activateFirmware);
@@ -192,28 +192,29 @@ export default {
           if (checkCounter > 36) {
             this.endLoader();
             return this.errorToast(
-              this.$t('pageFirmware.toast.errorActivation')
+              this.$t('pageFirmware.toast.errorActivation'),
             );
           }
 
           Promise.all([currentTask(data)]).then((res) => {
             // Check to see if activation was aborted
             const activationAborted = res[0].Messages.filter(
-              (message) => message.MessageId === 'TaskEvent.1.0.1.TaskAborted'
+              (message) => message.MessageId === 'TaskEvent.1.0.1.TaskAborted',
             )[0];
 
             if (activationAborted) {
               if (activationAborted?.Oem?.OpenBMC?.AbortReason) {
-                const message = activationAborted?.Oem?.OpenBMC?.AbortReason?.split(
-                  '.'
-                ).pop();
+                const message =
+                  activationAborted?.Oem?.OpenBMC?.AbortReason?.split(
+                    '.',
+                  ).pop();
                 if (message === 'ExpiredAccessKey')
                   return this.errorToast(
-                    this.$t('pageFirmware.toast.expiredAccessKeyError')
+                    this.$t('pageFirmware.toast.expiredAccessKeyError'),
                   );
               } else {
                 return this.errorToast(
-                  this.$t('pageFirmware.toast.errorActivation')
+                  this.$t('pageFirmware.toast.errorActivation'),
                 );
               }
             }
@@ -236,7 +237,7 @@ export default {
             {
               title: this.$t('pageFirmware.toast.updateFirmware.step2'),
               timestamp: true,
-            }
+            },
           );
           currentTaskProgress(0, taskLink);
         } else {
@@ -252,7 +253,7 @@ export default {
           {
             title: this.$t('pageFirmware.toast.updateFirmware.step3'),
             timestamp: true,
-          }
+          },
         );
 
         const rebootProgress = async () => {
@@ -284,7 +285,7 @@ export default {
             title: this.$t('pageFirmware.toast.updateFirmware.step4'),
             refreshAction: true,
             timestamp: true,
-          }
+          },
         );
       };
 

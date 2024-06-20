@@ -35,35 +35,35 @@ export default {
       items: [
         {
           description: this.$t(
-            'pageUserManagement.tableRoles.configureComponentsManagedByThisService'
+            'pageUserManagement.tableRoles.configureComponentsManagedByThisService',
           ),
           administrator: true,
           readonly: false,
         },
         {
           description: this.$t(
-            'pageUserManagement.tableRoles.configureManagerResources'
+            'pageUserManagement.tableRoles.configureManagerResources',
           ),
           administrator: true,
           readonly: false,
         },
         {
           description: this.$t(
-            'pageUserManagement.tableRoles.updatePasswordForCurrentUserAccount'
+            'pageUserManagement.tableRoles.updatePasswordForCurrentUserAccount',
           ),
           administrator: true,
           readonly: true,
         },
         {
           description: this.$t(
-            'pageUserManagement.tableRoles.configureUsersAndTheirAccounts'
+            'pageUserManagement.tableRoles.configureUsersAndTheirAccounts',
           ),
           administrator: true,
           readonly: false,
         },
         {
           description: this.$t(
-            'pageUserManagement.tableRoles.logInToTheServiceAndReadResources'
+            'pageUserManagement.tableRoles.logInToTheServiceAndReadResources',
           ),
           administrator: true,
           readonly: true,

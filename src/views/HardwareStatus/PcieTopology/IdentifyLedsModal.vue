@@ -150,11 +150,11 @@ export default {
           this.getAllLeds();
           if (value.led) {
             this.successToast(
-              this.$t('pagePcieTopology.toast.successEnableIdentifyLed')
+              this.$t('pagePcieTopology.toast.successEnableIdentifyLed'),
             );
           } else {
             this.successToast(
-              this.$t('pagePcieTopology.toast.successDisableIdentifyLed')
+              this.$t('pagePcieTopology.toast.successDisableIdentifyLed'),
             );
           }
         })
@@ -162,11 +162,11 @@ export default {
           this.getAllLeds();
           if (value.led) {
             this.errorToast(
-              this.$t('pagePcieTopology.toast.errorEnableIdentifyLed')
+              this.$t('pagePcieTopology.toast.errorEnableIdentifyLed'),
             );
           } else {
             this.errorToast(
-              this.$t('pagePcieTopology.toast.errorDisableIdentifyLed')
+              this.$t('pagePcieTopology.toast.errorDisableIdentifyLed'),
             );
           }
         });

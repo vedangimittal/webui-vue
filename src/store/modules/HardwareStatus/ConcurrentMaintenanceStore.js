@@ -42,13 +42,13 @@ const ConcurrentMaintenanceStore = {
             if (
               Object.hasOwn(entry?.Oem?.OpenBMC || {}, 'ReadyToRemove') &&
               entry?.Location?.PartLocation?.ServiceLabel?.endsWith?.(
-                'P0-C0-E0'
+                'P0-C0-E0',
               )
             ) {
               commit('setTodObject', entry);
               commit('setReadyToRemove', entry.Oem.OpenBMC.ReadyToRemove);
             }
-          })
+          }),
         )
         .catch((error) => console.log(error));
     },
@@ -57,17 +57,14 @@ const ConcurrentMaintenanceStore = {
         .get('/redfish/v1/Chassis/chassis/Assembly')
         .then((response) =>
           response.data.Assemblies.map((entry) => {
-            if (
-              Object.hasOwn(entry?.Oem?.OpenBMC || {}, 'ReadyToRemove') &&
-              entry?.Location?.PartLocation?.ServiceLabel?.endsWith?.('D0')
-            ) {
-              commit('setControlPanel', entry);
+            if (entry.Name === 'Operator Panel Base') {
+              commit('setOpPanelBase', entry);
               commit(
                 'setReadyToRemoveControlPanel',
-                entry.Oem.OpenBMC.ReadyToRemove
+                entry.Oem.OpenBMC.ReadyToRemove,
               );
             }
-          })
+          }),
         )
         .catch((error) => console.log(error));
     },
@@ -83,10 +80,10 @@ const ConcurrentMaintenanceStore = {
               commit('setControlPanelDisp', entry);
               commit(
                 'setReadyToRemoveControlPanelDisp',
-                entry.Oem.OpenBMC.ReadyToRemove
+                entry.Oem.OpenBMC.ReadyToRemove,
               );
             }
-          })
+          }),
         )
         .catch((error) => console.log(error));
     },
@@ -110,7 +107,7 @@ const ConcurrentMaintenanceStore = {
             'pageConcurrentMaintenance.toast.successSaveReadyToRemove',
             {
               state: updatedReadyToRemove ? 'enabled' : 'disabled',
-            }
+            },
           );
         })
         .catch((error) => {
@@ -119,13 +116,13 @@ const ConcurrentMaintenanceStore = {
           throw new Error(
             i18n.t('pageConcurrentMaintenance.toast.errorSaveReadyToRemove', {
               state: updatedReadyToRemove ? 'enabling' : 'disabling',
-            })
+            }),
           );
         });
     },
     async saveReadyToRemoveControlPanel(
       { commit, state },
-      updatedControlPanel
+      updatedControlPanel,
     ) {
       commit('setReadyToRemoveControlPanel', updatedControlPanel);
       return await api
@@ -146,7 +143,7 @@ const ConcurrentMaintenanceStore = {
             'pageConcurrentMaintenance.toast.successSaveReadyToRemove',
             {
               state: updatedControlPanel ? 'enabled' : 'disabled',
-            }
+            },
           );
         })
         .catch((error) => {
@@ -155,13 +152,13 @@ const ConcurrentMaintenanceStore = {
           throw new Error(
             i18n.t('pageConcurrentMaintenance.toast.errorSaveReadyToRemove', {
               state: updatedControlPanel ? 'enabling' : 'disabling',
-            })
+            }),
           );
         });
     },
     async saveReadyToRemoveControlPanelDisp(
       { commit, state },
-      updatedControlPanelDisp
+      updatedControlPanelDisp,
     ) {
       commit('setReadyToRemoveControlPanelDisp', updatedControlPanelDisp);
       return await api
@@ -182,7 +179,7 @@ const ConcurrentMaintenanceStore = {
             'pageConcurrentMaintenance.toast.successSaveReadyToRemove',
             {
               state: updatedControlPanelDisp ? 'enabled' : 'disabled',
-            }
+            },
           );
         })
         .catch((error) => {
@@ -191,7 +188,7 @@ const ConcurrentMaintenanceStore = {
           throw new Error(
             i18n.t('pageConcurrentMaintenance.toast.errorSaveReadyToRemove', {
               state: updatedControlPanelDisp ? 'enabling' : 'disabling',
-            })
+            }),
           );
         });
     },

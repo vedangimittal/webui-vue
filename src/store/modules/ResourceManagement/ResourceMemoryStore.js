@@ -35,7 +35,7 @@ const ResourceMemoryStore = {
       (state.ioAdapterCapacity = ioAdapterCapacity),
     setDynamicIoDrawerDefaultCapacity: (
       state,
-      dynamicIoDrawerDefaultCapacity
+      dynamicIoDrawerDefaultCapacity,
     ) =>
       (state.dynamicIoDrawerDefaultCapacity = dynamicIoDrawerDefaultCapacity),
     setDynamicIoDrawerCapacity: (state, dynamicIoDrawerCapacity) =>
@@ -52,14 +52,14 @@ const ResourceMemoryStore = {
     async getMemorySizeOptions({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const memorySize = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'hb_memory_region_size'
+            (Attribute) => Attribute.AttributeName == 'hb_memory_region_size',
           );
           let memorySizeOptions = memorySize[0].Value.map(
-            ({ ValueName }) => ValueName
+            ({ ValueName }) => ValueName,
           );
           commit('setLogicalMemorySizeOptions', memorySizeOptions);
         })
@@ -68,19 +68,23 @@ const ResourceMemoryStore = {
     async getLogicalMemorySize({ commit }) {
       return await api
         .get('/redfish/v1/Systems/system/Bios/')
-        .then(({ data: { Attributes: { hb_memory_region_size } } }) =>
-          commit('setLogicalMemorySize', hb_memory_region_size)
+        .then(
+          ({
+            data: {
+              Attributes: { hb_memory_region_size },
+            },
+          }) => commit('setLogicalMemorySize', hb_memory_region_size),
         )
         .catch((error) => console.log(error));
     },
     async getHmcManaged({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const hmcMananged = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'pvm_hmc_managed'
+            (Attribute) => Attribute.AttributeName == 'pvm_hmc_managed',
           );
           let hmcManangedValue = hmcMananged[0].CurrentValue;
           commit('setHmcManaged', hmcManangedValue);
@@ -90,12 +94,12 @@ const ResourceMemoryStore = {
     async getIoAdapterCapacity({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const ioAdapterCapacity = RegistryEntries.Attributes.filter(
             (Attribute) =>
-              Attribute.AttributeName == 'hb_ioadapter_enlarged_capacity'
+              Attribute.AttributeName == 'hb_ioadapter_enlarged_capacity',
           );
           let ioEnlargedAdapterCapacity = ioAdapterCapacity[0].CurrentValue;
           commit('setIoAdapterCapacity', ioEnlargedAdapterCapacity);
@@ -103,28 +107,29 @@ const ResourceMemoryStore = {
           const dynamicIoDrawerCapacity = RegistryEntries.Attributes.filter(
             (Attribute) =>
               Attribute.AttributeName ==
-              'hb_storage_preallocation_for_drawer_attach'
+              'hb_storage_preallocation_for_drawer_attach',
           );
           if (dynamicIoDrawerCapacity.length > 0) {
             let dynamicIoDrawerAttachmentCapacity =
               dynamicIoDrawerCapacity[0].CurrentValue;
             commit(
               'setDynamicIoDrawerCapacity',
-              dynamicIoDrawerAttachmentCapacity
+              dynamicIoDrawerAttachmentCapacity,
             );
           }
 
-          const dynamicIoDrawerDefaultCapacity = RegistryEntries.Attributes.filter(
-            (Attribute) =>
-              Attribute.AttributeName ==
-              'hb_storage_preallocation_for_drawer_attach'
-          );
+          const dynamicIoDrawerDefaultCapacity =
+            RegistryEntries.Attributes.filter(
+              (Attribute) =>
+                Attribute.AttributeName ==
+                'hb_storage_preallocation_for_drawer_attach',
+            );
           if (dynamicIoDrawerDefaultCapacity.length > 0) {
             let dynamicIoDrawerAttachmentDefaultCapacity =
               dynamicIoDrawerDefaultCapacity[0].DefaultValue;
             commit(
               'setDynamicIoDrawerDefaultCapacity',
-              dynamicIoDrawerAttachmentDefaultCapacity
+              dynamicIoDrawerAttachmentDefaultCapacity,
             );
           }
         })
@@ -134,11 +139,12 @@ const ResourceMemoryStore = {
     async getMaxNumHugePages({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const maxNumberHugePages = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'hb_max_number_huge_pages'
+            (Attribute) =>
+              Attribute.AttributeName == 'hb_max_number_huge_pages',
           );
           let maxNumberHugePagesLimit = maxNumberHugePages[0].CurrentValue;
           commit('setMaxNumHugePages', maxNumberHugePagesLimit);
@@ -148,11 +154,11 @@ const ResourceMemoryStore = {
     async getNumHugePages({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const numberHugePages = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'hb_number_huge_pages'
+            (Attribute) => Attribute.AttributeName == 'hb_number_huge_pages',
           );
           let systemMemoryPageSetup = numberHugePages[0].CurrentValue;
           commit('setNumHugePages', systemMemoryPageSetup);
@@ -162,11 +168,11 @@ const ResourceMemoryStore = {
     async getActiveMemoryMirroring({ commit }) {
       return await api
         .get(
-          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry'
+          '/redfish/v1/Registries/BiosAttributeRegistry/BiosAttributeRegistry',
         )
         .then(({ data: { RegistryEntries } }) => {
           const activeMemoryMirroringMode = RegistryEntries.Attributes.filter(
-            (Attribute) => Attribute.AttributeName == 'hb_memory_mirror_mode'
+            (Attribute) => Attribute.AttributeName == 'hb_memory_mirror_mode',
           );
           if (activeMemoryMirroringMode.length > 0) {
             let activeMemoryMirroringModeValue =
@@ -180,7 +186,7 @@ const ResourceMemoryStore = {
     },
     async saveActiveMemoryMirroringMode(
       { commit },
-      activeMemoryMirroringModeValue
+      activeMemoryMirroringModeValue,
     ) {
       let updatedMirroringModeValue = activeMemoryMirroringModeValue
         ? 'Enabled'
@@ -193,14 +199,14 @@ const ResourceMemoryStore = {
         .patch('/redfish/v1/Systems/system/Bios/Settings', updatedMirroringMode)
         .then(() => {
           return i18n.t(
-            'pageMemory.toast.successSavingActiveMemoryMirroringMode'
+            'pageMemory.toast.successSavingActiveMemoryMirroringMode',
           );
         })
         .catch((error) => {
           console.log(error);
           commit('setMemoryMirroringMode', !activeMemoryMirroringModeValue);
           throw new Error(
-            i18n.t('pageMemory.toast.errorSavingActiveMemoryMirroringMode')
+            i18n.t('pageMemory.toast.errorSavingActiveMemoryMirroringMode'),
           );
         });
     },
@@ -215,7 +221,7 @@ const ResourceMemoryStore = {
         .then(() => {
           commit(
             'setNumHugePages',
-            updatedNumHugePages.Attributes.hb_number_huge_pages
+            updatedNumHugePages.Attributes.hb_number_huge_pages,
           );
           return i18n.t('pageMemory.toast.successSavingPageSetup');
         })
@@ -227,55 +233,55 @@ const ResourceMemoryStore = {
     async saveEnlargedCapacity({ commit }) {
       const updatedIoEnlargedCapacity = {
         Attributes: {
-          hb_ioadapter_enlarged_capacity: this.state.resourceMemory
-            .ioAdapterCapacity,
+          hb_ioadapter_enlarged_capacity:
+            this.state.resourceMemory.ioAdapterCapacity,
         },
       };
       return await api
         .patch(
           '/redfish/v1/Systems/system/Bios/Settings',
-          updatedIoEnlargedCapacity
+          updatedIoEnlargedCapacity,
         )
         .then(() => {
           commit(
             'setIoAdapterCapacity',
-            updatedIoEnlargedCapacity.Attributes.hb_ioadapter_enlarged_capacity
+            updatedIoEnlargedCapacity.Attributes.hb_ioadapter_enlarged_capacity,
           );
           return i18n.t(
-            'pageMemory.toast.successSavingAdapterEnlargedCapacity'
+            'pageMemory.toast.successSavingAdapterEnlargedCapacity',
           );
         })
         .catch((error) => {
           console.log('error', error);
           throw new Error(
-            i18n.t('pageMemory.toast.errorSavingAdapterEnlargedCapacity')
+            i18n.t('pageMemory.toast.errorSavingAdapterEnlargedCapacity'),
           );
         });
     },
     async saveDynamicCapacity({ commit }) {
       const updatedIoDynamicCapacity = {
         Attributes: {
-          hb_storage_preallocation_for_drawer_attach: this.state.resourceMemory
-            .dynamicIoDrawerCapacity,
+          hb_storage_preallocation_for_drawer_attach:
+            this.state.resourceMemory.dynamicIoDrawerCapacity,
         },
       };
       return await api
         .patch(
           '/redfish/v1/Systems/system/Bios/Settings',
-          updatedIoDynamicCapacity
+          updatedIoDynamicCapacity,
         )
         .then(() => {
           commit(
             'setDynamicIoDrawerCapacity',
             updatedIoDynamicCapacity.Attributes
-              .hb_storage_preallocation_for_drawer_attach
+              .hb_storage_preallocation_for_drawer_attach,
           );
           return i18n.t('pageMemory.toast.successSavingAdapterDynamicCapacity');
         })
         .catch((error) => {
           console.log(error);
           throw new Error(
-            i18n.t('pageMemory.toast.errorSavingAdapterDynamicCapacity')
+            i18n.t('pageMemory.toast.errorSavingAdapterDynamicCapacity'),
           );
         });
     },
@@ -288,7 +294,7 @@ const ResourceMemoryStore = {
         .then(() => {
           commit(
             'setLogicalMemorySize',
-            updatedMemorySize.Attributes.hb_memory_region_size
+            updatedMemorySize.Attributes.hb_memory_region_size,
           );
           return i18n.t('pageMemory.toast.successSavingLogicalMemory');
         })

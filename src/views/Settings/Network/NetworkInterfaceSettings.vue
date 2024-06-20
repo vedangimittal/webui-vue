@@ -105,9 +105,9 @@ export default {
       return this.$store.getters['network/networkSettings'];
     },
     dhcpState() {
-      const ipv4Dhcp = this.$store.getters['network/networkSettings'][
-        this.selectedInterface
-      ].dhcpEnabled;
+      const ipv4Dhcp =
+        this.$store.getters['network/networkSettings'][this.selectedInterface]
+          .dhcpEnabled;
       const ipv6Dhcp =
         this.$store.getters['network/networkSettings'][this.selectedInterface]
           .ipv6OperatingMode === 'Enabled'

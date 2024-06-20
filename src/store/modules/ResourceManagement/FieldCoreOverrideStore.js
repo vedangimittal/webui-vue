@@ -44,13 +44,13 @@ const FieldCoreOverrideStore = {
         .then(() => {
           dispatch('getBiosAttributes');
           return i18n.t(
-            'pageFieldCoreOverride.toast.configurationChangeSuccess'
+            'pageFieldCoreOverride.toast.configurationChangeSuccess',
           );
         })
         .catch((error) => {
           console.log('Field core override', error);
           throw new Error(
-            i18n.t('pageFieldCoreOverride.toast.configurationChangeError')
+            i18n.t('pageFieldCoreOverride.toast.configurationChangeError'),
           );
         });
     },

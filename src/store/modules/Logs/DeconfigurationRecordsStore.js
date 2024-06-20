@@ -21,7 +21,9 @@ const DeconfigurationRecordsStore = {
           const allMembers = await api.all(
             Members.map(async (member) => {
               const arrayNumber = Number(
-                member?.Links?.OriginOfCondition?.['@odata.id'].split('/').pop()
+                member?.Links?.OriginOfCondition?.['@odata.id']
+                  .split('/')
+                  .pop(),
               );
               const uri = member?.Links?.OriginOfCondition?.['@odata.id']
                 .split('/SubProcessors')
@@ -42,7 +44,7 @@ const DeconfigurationRecordsStore = {
                 }
               });
               return member;
-            })
+            }),
           );
 
           const deconfigRecords = await api.all(
@@ -84,7 +86,7 @@ const DeconfigurationRecordsStore = {
                 location: LocationCode,
                 eventID: eventId,
               };
-            })
+            }),
           );
           commit('setDeconfigurationRecordInfo', deconfigRecords);
         })
@@ -93,16 +95,22 @@ const DeconfigurationRecordsStore = {
     async clearAllEntries({ dispatch }, data) {
       return await api
         .post(
-          '/redfish/v1/Systems/system/LogServices/HardwareIsolation/Actions/LogService.ClearLog'
+          '/redfish/v1/Systems/system/LogServices/HardwareIsolation/Actions/LogService.ClearLog',
         )
         .then(() => dispatch('getDeconfigurationRecordInfo'))
         .then(() =>
-          i18n.tc('pageDeconfigurationRecords.toast.successDelete', data.length)
+          i18n.tc(
+            'pageDeconfigurationRecords.toast.successDelete',
+            data.length,
+          ),
         )
         .catch((error) => {
           console.log(error);
           throw new Error(
-            i18n.tc('pageDeconfigurationRecords.toast.errorDelete', data.length)
+            i18n.tc(
+              'pageDeconfigurationRecords.toast.errorDelete',
+              data.length,
+            ),
           );
         });
     },
@@ -123,7 +131,7 @@ const DeconfigurationRecordsStore = {
           const element = document.createElement('a');
           element.setAttribute(
             'href',
-            `data:text/plain;charset=utf-8,${encodeURIComponent(pelJsonInfo)}`
+            `data:text/plain;charset=utf-8,${encodeURIComponent(pelJsonInfo)}`,
           );
           element.setAttribute('download', fileName);
           element.style.display = 'none';
@@ -136,7 +144,7 @@ const DeconfigurationRecordsStore = {
             i18n.t('pageDeconfigurationRecords.toast.successStartDownload'),
             {
               title: i18n.t(
-                'pageDeconfigurationRecords.toast.successStartDownloadTitle'
+                'pageDeconfigurationRecords.toast.successStartDownloadTitle',
               ),
             },
           ];
@@ -146,7 +154,7 @@ const DeconfigurationRecordsStore = {
         .catch((error) => {
           console.log(error);
           throw new Error(
-            i18n.t('pageDeconfigurationRecords.toast.errorStartDownload')
+            i18n.t('pageDeconfigurationRecords.toast.errorStartDownload'),
           );
         });
     },

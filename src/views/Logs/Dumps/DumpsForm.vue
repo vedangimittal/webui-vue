@@ -220,7 +220,7 @@ export default {
             this.infoToast(this.$t('pageDumps.toast.successStartDump'), {
               title: this.$t('pageDumps.toast.successStartResourceDumpTitle'),
               timestamp: true,
-            })
+            }),
           )
           .catch(({ message }) => this.errorToast(message));
       }
@@ -232,7 +232,7 @@ export default {
             this.infoToast(this.$t('pageDumps.toast.successStartDump'), {
               title: this.$t('pageDumps.toast.successStartBmcDumpTitle'),
               timestamp: true,
-            })
+            }),
           )
           .catch(({ message }) => this.errorToast(message));
       } else if (this.selectedDumpType === 'partition') {
@@ -273,7 +273,7 @@ export default {
         .dispatch('ibmiServiceFunctions/executeServiceFunction', value)
         .then((message) => {
           this.infoToast(
-            this.$t('pageDumps.toast.successSavePartitionDumpInfo')
+            this.$t('pageDumps.toast.successSavePartitionDumpInfo'),
           );
           this.successToast(message);
         })
@@ -300,7 +300,7 @@ export default {
           this.infoToast(this.$t('pageDumps.toast.successStartDump'), {
             title: this.$t('pageDumps.toast.successStartSystemDumpTitle'),
             timestamp: true,
-          })
+          }),
         )
         .catch(({ message }) => this.errorToast(message));
     },

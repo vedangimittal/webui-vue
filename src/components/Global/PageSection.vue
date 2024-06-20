@@ -1,3 +1,4 @@
+<!-- TODO: Work Requird -->
 <template>
   <div class="page-section">
     <h2 v-if="sectionTitle">{{ sectionTitle }}</h2>
@@ -5,16 +6,10 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'PageSection',
-  props: {
-    sectionTitle: {
-      type: String,
-      default: '',
-    },
-  },
-};
+<script setup>
+// const props = defineProps({
+//   sectionTitle: String,
+// });
 </script>
 
 <style lang="scss" scoped>
