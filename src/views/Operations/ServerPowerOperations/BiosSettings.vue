@@ -357,6 +357,20 @@
         </b-form-group>
       </b-col>
     </b-row>
+    <b-button
+      variant="primary"
+      type="submit"
+      class="mb-3"
+      :disabled="
+        !isLinuxKvmValid
+          ? form.attributes.pvm_default_os_type === 'Linux KVM'
+            ? true
+            : false
+          : false
+      "
+    >
+      {{ $t('global.action.save') }}
+    </b-button>
     <b-row class="mb-3">
       <b-col xl="10">
         <b-button v-b-toggle.collapse-role-table variant="link">
@@ -521,6 +535,12 @@ export default {
   },
   data() {
     return {
+      form: {
+        attributes: this.$store.getters['serverBootSettings/biosAttributes'],
+        attributeValues: this.$store.getters[
+          'serverBootSettings/attributeValues'
+        ],
+      },
       isLinuxKvmValid: true,
       manualMode: 'Manual',
       normalMode: 'Normal',
