@@ -10,6 +10,8 @@ const FirmwareStore = {
     hostActiveFirmwareId: null,
     applyTime: null,
     firmwareBootSide: null,
+    lowestSupportedFirmwareVersion: '',
+    showAlert: false,
   },
   getters: {
     isSingleFileUploadEnabled: (state) => state.hostFirmware.length === 0,
@@ -34,6 +36,9 @@ const FirmwareStore = {
       );
     },
     firmwareBootSide: (state) => state.firmwareBootSide,
+    lowestSupportedFirmwareVersion: (state) =>
+      state.lowestSupportedFirmwareVersion,
+    showAlert: (state) => state.showAlert,
   },
   mutations: {
     setActiveBmcFirmwareId: (state, id) => (state.bmcActiveFirmwareId = id),
@@ -45,8 +50,34 @@ const FirmwareStore = {
     setApplyTime: (state, applyTime) => (state.applyTime = applyTime),
     setFirmwareBootSide: (state, firmwareBootSide) =>
       (state.firmwareBootSide = firmwareBootSide),
+    setLowestSupportedFirmwareVersion: (
+      state,
+      lowestSupportedFirmwareVersion
+    ) =>
+      (state.lowestSupportedFirmwareVersion = lowestSupportedFirmwareVersion),
+    setShowAlert: (state, showAlert) => (state.showAlert = showAlert),
   },
   actions: {
+    async getLowestSupportedFirmwareVersion({ commit, state }) {
+      await api.get('/redfish/v1/Managers/bmc').then((response) =>
+        api
+          .get(response.data.Links.ActiveSoftwareImage['@odata.id'])
+          .then((response) => {
+            let lowestSupportedFirmware;
+            if (Object.keys(response.data).includes('LowestSupportedVersion')) {
+              state.showAlert = true;
+              lowestSupportedFirmware = response.data.LowestSupportedVersion;
+            } else {
+              state.showAlert = false;
+            }
+            commit(
+              'setLowestSupportedFirmwareVersion',
+              lowestSupportedFirmware
+            );
+          })
+      );
+      return this.lowestSupportedFirmwareVersion;
+    },
     async getFirmwareInformation({ dispatch }) {
       dispatch('getActiveHostFirmware');
       dispatch('getActiveBmcFirmware');
