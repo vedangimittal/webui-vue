@@ -68,9 +68,9 @@ const FirmwareStore = {
           .get(response.data.Links.ActiveSoftwareImage['@odata.id'])
           .then((response) => {
             let lowestSupportedFirmware;
-            if (Object.keys(response.data).includes('lowestSupportedVersion')) {
+            if (Object.keys(response.data).includes('LowestSupportedVersion')) {
               state.showAlert = true;
-              lowestSupportedFirmware = response.data.lowestSupportedVersion;
+              lowestSupportedFirmware = response.data.LowestSupportedVersion;
             } else {
               state.showAlert = false;
             }
