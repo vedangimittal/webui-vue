@@ -6,6 +6,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import Overview from '@/views/Overview/Overview.vue';
 import VirtualMedia from '@/views/Operations/VirtualMedia/VirtualMedia.vue';
 import Kvm from '@/views/Operations/Kvm';
+import Policies from '@/views/SecurityAndAccess/Policies';
 import PageNotFound from '@/views/PageNotFound/PageNotFound.vue';
 import KeyClear from '@/views/Operations/KeyClear/KeyClear.vue';
 import RebootBmc from '@/views/Operations/RebootBmc';
@@ -60,13 +61,14 @@ export const routes = [
         },
       },
       {
-        path: '/operations/key-clear',
-        name: 'key-clear',
-        component: KeyClear,
+        path: '/security-and-access/policies',
+        name: 'policies',
+        component: Policies,
         meta: {
           title: i18n.global.t('appPageTitle.policies'),
         },
       },
+      { path: '/operations/key-clear', name: 'key-clear', component: KeyClear },
       {
         path: '/operations/reboot-bmc',
         name: 'reboot-bmc',
