@@ -10,6 +10,7 @@ import KeyClearStore from './modules/Operations/KeyClearStore';
 import ControlStore from './modules/Operations/ControlStore';
 import BootSettingsStore from './modules/Operations/BootSettingsStore';
 import ResourceMemoryStore from './modules/ResourceManagement/ResourceMemoryStore';
+import PowerPolicyStore from './modules/Settings/PowerPolicyStore';
 
 // ... (export use other stores)
 export {
@@ -24,4 +25,5 @@ export {
   ControlStore,
   BootSettingsStore,
   ResourceMemoryStore,
+  PowerPolicyStore,
 };

@@ -364,7 +364,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onBeforeMount, onMounted } from 'vue';
+import { ref, computed, watch, onBeforeMount } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { minValue, maxValue } from '@vuelidate/validators';
 import { storeToRefs } from 'pinia';
@@ -536,12 +536,6 @@ const v$ = useVuelidate(rules, {
   ioAdapterCapacity,
   dynamicIoDrawerCapacity,
   systemMemoryPageSetup,
-});
-
-onMounted(function () {
-  const int8 = new Uint8Array(2);
-  int8[0] = -42;
-  console.log(int8[0]);
 });
 
 function isServerOff() {

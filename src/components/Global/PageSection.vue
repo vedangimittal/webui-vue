@@ -1,4 +1,3 @@
-<!-- TODO: Work Requird -->
 <template>
   <div class="page-section">
     <h2 v-if="sectionTitle">{{ sectionTitle }}</h2>
@@ -8,7 +7,10 @@
 
 <script setup>
 defineProps({
-  sectionTitle: { type: String, default: '' },
+  sectionTitle: {
+    type: String,
+    default: '',
+  },
 });
 </script>
 
