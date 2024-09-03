@@ -11,6 +11,7 @@ import Sensors from '@/views/HardwareStatus/Sensors';
 import PageNotFound from '@/views/PageNotFound/PageNotFound.vue';
 import KeyClear from '@/views/Operations/KeyClear/KeyClear.vue';
 import RebootBmc from '@/views/Operations/RebootBmc';
+import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
 import PowerRestorePolicy from '@/views/Settings/PowerRestorePolicy';
 const roles = {
@@ -102,6 +103,14 @@ export const routes = [
         component: PowerRestorePolicy,
         meta: {
           title: i18n.global.t('appPageTitle.powerRestorePolicy'),
+        },
+      },
+      {
+        path: '/resource-management/memory',
+        name: 'memory',
+        component: Memory,
+        meta: {
+          title: i18n.global.t('appPageTitle.memory'),
         },
       },
       {
