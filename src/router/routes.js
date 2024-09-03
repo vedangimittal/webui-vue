@@ -17,6 +17,7 @@ import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
 import PowerRestorePolicy from '@/views/Settings/PowerRestorePolicy';
 import IBMiServiceFunctions from '@/views/Logs/IBMiServiceFunctions';
+import Notices from '@/views/Notices/Notices.vue';
 
 const roles = {
   administrator: 'Administrator',
@@ -148,6 +149,14 @@ export const routes = [
         component: PageNotFound,
         meta: {
           title: i18n.global.t('appPageTitle.pageNotFound'),
+        },
+      },
+      {
+        path: '/notices',
+        name: 'notices',
+        component: Notices,
+        meta: {
+          title: i18n.global.t('appPageTitle.notices'),
         },
       },
     ],
