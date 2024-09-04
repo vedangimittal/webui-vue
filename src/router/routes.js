@@ -11,6 +11,7 @@ import Sensors from '@/views/HardwareStatus/Sensors';
 import PageNotFound from '@/views/PageNotFound/PageNotFound.vue';
 import KeyClear from '@/views/Operations/KeyClear/KeyClear.vue';
 import RebootBmc from '@/views/Operations/RebootBmc';
+import FactoryReset from '@/views/Operations/FactoryReset';
 import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
 import PowerRestorePolicy from '@/views/Settings/PowerRestorePolicy';
@@ -89,12 +90,13 @@ export const routes = [
           title: i18n.global.t('appPageTitle.rebootBmc'),
         },
       },
+
       {
-        path: '/resource-management/power',
-        name: 'power',
-        component: Power,
+        path: '/operations/factory-reset',
+        name: 'factory-reset',
+        component: FactoryReset,
         meta: {
-          title: i18n.global.t('appPageTitle.power'),
+          title: i18n.global.t('appPageTitle.factoryReset'),
         },
       },
       {
@@ -103,6 +105,14 @@ export const routes = [
         component: PowerRestorePolicy,
         meta: {
           title: i18n.global.t('appPageTitle.powerRestorePolicy'),
+        },
+      },
+      {
+        path: '/resource-management/power',
+        name: 'power',
+        component: Power,
+        meta: {
+          title: i18n.global.t('appPageTitle.power'),
         },
       },
       {
