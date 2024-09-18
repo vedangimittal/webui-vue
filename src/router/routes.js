@@ -16,6 +16,7 @@ import FactoryReset from '@/views/Operations/FactoryReset';
 import Memory from '@/views/ResourceManagement/Memory';
 import Power from '@/views/ResourceManagement/Power';
 import PowerRestorePolicy from '@/views/Settings/PowerRestorePolicy';
+import ConcurrentMaintenance from '../views/HardwareStatus/ConcurrentMaintenance/ConcurrentMaintenance.vue';
 import IBMiServiceFunctions from '@/views/Logs/IBMiServiceFunctions';
 import Notices from '@/views/Notices/Notices.vue';
 
@@ -67,6 +68,14 @@ export const routes = [
         component: Sensors,
         meta: {
           title: i18n.global.t('appPageTitle.sensors'),
+        },
+      },
+      {
+        path: '/hardware-status/concurrent-maintenance',
+        name: 'concurrent-maintenance',
+        component: ConcurrentMaintenance,
+        meta: {
+          title: i18n.global.t('appPageTitle.concurrentMaintenance'),
         },
       },
       {

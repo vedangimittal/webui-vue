@@ -12,6 +12,7 @@ import BootSettingsStore from './modules/Operations/BootSettingsStore';
 import FactoryResetStore from './modules/Operations/FactoryResetStore';
 import ResourceMemoryStore from './modules/ResourceManagement/ResourceMemoryStore';
 import PowerPolicyStore from './modules/Settings/PowerPolicyStore';
+import ConcurrentMaintenanceStore from './modules/HardwareStatus/ConcurrentMaintenanceStore';
 import IBMiServiceFunctionsStore from './modules/Logs/IBMiServiceFunctionsStore';
 import AuditLogsStore from './modules/Logs/AuditLogsStore';
 
@@ -30,6 +31,7 @@ export {
   FactoryResetStore,
   ResourceMemoryStore,
   PowerPolicyStore,
+  ConcurrentMaintenanceStore,
   IBMiServiceFunctionsStore,
   AuditLogsStore,
 };
