@@ -19,6 +19,7 @@ import PowerRestorePolicy from '@/views/Settings/PowerRestorePolicy';
 import ConcurrentMaintenance from '../views/HardwareStatus/ConcurrentMaintenance/ConcurrentMaintenance.vue';
 import IBMiServiceFunctions from '@/views/Logs/IBMiServiceFunctions';
 import Notices from '@/views/Notices/Notices.vue';
+import Sessions from '@/views/SecurityAndAccess/Sessions';
 
 const roles = {
   administrator: 'Administrator',
@@ -150,6 +151,14 @@ export const routes = [
         component: Memory,
         meta: {
           title: i18n.global.t('appPageTitle.memory'),
+        },
+      },
+      {
+        path: '/security-and-access/sessions',
+        name: 'sessions',
+        component: Sessions,
+        meta: {
+          title: i18n.global.t('appPageTitle.sessions'),
         },
       },
       {
