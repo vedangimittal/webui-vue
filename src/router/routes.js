@@ -23,6 +23,7 @@ import Notices from '@/views/Notices/Notices.vue';
 import Sessions from '@/views/SecurityAndAccess/Sessions';
 import Firmware from '@/views/Operations/Firmware';
 import Inventory from '../views/HardwareStatus/Inventory/Inventory.vue';
+import SystemParameters from '@/views/ResourceManagement/SystemParameters';
 
 const roles = {
   administrator: 'Administrator',
@@ -162,6 +163,14 @@ export const routes = [
         component: Power,
         meta: {
           title: i18n.global.t('appPageTitle.power'),
+        },
+      },
+      {
+        path: '/resource-management/system-parameters',
+        name: 'system-parameters',
+        component: SystemParameters,
+        meta: {
+          title: i18n.global.t('appPageTitle.systemParameters'),
         },
       },
       {
