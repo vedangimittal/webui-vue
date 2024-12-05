@@ -25,6 +25,7 @@ import FanStore from './modules/HardwareStatus/FanStore';
 import MemoryStore from './modules/HardwareStatus/MemoryStore';
 import AssemblyStore from './modules/HardwareStatus/AssemblyStore';
 import FabricAdaptersStore from './modules/HardwareStatus/FabricAdaptersStore';
+import SystemParametersStore from './modules/ResourceManagement/SystemParametersStore';
 import CertificatesStore from './modules/SecurityAndAccess/CertificatesStore';
 import UserManagementStore from './modules/SecurityAndAccess/UserManagementStore';
 
@@ -56,6 +57,7 @@ export {
   BmcStore,
   AssemblyStore,
   FabricAdaptersStore,
+  SystemParametersStore,
   CertificatesStore,
   UserManagementStore,
 };
