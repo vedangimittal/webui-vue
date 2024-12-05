@@ -26,6 +26,8 @@ import MemoryStore from './modules/HardwareStatus/MemoryStore';
 import AssemblyStore from './modules/HardwareStatus/AssemblyStore';
 import FabricAdaptersStore from './modules/HardwareStatus/FabricAdaptersStore';
 import SystemParametersStore from './modules/ResourceManagement/SystemParametersStore';
+import CertificatesStore from './modules/SecurityAndAccess/CertificatesStore';
+import UserManagementStore from './modules/SecurityAndAccess/UserManagementStore';
 
 // ... (export use other stores)
 export {
@@ -55,6 +57,7 @@ export {
   BmcStore,
   AssemblyStore,
   FabricAdaptersStore,
-  SystemParametersStore
-
+  SystemParametersStore,
+  CertificatesStore,
+  UserManagementStore,
 };
