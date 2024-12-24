@@ -26,6 +26,7 @@ import Firmware from '@/views/Operations/Firmware';
 import Certificates from '@/views/SecurityAndAccess/Certificates';
 import Inventory from '../views/HardwareStatus/Inventory/Inventory.vue';
 import SystemParameters from '@/views/ResourceManagement/SystemParameters';
+import DeconfigurationRecords from '../views/Logs/DeconfigurationRecords/DeconfigurationRecords.vue';
 
 const roles = {
   administrator: 'Administrator',
@@ -167,6 +168,14 @@ export const routes = [
           title: i18n.global.t('appPageTitle.firmware'),
         },
       },
+      {
+        path: '/logs/deconfiguration-records',
+        name: 'deconfiguration-records',
+        component: DeconfigurationRecords,
+        meta: {
+          title: i18n.global.t('appPageTitle.deconfigurationRecords'),
+          },
+        },  
       {
         path: '/settings/power-restore-policy',
         name: 'power-restore-policy',
