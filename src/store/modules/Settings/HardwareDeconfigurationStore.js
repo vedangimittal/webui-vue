@@ -50,7 +50,7 @@ const HardwareDeconfigurationStore = {
           if (Array.isArray(messageArgsArray) && messageArgsArray.length) {
             msgArgs = messageArgsArray[0];
           }
-          const logEntry = conditionsArray[0].LogEntry;
+          const logEntry = data['/Status/Conditions/0/LogEntry'];
           if (logEntry) {
             const eventIdUrl = logEntry['@odata.id'];
             const splitUrl = eventIdUrl.split('/');
