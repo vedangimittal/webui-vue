@@ -67,8 +67,8 @@ import FirmwareAccessKey from './FirmwareAccessKey.vue';
 import stores from '@/store';
 import { useFirmware } from '@/api/composables/useFirmware';
 import { useCapacityOnDemand } from '@/api/composables/useCapacityOnDemand';
+import { useSystemInfo } from '@/api/composables/useSystemInfo';
 
-const globalStore = stores.GlobalStore();
 const controlStore = stores.ControlStore();
 
 // Use the new VueQuery composables
@@ -82,17 +82,16 @@ const {
 // Also fetch license data for access key
 useCapacityOnDemand();
 
+// Live server status from VueQuery (polls every 60 s via systemInfo preset)
+const { serverStatus } = useSystemInfo();
+
 const isServerPowerOffRequired = ref('true');
 const isLoading = ref(loading.value);
 
 usePageLoadingBar(isFirmwareFetching, isError);
 
-const serverStatus = computed(() => {
-  return globalStore.serverStatusGetter;
-});
-
 const isServerOff = computed(() => {
-  return serverStatus.value === 'off' ? true : false;
+  return serverStatus.value === 'off';
 });
 
 const lowestSupportedFirmwareVersion = computed(() => {

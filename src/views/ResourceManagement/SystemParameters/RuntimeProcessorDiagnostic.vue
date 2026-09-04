@@ -224,6 +224,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { minValue, maxValue } from '@vuelidate/validators';
 import { useSystemParameters } from '@/api/composables/useSystemParameters';
 import i18n from '@/i18n';
+import { useSystemInfo } from '@/api/composables/useSystemInfo';
 
 const { getValidationState } = useVuelidateComposable();
 const { startLoader, endLoader } = useLoadingBar();
@@ -247,6 +248,7 @@ const {
 } = useSystemParameters();
 
 const global = stores.GlobalStore();
+const { serverStatus } = useSystemInfo();
 
 const isoTimeRegex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
@@ -339,21 +341,18 @@ const immediateTestRequestedState = computed({
   },
 });
 
-const guardOnErrorState = computed({
-  get() {
-    return guardOnError.value;
-  },
-  set(newValue) {
-    return newValue;
-  },
-});
+const guardOnErrorState = ref(false);
 
-const serverStatus = computed(() => {
-  return global.serverStatusGetter;
-});
+watch(
+  guardOnError,
+  (value) => {
+    if (value !== null) guardOnErrorState.value = value;
+  },
+  { immediate: true },
+);
 
 const isServerOff = computed(() => {
-  return serverStatus.value === 'off' ? true : false;
+  return serverStatus.value === 'off';
 });
 
 const rules = computed(() => ({
@@ -421,6 +420,7 @@ const updateGuardOnErrorState = async (state) => {
       i18n.global.t('pageSystemParameters.toast.successSavingGuardOnError'),
     );
   } catch (error) {
+    guardOnErrorState.value = !state;
     Toast.errorToast(
       i18n.global.t('pageSystemParameters.toast.errorSavingGuardOnError'),
     );

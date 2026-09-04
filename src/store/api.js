@@ -5,6 +5,7 @@ import Axios from 'axios';
 import stores from '@/store';
 import router from '@/router';
 import { buildApiPath } from '@/utilities/url';
+import { queryClient } from '@/main';
 
 Axios.defaults.headers.common['Accept'] = [
   'application/octet-stream',
@@ -31,8 +32,12 @@ api.interceptors.response.use(undefined, (error) => {
 
   if (response?.status == 401) {
     if (response.config.url != 'api/login') {
-      router.replace('/login');
+      // Clear the entire VueQuery cache on session expiry so stale data from
+      // this user is never served to the next login session.
+      queryClient.clear();
+      sessionStorage.removeItem('systemInfoCache');
       authenticationStore.logoutRemove();
+      router.replace('/login');
     }
   }
 

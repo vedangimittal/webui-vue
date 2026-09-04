@@ -3,7 +3,7 @@ import api from '@/store/api';
 import { useCookies } from 'vue3-cookies';
 import Cookies from 'js-cookie';
 import router from '@/router';
-import { useQueryClient } from '@tanstack/vue-query';
+import { queryClient } from '@/main';
 const { cookies } = useCookies();
 
 export const AuthenticationStore = defineStore('authentication', {
@@ -109,11 +109,9 @@ export const AuthenticationStore = defineStore('authentication', {
           this.isAuthenticatedCookie = undefined;
           this.currentSessionUri = null;
 
-          // Clear TanStack Query cache and sessionStorage for system info
-          const queryClient = useQueryClient();
-          queryClient.removeQueries({
-            queryKey: ['redfish', 'system', 'info'],
-          });
+          // Clear the entire VueQuery cache so no previous user's data
+          // is ever served to the next login session.
+          queryClient.clear();
           sessionStorage.removeItem('systemInfoCache');
         })
         .then(() => {

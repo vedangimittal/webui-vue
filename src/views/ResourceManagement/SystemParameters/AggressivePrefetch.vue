@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, watch } from 'vue';
 import InfoTooltip from '@/components/Global/InfoTooltip.vue';
 import useToastComposable from '@/components/Composables/useToastComposable';
 import { useSystemParameters } from '@/api/composables/useSystemParameters';
@@ -45,14 +45,15 @@ defineProps({
   },
 });
 
-const aggressivePrefetchState = computed({
-  get() {
-    return aggressivePrefetch.value;
+const aggressivePrefetchState = ref(false);
+
+watch(
+  aggressivePrefetch,
+  (value) => {
+    if (value !== null) aggressivePrefetchState.value = value;
   },
-  set(newValue) {
-    return newValue;
-  },
-});
+  { immediate: true },
+);
 
 const changeAggressivePrefetchState = async (state) => {
   try {
@@ -63,6 +64,7 @@ const changeAggressivePrefetchState = async (state) => {
       ),
     );
   } catch (error) {
+    aggressivePrefetchState.value = !state;
     Toast.errorToast(
       i18n.global.t('pageSystemParameters.toast.errorSavingAggressivePrefetch'),
     );

@@ -680,6 +680,11 @@ export default {
         // Revert the toggle to its original state on failure
         row.status = !newStatus;
         this.toast.errorToast(error.message);
+      } finally {
+        eventBus.emit('clear-selected');
+        this.tableHeaderCheckboxModel = false;
+        this.tableHeaderCheckboxIndeterminate = false;
+        this.reloadEventLogData();
       }
     },
     resolutionValue(item) {
