@@ -22,16 +22,14 @@ import RuntimeProcessorDiagnostic from './RuntimeProcessorDiagnostic.vue';
 import { usePageLoadingBar } from '@/components/Composables/usePageLoadingBar';
 import stores from '@/store';
 import { useSystemParameters } from '@/api/composables/useSystemParameters';
+import { useSystemInfo } from '@/api/composables/useSystemInfo';
 
-const global = stores.GlobalStore();
 const { isFetching, isError } = useSystemParameters();
+const { serverStatus } = useSystemInfo();
 
 usePageLoadingBar(isFetching, isError);
 
-const serverStatus = computed(() => {
-  return global.serverStatus;
-});
 const isServerOff = computed(() => {
-  return serverStatus.value === 'off' ? true : false;
+  return serverStatus.value === 'off';
 });
 </script>

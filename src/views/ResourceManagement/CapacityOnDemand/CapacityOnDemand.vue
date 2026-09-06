@@ -56,10 +56,12 @@ import CapacityOnDemandAcvitation from './CapacityOnDemandActivation.vue';
 import CapacityOnDemandTable from './CapacityOnDemandTable.vue';
 import stores from '@/store';
 import { useCapacityOnDemand } from '@/api/composables/useCapacityOnDemand';
+import { useSystemInfo } from '@/api/composables/useSystemInfo';
 
 const { scrollToOffset } = useJumpLinkComposable();
 
 const global = stores.GlobalStore();
+const { serverStatus } = useSystemInfo();
 const systemStore = stores.SystemStore();
 
 // Use the new VueQuery composable
@@ -111,10 +113,6 @@ usePageLoadingBar(isPageFetching, isError);
 // Also fetch system data (not part of licenses composable)
 systemStore.getSystem().finally(() => {
   isExtraLoading.value = false;
-});
-
-const serverStatus = computed(() => {
-  return global.serverStatusGetter;
 });
 
 const isBusy = computed(() => isLoading.value);

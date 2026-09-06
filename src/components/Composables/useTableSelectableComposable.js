@@ -20,6 +20,7 @@ const useTableSelectableComposable = () => {
       tableRef.clearSelected();
       selectedRowsList.value = [];
       tableHeaderCheckboxModel.value = false;
+      tableHeaderCheckboxIndeterminate.value = false;
     }
   };
 

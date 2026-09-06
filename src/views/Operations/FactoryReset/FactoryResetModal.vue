@@ -56,10 +56,10 @@ import useVuelidateComposable from '@/components/Composables/useVuelidateComposa
 import { useVuelidate } from '@vuelidate/core';
 import i18n from '@/i18n';
 import eventBus from '@/eventBus';
+import { useSystemInfo } from '@/api/composables/useSystemInfo';
 
 const { getValidationState } = useVuelidateComposable();
-
-const global = stores.GlobalStore();
+const { serverStatus } = useSystemInfo();
 
 const messagesEn = i18n.global.getLocaleMessage('en-US');
 const factoryResetMessage = messagesEn?.pageFactoryReset?.modal;
@@ -78,10 +78,7 @@ eventBus.on('modal-reset', () => {
 
 const confirm = ref(false);
 
-const serverStatus = computed(() => global.serverStatus);
-const isServerOff = computed(() =>
-  serverStatus.value === 'off' ? true : false,
-);
+const isServerOff = computed(() => serverStatus.value === 'off');
 const rules = {
   confirm: {
     mustBeTrue: (value) => isServerOff.value || value === true,

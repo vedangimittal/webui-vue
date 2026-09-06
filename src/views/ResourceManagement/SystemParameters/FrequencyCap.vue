@@ -19,14 +19,14 @@
         </dl>
         <BFormCheckbox
           id="frequency-cap-switch"
-          v-model="frequencyRequestCurrentToggle"
+          v-model="frequencyToggleState"
           aria-labelledby="frequency-cap-label"
           aria-describedby="frequency-cap-description"
           :disabled="frequencyMax === 0 && frequencyMin === 0"
           switch
           @update:model-value="changeFrequencyRequestCurrent"
         >
-          <span v-if="frequencyRequestCurrentToggle">
+          <span v-if="frequencyToggleState">
             {{ $t('global.status.enabled') }}
           </span>
           <span v-else>{{ $t('global.status.disabled') }}</span>
@@ -48,7 +48,7 @@
             class="mb-0 mr-0"
           >
             <BFormText
-              v-show="frequencyRequestCurrentToggle"
+              v-show="frequencyToggleState"
               id="frequency-cap-help-text"
             >
               {{
@@ -69,16 +69,13 @@
                 aria-label="frequency-cap-input"
                 type="number"
                 aria-describedby="frequency-cap-help-text"
-                :disabled="!frequencyRequestCurrentToggle"
+                :disabled="!frequencyToggleState"
                 :number="true"
                 :state="getValidationState(v$.frequencyValue)"
                 @click="v$.frequencyValue.$touch()"
                 @input="frequencyRequest"
               />
-              <BFormInvalidFeedback
-                v-if="frequencyRequestCurrentToggle"
-                role="alert"
-              >
+              <BFormInvalidFeedback v-if="frequencyToggleState" role="alert">
                 {{
                   $t('global.form.valueMustBeBetween', {
                     min: frequencyMin,
@@ -90,7 +87,7 @@
             <BButton
               variant="primary"
               type="submit"
-              :disabled="!frequencyRequestCurrentToggle"
+              :disabled="!frequencyToggleState"
               class="mb-3"
               @click="saveFrequencyRequest"
             >
@@ -135,8 +132,9 @@ defineProps({
 });
 
 const frequencyValue = ref(0);
+const frequencyToggleState = ref(false);
 
-// Sync frequencyValue with fetched data
+// Sync frequencyValue and toggle state with fetched data
 watch(
   frequencyRequestData,
   (value) => {
@@ -145,11 +143,19 @@ watch(
   { immediate: true },
 );
 
+watch(
+  frequencyRequestCurrentToggle,
+  (value) => {
+    frequencyToggleState.value = value;
+  },
+  { immediate: true },
+);
+
 const rules = computed(() => ({
   frequencyValue: {
-    requiredIf: requiredIf(frequencyRequestCurrentToggle),
+    requiredIf: requiredIf(frequencyToggleState),
     numeric,
-    between: frequencyRequestCurrentToggle.value
+    between: frequencyToggleState.value
       ? between(frequencyMin.value ?? 0, frequencyMax.value ?? 0)
       : true,
   },
@@ -169,6 +175,7 @@ const changeFrequencyRequestCurrent = async (state) => {
       i18n.global.t('pageSystemParameters.toast.successSavingFrequencyCap'),
     );
   } catch (error) {
+    frequencyToggleState.value = !state;
     Toast.errorToast(
       i18n.global.t('pageSystemParameters.toast.errorSavingFrequencyCap'),
     );

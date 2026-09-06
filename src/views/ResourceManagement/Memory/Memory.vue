@@ -396,12 +396,14 @@ import PageTitle from '@/components/Global/PageTitle.vue';
 import PageSection from '@/components/Global/PageSection.vue';
 import stores from '@/store';
 import { useMemory } from '@/api/composables/useMemory';
+import { useSystemInfo } from '@/api/composables/useSystemInfo';
 
 const { scrollToOffset } = useJumpLinkComposable();
 const { successToast, errorToast } = useToast();
 const { getValidationState } = useVuelidateComposable();
 
 const globalStore = stores.GlobalStore();
+const { serverStatus } = useSystemInfo();
 
 // Use the new VueQuery composable
 const {
@@ -533,10 +535,6 @@ const predictiveDynamicMemoryDeallocationState = computed({
   },
 });
 
-const serverStatus = computed(() => {
-  return globalStore.serverStatusGetter;
-});
-
 const rules = computed(() => ({
   form: {
     logicalMemorySizeOption: {},
@@ -563,7 +561,7 @@ const v$ = useVuelidate(rules, {
 });
 
 function isServerOff() {
-  return serverStatus.value === 'off' ? true : false;
+  return serverStatus.value === 'off';
 }
 
 function isSectionEditable() {

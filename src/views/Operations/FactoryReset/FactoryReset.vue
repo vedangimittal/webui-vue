@@ -86,23 +86,20 @@ import useToastComposable from '@/components/Composables/useToastComposable';
 import stores from '@/store';
 import eventBus from '@/eventBus';
 import { useFactoryReset } from '@/api/composables/useFactoryReset';
+import { useSystemInfo } from '@/api/composables/useSystemInfo';
 
 const toast = useToastComposable();
 const { hideLoader, startLoader, endLoader } = useLoadingBar();
 
 const { resetBios, resetToDefaults, isResetting } = useFactoryReset();
 
-const global = stores.GlobalStore();
 const authentication = stores.AuthenticationStore();
+const { serverStatus } = useSystemInfo();
 
 const resetOption = ref('resetBios');
 
 onBeforeRouteLeave(() => {
   hideLoader();
-});
-
-const serverStatus = computed(() => {
-  return global.serverStatus;
 });
 
 const onResetSubmit = () => {

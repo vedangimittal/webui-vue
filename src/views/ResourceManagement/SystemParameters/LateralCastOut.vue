@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, watch } from 'vue';
 import InfoTooltip from '@/components/Global/InfoTooltip.vue';
 import useToastComposable from '@/components/Composables/useToastComposable';
 import { useSystemParameters } from '@/api/composables/useSystemParameters';
@@ -47,14 +47,15 @@ defineProps({
   },
 });
 
-const lateralCastOutModeState = computed({
-  get() {
-    return lateralCastOutMode.value;
+const lateralCastOutModeState = ref(false);
+
+watch(
+  lateralCastOutMode,
+  (value) => {
+    if (value !== null) lateralCastOutModeState.value = value;
   },
-  set(newValue) {
-    return newValue;
-  },
-});
+  { immediate: true },
+);
 
 const changeLateralCastOutState = async (state) => {
   try {
@@ -63,6 +64,7 @@ const changeLateralCastOutState = async (state) => {
       i18n.global.t('pageSystemParameters.toast.successSavingLateralCastOut'),
     );
   } catch (error) {
+    lateralCastOutModeState.value = !state;
     Toast.errorToast(
       i18n.global.t('pageSystemParameters.toast.errorSavingLateralCastOut'),
     );

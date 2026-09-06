@@ -16,8 +16,10 @@ import WebSocketPlugin, {
   initWebSocket,
 } from '@/store/plugins/WebSocketPlugin.js';
 
-// Configure TanStack Query
-const queryClient = new QueryClient({
+// Configure TanStack Query.
+// Exported so Pinia stores and axios interceptors can call queryClient.clear()
+// on logout without needing a Vue component context.
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 30 * 1000, // 30 seconds
