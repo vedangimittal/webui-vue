@@ -219,6 +219,10 @@ function updateFirmware() {
       // if this function runs more than 36 times, it won't run anymore
       if (checkCounter > 36) {
         endLoader();
+        globalStore.setFirmwareUpdateInProgress({
+          inProgress: false,
+          success: false,
+        });
         return errorToast(i18n.global.t('pageFirmware.toast.errorActivation'));
       }
 
@@ -240,11 +244,7 @@ function updateFirmware() {
             }
           })
           .catch(() => {
-            // BMC not responding yet, retry
-            globalStore.setFirmwareUpdateInProgress({
-              inProgress: false,
-              success: false,
-            });
+            // BMC not responding yet, retry silently
             rebootProgress(checkCounter);
           });
       }, 180000); // 3 minutes
