@@ -374,61 +374,6 @@
         </div>
       </BTab>
 
-      <!-- System Alerts Tab -->
-      <BTab>
-        <template #title>
-          <span class="tab-title-with-badge">
-            {{ $t('appHeader.alerts') || 'Alerts' }}
-            <span v-if="criticalEvents.length > 0" class="tab-alert-badge">
-              {{ criticalEvents.length }}
-            </span>
-          </span>
-        </template>
-        <div class="notification-body">
-          <div v-if="recentEvents.length > 0" class="completed-list">
-            <div
-              v-for="event in recentEvents"
-              :key="event.id"
-              class="completed-notification alert-notification"
-              :class="{ 'alert-critical': event.severity === 'Critical' }"
-            >
-              <div class="notification-icon">
-                <icon-warning-filled
-                  v-if="event.severity === 'Critical'"
-                  class="critical-icon"
-                />
-                <icon-warning v-else class="warning-icon" />
-              </div>
-              <div class="notification-content">
-                <div class="notification-title">
-                  {{ event.name || event.id }}
-                </div>
-                <div class="notification-message">
-                  {{ event.description || event.message }}
-                </div>
-                <div class="notification-meta">
-                  <span class="notification-time">{{
-                    formatCompletedTime(event.date)
-                  }}</span>
-                  <span class="notification-severity">{{
-                    event.severity
-                  }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-else class="no-operations">
-            <icon-checkmark class="success-icon-large" />
-            <h6>{{ $t('appHeader.noRecentEvents') }}</h6>
-            <p>
-              {{
-                $t('appHeader.systemHealthyMessage') ||
-                'System status is healthy with no unresolved events'
-              }}
-            </p>
-          </div>
-        </div>
-      </BTab>
     </BTabs>
   </div>
 </template>
@@ -445,8 +390,6 @@ import IconChartActivity from '@carbon/icons-vue/es/chart--bar/20';
 import IconLight from '@carbon/icons-vue/es/light/20';
 import IconCheckmark from '@carbon/icons-vue/es/checkmark--filled/32';
 import IconCheckmarkFilled from '@carbon/icons-vue/es/checkmark--filled/16';
-import IconWarningFilled from '@carbon/icons-vue/es/warning--filled/16';
-import IconWarning from '@carbon/icons-vue/es/warning/16';
 import IconTime from '@carbon/icons-vue/es/time/16';
 import stores from '@/store';
 import i18n from '@/i18n';
@@ -455,7 +398,6 @@ defineEmits(['close']);
 
 const globalStore = stores.GlobalStore();
 const controlStore = stores.ControlStore();
-const eventLogStore = stores.EventLogStore();
 
 const activeTab = ref(0);
 const firmwareSwitchElapsedTime = ref('0:00');
@@ -596,16 +538,6 @@ const completedOperations = computed(
 const hasUnviewedNotifications = computed(
   () => globalStore.hasUnviewedNotifications,
 );
-
-const recentEvents = computed(() => {
-  return (eventLogStore.allEventsGetter || []).slice(0, 15);
-});
-
-const criticalEvents = computed(() => {
-  return (eventLogStore.allEventsGetter || []).filter(
-    (e) => e.severity === 'Critical' && !e.status,
-  );
-});
 
 const calculateTime = (startTime) => {
   if (!startTime) return '0:00';
@@ -864,20 +796,6 @@ onBeforeUnmount(() => {
     border-radius: 50%;
   }
 
-  .tab-alert-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 16px;
-    height: 16px;
-    padding: 0 4px;
-    background-color: #da1e28;
-    color: #ffffff;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    border-radius: 8px;
-  }
-
   :deep(.tab-content) {
     flex: 1;
     overflow: hidden;
@@ -1073,10 +991,6 @@ onBeforeUnmount(() => {
     background-color: #333333;
   }
 
-  &.alert-critical {
-    border-left: 3px solid #da1e28;
-  }
-
   .notification-icon {
     margin-right: 0.75rem;
     display: flex;
@@ -1086,16 +1000,6 @@ onBeforeUnmount(() => {
 
     .success-icon {
       fill: #42be65;
-      width: 16px;
-      height: 16px;
-    }
-    .critical-icon {
-      fill: #da1e28;
-      width: 16px;
-      height: 16px;
-    }
-    .warning-icon {
-      fill: #f1c21b;
       width: 16px;
       height: 16px;
     }
