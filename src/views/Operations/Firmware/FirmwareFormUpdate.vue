@@ -107,7 +107,7 @@ const isReadonly = () => {
 function updateFirmware() {
   startLoader();
   emit('loadingStatus', loading.value);
-  globalStore.setFirmwareUpdateInProgress(true);
+  globalStore.setFirmwareUpdateInProgress({ inProgress: true, success: false });
 
   // Step 1 - Upload
   const uploadFirmware = () => {

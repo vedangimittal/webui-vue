@@ -166,7 +166,7 @@ function toggleSystemAttentionLedSwitch(systemLedState) {
 
 function toggleLampTestSwitch(lampTestState) {
   if (lampTestState) {
-    globalStore.setLampTestInProgress(true);
+    globalStore.setLampTestInProgress({ inProgress: true, success: false });
   }
   systemStore
     .changeLampTestState(lampTestState)

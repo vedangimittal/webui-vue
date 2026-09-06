@@ -132,14 +132,14 @@
       </BNavbar>
     </header>
     <loading-bar />
-    <transition name="slide-fade">
-      <NotificationPanel
-        v-if="isNotificationPanelOpen"
-        @close="closeNotificationPanel"
-      />
-    </transition>
+    <NotificationPanel
+      v-if="isNotificationPanelOpen"
+      @close="closeNotificationPanel"
+      @keydown.esc="closeNotificationPanel"
+    />
     <div
       v-if="isNotificationPanelOpen"
+      aria-hidden="true"
       class="notification-overlay"
       @click="closeNotificationPanel"
     ></div>
@@ -167,6 +167,7 @@ const router = useRouter();
 
 const authenticationStore = stores.AuthenticationStore();
 const global = stores.GlobalStore();
+const controlStore = stores.ControlStore();
 const eventLogStore = stores.EventLogStore();
 
 const props = defineProps({
@@ -261,6 +262,18 @@ const toggleNotificationPanel = () => {
 const closeNotificationPanel = () => {
   isNotificationPanelOpen.value = false;
 };
+
+// Server power operations complete when controlStore.isOperationInProgress
+// drops to false. This watch lives in AppHeader (always mounted) rather than
+// in NotificationPanel (only mounted while open) so completion is never missed.
+watch(
+  () => controlStore.isOperationInProgress,
+  (isInProgress) => {
+    if (!isInProgress && global.serverPowerInProgress) {
+      global.setServerPowerInProgress({ inProgress: false, success: true });
+    }
+  },
+);
 
 watch(isAuthorized, (value) => {
   if (value === false) {

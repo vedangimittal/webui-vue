@@ -318,7 +318,13 @@ const handleSubmit = () => {
           title: i18n.global.t('pageDumps.toast.successStartBmcDumpTitle'),
           timestamp: true,
         });
-        checkTask('BMC');
+        // BMC dumps do not expose a pollable task link — mark complete
+        // immediately once the initiation request succeeds.
+        global.setDumpGenerationInProgress({
+          inProgress: false,
+          success: true,
+          dumpType: 'BMC',
+        });
       })
       .catch(({ message }) => {
         global.setDumpGenerationInProgress({
@@ -395,7 +401,13 @@ const createSystemDump = (dumpType) => {
         title: i18n.global.t('pageDumps.toast.successStartSystemDumpTitle'),
         timestamp: true,
       });
-      checkTask('System');
+      // System dumps do not expose a pollable task link — mark complete
+      // immediately once the initiation request succeeds.
+      global.setDumpGenerationInProgress({
+        inProgress: false,
+        success: true,
+        dumpType: 'System',
+      });
     })
     .catch(({ message }) => {
       global.setDumpGenerationInProgress({

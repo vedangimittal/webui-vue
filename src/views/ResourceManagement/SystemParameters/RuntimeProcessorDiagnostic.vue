@@ -351,7 +351,7 @@ const updateImmediateTestRequestedState = (value) => {
   startLoader();
   if (value) {
     // Run Now — mark as active immediately; stay active until the user stops
-    global.setImmediateTestInProgress(true);
+    global.setImmediateTestInProgress({ inProgress: true, success: false });
   }
   Promise.all([
     systemParametersStore.saveImmediateTestRequested({

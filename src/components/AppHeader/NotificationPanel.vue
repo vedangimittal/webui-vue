@@ -373,7 +373,6 @@
           </div>
         </div>
       </BTab>
-
     </BTabs>
   </div>
 </template>
@@ -397,7 +396,6 @@ import i18n from '@/i18n';
 defineEmits(['close']);
 
 const globalStore = stores.GlobalStore();
-const controlStore = stores.ControlStore();
 
 const activeTab = ref(0);
 const firmwareSwitchElapsedTime = ref('0:00');
@@ -426,56 +424,43 @@ const firmwareSwitchSteps = computed(() => [
 
 const firmwareUpdateSteps = computed(() => [
   {
-    title:
-      i18n.global.t('pageFirmware.toast.updateFirmware.step1') ||
-      'Uploading Image',
-    description:
-      i18n.global.t('pageFirmware.toast.updateFirmware.step1Message') ||
-      'Image upload in progress',
+    title: i18n.global.t('pageFirmware.toast.updateFirmware.step1'),
+    description: i18n.global.t(
+      'pageFirmware.toast.updateFirmware.step1Message',
+    ),
   },
   {
-    title:
-      i18n.global.t('pageFirmware.toast.updateFirmware.step2') ||
-      'Activating Image',
-    description:
-      i18n.global.t('pageFirmware.toast.updateFirmware.step2Message') ||
-      'Image activation in progress',
+    title: i18n.global.t('pageFirmware.toast.updateFirmware.step2'),
+    description: i18n.global.t(
+      'pageFirmware.toast.updateFirmware.step2Message',
+    ),
   },
   {
-    title:
-      i18n.global.t('pageFirmware.toast.updateFirmware.step3') || 'BMC Reboot',
-    description:
-      i18n.global.t('pageFirmware.toast.updateFirmware.step3Message') ||
-      'Waiting for BMC to reboot',
+    title: i18n.global.t('pageFirmware.toast.updateFirmware.step3'),
+    description: i18n.global.t(
+      'pageFirmware.toast.updateFirmware.step3Message',
+    ),
   },
   {
-    title:
-      i18n.global.t('pageFirmware.toast.updateFirmware.step4') ||
-      'Verification Complete',
-    description:
-      i18n.global.t('pageFirmware.toast.updateFirmware.step4Message') ||
-      'Firmware update verified',
+    title: i18n.global.t('pageFirmware.toast.updateFirmware.step4'),
+    description: i18n.global.t(
+      'pageFirmware.toast.updateFirmware.step4Message',
+    ),
   },
 ]);
 
 const bmcRebootSteps = computed(() => [
   {
-    title: i18n.global.t('pageRebootBmc.rebootBmc') || 'Initiate Reboot',
-    description:
-      i18n.global.t('pageRebootBmc.modal.confirmTitle') ||
-      'BMC reboot signal sent',
+    title: i18n.global.t('pageRebootBmc.rebootBmc'),
+    description: i18n.global.t('appHeader.bmcRebootStep1Desc'),
   },
   {
-    title: i18n.global.t('appHeader.firmwareStep2') || 'BMC Rebooting',
-    description:
-      i18n.global.t('appHeader.firmwareStep2Desc') ||
-      'Waiting for BMC services to come online',
+    title: i18n.global.t('appHeader.bmcRebootStep2'),
+    description: i18n.global.t('appHeader.bmcRebootStep2Desc'),
   },
   {
-    title: i18n.global.t('appHeader.completed') || 'Reboot Complete',
-    description:
-      i18n.global.t('pageRebootBmc.toast.successRebootCompleted') ||
-      'BMC is accessible and ready',
+    title: i18n.global.t('appHeader.bmcRebootStep3'),
+    description: i18n.global.t('appHeader.bmcRebootStep3Desc'),
   },
 ]);
 
@@ -621,20 +606,6 @@ const removeOperation = (operationId) => {
   globalStore.removeCompletedOperation(operationId);
 };
 
-// When controlStore.isOperationInProgress goes true→false, the server power
-// operation has actually reached the target state. Mark it complete.
-watch(
-  () => controlStore.isOperationInProgress,
-  (isInProgress) => {
-    if (!isInProgress && globalStore.serverPowerInProgress) {
-      globalStore.setServerPowerInProgress({
-        inProgress: false,
-        success: true,
-      });
-    }
-  },
-);
-
 watch(hasActiveOperations, (newVal) => {
   if (newVal) {
     startTimerLoop();
@@ -674,7 +645,7 @@ onBeforeUnmount(() => {
   height: calc(100vh - #{$header-height});
   background-color: #262626;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
+  z-index: $zindex-modal;
   display: flex;
   flex-direction: column;
   overflow: hidden;

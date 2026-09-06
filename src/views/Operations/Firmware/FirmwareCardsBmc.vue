@@ -170,7 +170,7 @@ function switchToRunning() {
   emit('loadingStatus', loading.value);
 
   // Set firmware switch in progress
-  globalStore.setFirmwareSwitchInProgress(true);
+  globalStore.setFirmwareSwitchInProgress({ inProgress: true, success: false });
 
   // Step 1 - Switch firmware
   const switchFirmware = () => {

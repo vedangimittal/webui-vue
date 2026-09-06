@@ -1,12 +1,49 @@
 import api from '@/store/api';
+import i18n from '@/i18n';
 import { defineStore } from 'pinia';
 
 const NOTIF_SESSION_KEY = 'notifCentState';
 
+// Operations that were started more than 30 minutes ago are considered stale
+// (the tab was refreshed mid-operation and the callbacks no longer exist).
+const STALE_THRESHOLD_MS = 30 * 60 * 1000;
+
 const loadNotifState = () => {
   try {
     const raw = sessionStorage.getItem(NOTIF_SESSION_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const n = JSON.parse(raw);
+    const now = Date.now();
+    // Reset any in-progress flag whose start time is stale
+    const startFields = [
+      [
+        'firmwareSwitchInProgress',
+        'firmwareSwitchStartTime',
+        'firmwareSwitchCurrentStep',
+      ],
+      [
+        'firmwareUpdateInProgress',
+        'firmwareUpdateStartTime',
+        'firmwareUpdateCurrentStep',
+      ],
+      ['bmcRebootInProgress', 'bmcRebootStartTime', 'bmcRebootCurrentStep'],
+      ['dumpGenerationInProgress', 'dumpGenerationStartTime', null],
+      ['serverPowerInProgress', 'serverPowerStartTime', null],
+      ['immediateTestInProgress', 'immediateTestStartTime', null],
+      ['lampTestInProgress', 'lampTestStartTime', null],
+    ];
+    for (const [inProgressKey, startTimeKey, stepKey] of startFields) {
+      if (
+        n[inProgressKey] &&
+        n[startTimeKey] &&
+        now - n[startTimeKey] > STALE_THRESHOLD_MS
+      ) {
+        n[inProgressKey] = false;
+        n[startTimeKey] = null;
+        if (stepKey) n[stepKey] = 1;
+      }
+    }
+    return n;
   } catch {
     return null;
   }
@@ -43,6 +80,53 @@ const saveNotifState = (state) => {
   } catch {
     // sessionStorage unavailable — fail silently
   }
+};
+
+/**
+ * Normalise the payload passed to set*InProgress actions.
+ * Always pass an object { inProgress, success } — bare booleans are no longer
+ * supported and will throw to catch accidental misuse.
+ */
+const normalisePayload = (payload) => {
+  if (typeof payload === 'boolean') {
+    throw new Error(
+      'set*InProgress: pass { inProgress, success } instead of a bare boolean',
+    );
+  }
+  return { inProgress: payload.inProgress, success: payload.success ?? false };
+};
+
+/**
+ * Append a completed-operation entry to the store and cap the list at 10.
+ * @param {object} state  - Pinia store `this`
+ * @param {object} entry  - { type, title, message }
+ */
+const addCompletedOperation = (state, { type, title, message }) => {
+  const startTimeKey = `${type.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}StartTime`;
+  // Resolve the matching startTime field by operation type
+  const startTimeMap = {
+    'firmware-switch': state.firmwareSwitchStartTime,
+    'firmware-update': state.firmwareUpdateStartTime,
+    'bmc-reboot': state.bmcRebootStartTime,
+    'dump-generation': state.dumpGenerationStartTime,
+    'server-power': state.serverPowerStartTime,
+    'immediate-test': state.immediateTestStartTime,
+    'lamp-test': state.lampTestStartTime,
+  };
+  const startTime = startTimeMap[type];
+  state.completedOperations.unshift({
+    id: Date.now(),
+    type,
+    title,
+    message,
+    status: 'success',
+    timestamp: Date.now(),
+    duration: startTime ? Date.now() - startTime : 0,
+  });
+  if (state.completedOperations.length > 10) {
+    state.completedOperations = state.completedOperations.slice(0, 10);
+  }
+  state.notificationsViewed = false;
 };
 
 export const HOST_STATE = {
@@ -331,33 +415,19 @@ export const GlobalStore = defineStore('global', {
       this.isUtcDisplay = isUtcDisplay;
     },
     setFirmwareSwitchInProgress(payload) {
-      const inProgress =
-        typeof payload === 'boolean' ? payload : payload.inProgress;
-      const success = typeof payload === 'boolean' ? true : payload.success;
+      const { inProgress, success } = normalisePayload(payload);
 
       this.firmwareSwitchInProgress = inProgress;
       if (inProgress) {
         this.firmwareSwitchStartTime = Date.now();
         this.firmwareSwitchCurrentStep = 1;
       } else {
-        // When operation completes successfully, add to completed operations
         if (this.firmwareSwitchStartTime && success) {
-          const operation = {
-            id: Date.now(),
+          addCompletedOperation(this, {
             type: 'firmware-switch',
-            title: 'Firmware Switch',
-            message: 'BMC firmware switched successfully',
-            status: 'success',
-            timestamp: Date.now(),
-            duration: Date.now() - this.firmwareSwitchStartTime,
-          };
-          this.completedOperations.unshift(operation);
-          // Keep only last 10 completed operations
-          if (this.completedOperations.length > 10) {
-            this.completedOperations = this.completedOperations.slice(0, 10);
-          }
-          // Mark notifications as unviewed when new operation completes
-          this.notificationsViewed = false;
+            title: i18n.global.t('appHeader.firmwareSwitchProgress'),
+            message: i18n.global.t('appHeader.firmwareSwitchComplete'),
+          });
         }
         this.firmwareSwitchStartTime = null;
         this.firmwareSwitchCurrentStep = 1;
@@ -379,9 +449,7 @@ export const GlobalStore = defineStore('global', {
       saveNotifState(this);
     },
     setFirmwareUpdateInProgress(payload) {
-      const inProgress =
-        typeof payload === 'boolean' ? payload : payload.inProgress;
-      const success = typeof payload === 'boolean' ? true : payload.success;
+      const { inProgress, success } = normalisePayload(payload);
 
       this.firmwareUpdateInProgress = inProgress;
       if (inProgress) {
@@ -389,20 +457,13 @@ export const GlobalStore = defineStore('global', {
         this.firmwareUpdateCurrentStep = 1;
       } else {
         if (this.firmwareUpdateStartTime && success) {
-          const operation = {
-            id: Date.now(),
+          addCompletedOperation(this, {
             type: 'firmware-update',
-            title: 'Firmware Update',
-            message: 'Firmware image updated successfully',
-            status: 'success',
-            timestamp: Date.now(),
-            duration: Date.now() - this.firmwareUpdateStartTime,
-          };
-          this.completedOperations.unshift(operation);
-          if (this.completedOperations.length > 10) {
-            this.completedOperations = this.completedOperations.slice(0, 10);
-          }
-          this.notificationsViewed = false;
+            title: i18n.global.t('appHeader.firmwareUpdateProgress'),
+            message: i18n.global.t(
+              'pageFirmware.toast.updateFirmware.step4Message',
+            ),
+          });
         }
         this.firmwareUpdateStartTime = null;
         this.firmwareUpdateCurrentStep = 1;
@@ -414,9 +475,7 @@ export const GlobalStore = defineStore('global', {
       saveNotifState(this);
     },
     setBmcRebootInProgress(payload) {
-      const inProgress =
-        typeof payload === 'boolean' ? payload : payload.inProgress;
-      const success = typeof payload === 'boolean' ? true : payload.success;
+      const { inProgress, success } = normalisePayload(payload);
 
       this.bmcRebootInProgress = inProgress;
       if (inProgress) {
@@ -424,20 +483,13 @@ export const GlobalStore = defineStore('global', {
         this.bmcRebootCurrentStep = 1;
       } else {
         if (this.bmcRebootStartTime && success) {
-          const operation = {
-            id: Date.now(),
+          addCompletedOperation(this, {
             type: 'bmc-reboot',
-            title: 'BMC Reboot',
-            message: 'BMC reboot completed and system is reachable',
-            status: 'success',
-            timestamp: Date.now(),
-            duration: Date.now() - this.bmcRebootStartTime,
-          };
-          this.completedOperations.unshift(operation);
-          if (this.completedOperations.length > 10) {
-            this.completedOperations = this.completedOperations.slice(0, 10);
-          }
-          this.notificationsViewed = false;
+            title: i18n.global.t('appHeader.bmcRebootProgress'),
+            message: i18n.global.t(
+              'pageRebootBmc.toast.successRebootCompleted',
+            ),
+          });
         }
         this.bmcRebootStartTime = null;
         this.bmcRebootCurrentStep = 1;
@@ -449,9 +501,7 @@ export const GlobalStore = defineStore('global', {
       saveNotifState(this);
     },
     setDumpGenerationInProgress(payload) {
-      const inProgress =
-        typeof payload === 'boolean' ? payload : payload.inProgress;
-      const success = typeof payload === 'boolean' ? true : payload.success;
+      const { inProgress, success } = normalisePayload(payload);
       const dumpType = payload?.dumpType || this.dumpGenerationType || 'System';
 
       this.dumpGenerationInProgress = inProgress;
@@ -460,20 +510,13 @@ export const GlobalStore = defineStore('global', {
         this.dumpGenerationType = dumpType;
       } else {
         if (this.dumpGenerationStartTime && success) {
-          const operation = {
-            id: Date.now(),
+          addCompletedOperation(this, {
             type: 'dump-generation',
-            title: `${this.dumpGenerationType} Dump`,
-            message: `${this.dumpGenerationType} dump generated successfully`,
-            status: 'success',
-            timestamp: Date.now(),
-            duration: Date.now() - this.dumpGenerationStartTime,
-          };
-          this.completedOperations.unshift(operation);
-          if (this.completedOperations.length > 10) {
-            this.completedOperations = this.completedOperations.slice(0, 10);
-          }
-          this.notificationsViewed = false;
+            title: `${this.dumpGenerationType} ${i18n.global.t('appHeader.dumpProgress')}`,
+            message: i18n.global.t('appHeader.dumpCompleted', {
+              type: this.dumpGenerationType,
+            }),
+          });
         }
         this.dumpGenerationStartTime = null;
         this.dumpGenerationType = '';
@@ -481,11 +524,9 @@ export const GlobalStore = defineStore('global', {
       saveNotifState(this);
     },
     setServerPowerInProgress(payload) {
-      const inProgress =
-        typeof payload === 'boolean' ? payload : payload.inProgress;
-      const success = typeof payload === 'boolean' ? true : payload.success;
+      const { inProgress, success } = normalisePayload(payload);
       const operationType =
-        payload?.operationType || this.serverPowerOperationType || 'Power On';
+        payload?.operationType || this.serverPowerOperationType || '';
 
       this.serverPowerInProgress = inProgress;
       if (inProgress) {
@@ -493,20 +534,11 @@ export const GlobalStore = defineStore('global', {
         this.serverPowerOperationType = operationType;
       } else {
         if (this.serverPowerStartTime && success) {
-          const operation = {
-            id: Date.now(),
+          addCompletedOperation(this, {
             type: 'server-power',
             title: this.serverPowerOperationType,
-            message: `${this.serverPowerOperationType} completed successfully`,
-            status: 'success',
-            timestamp: Date.now(),
-            duration: Date.now() - this.serverPowerStartTime,
-          };
-          this.completedOperations.unshift(operation);
-          if (this.completedOperations.length > 10) {
-            this.completedOperations = this.completedOperations.slice(0, 10);
-          }
-          this.notificationsViewed = false;
+            message: i18n.global.t('appHeader.serverPowerCompleted'),
+          });
         }
         this.serverPowerStartTime = null;
         this.serverPowerOperationType = '';
@@ -514,58 +546,36 @@ export const GlobalStore = defineStore('global', {
       saveNotifState(this);
     },
     setImmediateTestInProgress(payload) {
-      const inProgress =
-        typeof payload === 'boolean' ? payload : payload.inProgress;
-      const success = typeof payload === 'boolean' ? true : payload.success;
+      const { inProgress, success } = normalisePayload(payload);
 
       this.immediateTestInProgress = inProgress;
       if (inProgress) {
         this.immediateTestStartTime = Date.now();
       } else {
         if (this.immediateTestStartTime && success) {
-          const operation = {
-            id: Date.now(),
+          addCompletedOperation(this, {
             type: 'immediate-test',
-            title: 'Immediate Test Requested',
-            message: 'Runtime processor diagnostic test completed',
-            status: 'success',
-            timestamp: Date.now(),
-            duration: Date.now() - this.immediateTestStartTime,
-          };
-          this.completedOperations.unshift(operation);
-          if (this.completedOperations.length > 10) {
-            this.completedOperations = this.completedOperations.slice(0, 10);
-          }
-          this.notificationsViewed = false;
+            title: i18n.global.t('appHeader.immediateTestProgress'),
+            message: i18n.global.t('appHeader.immediateTestCompleted'),
+          });
         }
         this.immediateTestStartTime = null;
       }
       saveNotifState(this);
     },
     setLampTestInProgress(payload) {
-      const inProgress =
-        typeof payload === 'boolean' ? payload : payload.inProgress;
-      const success = typeof payload === 'boolean' ? true : payload.success;
+      const { inProgress, success } = normalisePayload(payload);
 
       this.lampTestInProgress = inProgress;
       if (inProgress) {
         this.lampTestStartTime = Date.now();
       } else {
         if (this.lampTestStartTime && success) {
-          const operation = {
-            id: Date.now(),
+          addCompletedOperation(this, {
             type: 'lamp-test',
-            title: 'Lamp Test',
-            message: 'Lamp test activated successfully',
-            status: 'success',
-            timestamp: Date.now(),
-            duration: Date.now() - this.lampTestStartTime,
-          };
-          this.completedOperations.unshift(operation);
-          if (this.completedOperations.length > 10) {
-            this.completedOperations = this.completedOperations.slice(0, 10);
-          }
-          this.notificationsViewed = false;
+            title: i18n.global.t('appHeader.lampTestProgress'),
+            message: i18n.global.t('appHeader.lampTestCompleted'),
+          });
         }
         this.lampTestStartTime = null;
       }
