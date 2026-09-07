@@ -132,9 +132,7 @@ async function rebootBmc() {
             inProgress: false,
             success: false,
           });
-          return errorToast(
-            i18n.global.t('pageRebootBmc.toast.errorTimeout'),
-          );
+          return errorToast(i18n.global.t('pageRebootBmc.toast.errorTimeout'));
         }
         controlStore.fetchLastBmcRebootTime().then(() => {
           const newRebootTime = controlStore.getLastBmcRebootTime
@@ -143,7 +141,7 @@ async function rebootBmc() {
           const rebootComplete =
             newRebootTime !== null &&
             (rebootTimeBeforeStart === null
-              ? true  // no baseline — any timestamp means the BMC came back
+              ? true // no baseline — any timestamp means the BMC came back
               : newRebootTime > rebootTimeBeforeStart);
           if (rebootComplete) {
             globalStore.setBmcRebootStep(3);
