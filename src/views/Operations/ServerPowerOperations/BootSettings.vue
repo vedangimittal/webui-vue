@@ -181,8 +181,10 @@ function handleSubmit() {
         }, 5000);
       });
     })
-    .catch(({ message }) => {
-      errorToast(message);
+    .catch(() => {
+      errorToast(
+        i18n.global.t('pageServerPowerOperations.toast.errorSaveSettings'),
+      );
     })
     .finally(() => {
       if (props.isUpdated) {

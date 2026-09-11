@@ -636,7 +636,11 @@ async function handleSubmit() {
       resetForm();
     }
   } catch (error) {
-    errorToast(error?.message ?? error);
+    errorToast(
+      i18n.global.t(
+        'pageServerPowerOperations.modal.networkSettings.toast.errorSavedSettings',
+      ),
+    );
   }
 }
 
@@ -645,7 +649,11 @@ async function restoreDefault() {
     const message = await restoreDefaultMutation();
     successToast(message);
   } catch (error) {
-    errorToast(error?.message ?? error);
+    errorToast(
+      i18n.global.t(
+        'pageServerPowerOperations.modal.networkSettings.toast.errorRestoreDefault',
+      ),
+    );
   }
 }
 
