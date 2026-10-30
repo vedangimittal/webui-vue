@@ -87,6 +87,7 @@ function handleOK() {
     .then(() => {
       infoToast(i18n.global.t('pageRebootBmc.toast.successRebootStart'));
       startLoader();
+      globalStore.setBmcRebootInProgress({ inProgress: true, success: false });
 
       // Phase 1: Wait for the BMC to go offline (requests start failing).
       // The reboot command was just issued but the BMC is still alive for a
@@ -96,6 +97,10 @@ function handleOK() {
         if (attempts > 60) {
           // BMC never went offline — surface an error and stop.
           endLoader();
+          globalStore.setBmcRebootInProgress({
+            inProgress: false,
+            success: false,
+          });
           return errorToast(
             i18n.global.t('pageRebootBmc.toast.errorRebootStart'),
           );
@@ -116,6 +121,10 @@ function handleOK() {
       const waitForOnline = (attempts = 0) => {
         if (attempts > 10) {
           endLoader();
+          globalStore.setBmcRebootInProgress({
+            inProgress: false,
+            success: false,
+          });
           return errorToast(
             i18n.global.t('pageRebootBmc.toast.errorRebootStart'),
           );
@@ -127,6 +136,10 @@ function handleOK() {
               i18n.global.t('pageRebootBmc.toast.successRebootCompleted'),
             );
             endLoader();
+            globalStore.setBmcRebootInProgress({
+              inProgress: false,
+              success: true,
+            });
           })
           .catch(() => {
             // Still offline — retry after 1 minute.
@@ -137,6 +150,7 @@ function handleOK() {
       waitForOffline();
     })
     .catch(() => {
+      globalStore.setBmcRebootInProgress({ inProgress: false, success: false });
       return errorToast(i18n.global.t('pageRebootBmc.toast.errorRebootStart'));
     });
 }

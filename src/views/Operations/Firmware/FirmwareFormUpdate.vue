@@ -109,6 +109,7 @@ const isReadonly = () => {
 function updateFirmware() {
   startLoader();
   emit('loadingStatus', loading.value);
+  globalStore.setFirmwareUpdateInProgress({ inProgress: true, success: false });
 
   // Step 1 - Upload
   const uploadFirmware = () => {
@@ -126,6 +127,7 @@ function updateFirmware() {
 
   // Step 2 - Activation
   const activateFirmware = async (data) => {
+    globalStore.setFirmwareUpdateStep(2);
     const taskLink = data['@odata.id'];
 
     const currentTask = async () => {
@@ -140,6 +142,10 @@ function updateFirmware() {
       // if this function runs more than 36 times, it won't run anymore
       if (checkCounter > 36) {
         endLoader();
+        globalStore.setFirmwareUpdateInProgress({
+          inProgress: false,
+          success: false,
+        });
         return errorToast(i18n.global.t('pageFirmware.toast.errorActivation'));
       }
 
@@ -150,6 +156,10 @@ function updateFirmware() {
         )[0];
 
         if (activationAborted) {
+          globalStore.setFirmwareUpdateInProgress({
+            inProgress: false,
+            success: false,
+          });
           if (activationAborted?.Oem?.OpenBMC?.AbortReason) {
             const message =
               activationAborted?.Oem?.OpenBMC?.AbortReason?.split('.').pop();
@@ -187,12 +197,17 @@ function updateFirmware() {
       currentTaskProgress(0, taskLink);
     } else {
       endLoader();
+      globalStore.setFirmwareUpdateInProgress({
+        inProgress: false,
+        success: false,
+      });
       return errorToast(i18n.global.t('pageFirmware.toast.errorActivation'));
     }
   };
 
   // Step 3 - BMC Reboot
   const bmcReboot = async () => {
+    globalStore.setFirmwareUpdateStep(3);
     infoToast(i18n.global.t('pageFirmware.toast.updateFirmware.step3Message'), {
       title: i18n.global.t('pageFirmware.toast.updateFirmware.step3'),
       timestamp: true,
@@ -206,6 +221,10 @@ function updateFirmware() {
       // if this function runs more than 36 times, it won't run anymore
       if (checkCounter > 36) {
         endLoader();
+        globalStore.setFirmwareUpdateInProgress({
+          inProgress: false,
+          success: false,
+        });
         return errorToast(i18n.global.t('pageFirmware.toast.errorActivation'));
       }
 
@@ -237,7 +256,12 @@ function updateFirmware() {
 
   // Step 4 - Activation complete
   const activationComplete = () => {
+    globalStore.setFirmwareUpdateStep(4);
     endLoader();
+    globalStore.setFirmwareUpdateInProgress({
+      inProgress: false,
+      success: true,
+    });
     return infoToast(
       i18n.global.t('pageFirmware.toast.updateFirmware.step4Message'),
       {
